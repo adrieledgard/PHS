@@ -1,0 +1,2841 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
+// use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Http\Request;
+
+use App\member;
+use App\category;
+use App\sub_category;
+use App\brand;
+use App\banner;
+use App\type;
+use App\product;
+use App\product_sub_category;
+use App\variation;
+use App\product_image;
+use App\supplier;
+use App\affiliate;
+use App\promo_header;
+use App\promo_detail;
+use App\wishlist;
+use App\cart;
+use App\voucher;
+use App\voucher_member;
+use App\voucher_product;
+use App\point_card;
+use App\address_member;
+use App\list_city;
+
+
+
+
+use App\Rules\ValidasiEmailMember;
+use App\Rules\ValidasiPasswordEditTeamMember;
+use App\Rules\ValidasiUsernameMember;
+use App\Rules\ValidasiPhoneMember;
+use App\Rules\ValidasiProductName;
+use App\Rules\ValidasiSubCategorySession;
+use App\Rules\ValidasiOptionSession;
+use App\Rules\ValidasiSupplierName;
+
+
+
+use resources\lang\en\validation;
+
+
+
+class Controller extends BaseController
+{
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+	
+	// public function rajaongkir(Request $request)
+	// {
+	// 	function getCost($apikey) {
+	// 		$curl = curl_init();
+	// 		curl_setopt_array($curl, array(
+	// 		  CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
+	// 		  CURLOPT_RETURNTRANSFER => true,
+	// 		  CURLOPT_ENCODING => "",
+	// 		  CURLOPT_MAXREDIRS => 10,
+	// 		  CURLOPT_TIMEOUT => 30,
+	// 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	// 		  CURLOPT_CUSTOMREQUEST => "POST",
+	// 		  CURLOPT_POSTFIELDS => "origin=444&destination=114&weight=1700&courier=jne",
+	// 		  CURLOPT_HTTPHEADER => array(
+	// 		 "content-type: application/x-www-form-urlencoded",
+	// 		 "key: $apikey"
+	// 		  ),
+	// 		));
+		   
+	// 		$response = curl_exec($curl);
+	// 		$err = curl_error($curl);
+	// 		curl_close($curl); 
+			
+	// 		return $response; 
+	// 	   }
+		   
+	// 	   function getListKota($apikey) {
+	// 		$curl = curl_init();
+	// 		curl_setopt_array($curl, array(
+	// 		  CURLOPT_URL => "https://api.rajaongkir.com/starter/city",
+	// 		  CURLOPT_RETURNTRANSFER => true,
+	// 		  CURLOPT_ENCODING => "",
+	// 		  CURLOPT_MAXREDIRS => 10,
+	// 		  CURLOPT_TIMEOUT => 30,
+	// 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	// 		  CURLOPT_CUSTOMREQUEST => "GET",
+	// 		  CURLOPT_HTTPHEADER => array(
+	// 		 "key: $apikey"
+	// 		  ),
+	// 		));
+		   
+	// 		$response = curl_exec($curl);
+	// 		$err = curl_error($curl);
+	// 		curl_close($curl);
+			
+	// 		return $response; 
+	// 	   }
+		   
+	// 	   $apikey = "43071cec4b1eddf220044c10ee25dfb1"; 
+	// 	   //echo  getListKota($apikey); 
+	// 	   echo  getCost($apikey);
+	// }
+
+	public function dthome()
+	{
+		session()->forget('id_cat');
+		session()->forget('Id_address');
+		//  session()->put('id_cat','');
+
+
+		$this->validasipromo();
+		$this->validasivoucher();
+		// validasipromo();
+
+		$param['dtproduct'] = product::where('product.Id_product','>', -1)
+		->join('brand','product.Id_brand','brand.Id_brand')
+		->join('type','product.Id_type','type.Id_type')
+		// ->join('product_image','product.Id_product','product_image.Id_product')
+		// ->where('product_image.Image_order','=',1)
+		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
+		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+			->get();
+
+
+		$param['dtproductimage'] = product_image::all();
+
+		$param['dtvariasi'] = variation::all();
+
+		$param['dtpromoheader'] = promo_header::where('Status','=',1)
+		->get();
+
+		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
+		->get();
+
+		$param['banner'] = banner::where('banner_position','=',1)
+		->get();
+
+		$param['banner_2'] = banner::where('banner_position','=',2)
+		->get();
+
+		$param['member_name'] ="";
+		try {
+			//code...
+			$param['member_name'] = session()->get('userlogin')->Username;
+			// if(get('userlogin')->Role=='CUST')
+			// {
+			// 	$param['member_name'] ="abc";
+			// }
+			// else
+			// {
+				
+			// }
+		
+		} catch (\Throwable $th) {
+			//throw $th;
+			$param['member_name'] ="";
+		}
+		
+		$param['category'] = category::where('category.Status','=',1)
+		->join('sub_category','category.Id_category','sub_category.Id_category')
+		->select('category.Id_category','category.Category_code','category.Category_name')
+		->distinct('category.Id_category')
+		->get();
+
+		$param['subcategory'] = sub_category::where('Status','=',1)
+		->get();
+
+		return $param;
+	}
+
+
+	public function hasil_Search($angkapage)
+	{
+		$dtproductimage = product_image::all();
+		$dtvariasi = variation::all();
+
+		$dtpromoheader = promo_header::where('Status','=',1)
+		->get();
+
+		$dtpromodetail = promo_detail::where('Status','=',1)
+		->get();
+
+		//---------------------------------------------------------
+		session()->forget('page');
+		session()->put('page',$angkapage);
+		//---------------------------------------------------------
+
+		$temp="";
+		$pro = new product();
+		$hasil = $pro->getproduct_search();
+
+		$hitungjumlah=0;
+
+		//1 1-12
+		//2 13-24
+
+		if($angkapage <= ceil(count($hasil)/12) )
+		{
+			$pageakhir = $angkapage * 12;
+			$pageawal = $pageakhir-11;
+		}
+		else
+		{
+			$pageakhir = ceil(count($hasil)/12) * 12;
+			$pageawal = $pageakhir-11;
+		}
+		
+		
+
+		
+
+		foreach ($hasil as $product) {
+			# code...
+			$hitungjumlah++;
+			if($hitungjumlah>=$pageawal && $hitungjumlah<=$pageakhir)
+			{
+				$gambardata = "";
+
+				foreach ($dtproductimage as $gambar ) {
+					if(($gambar->Id_product == $product->Id_product )&& ($gambar->Image_order == 1))
+					{
+						$gambardata = $gambar->Image_name;
+					}
+				}
+	
+				if($gambardata=="")
+				{
+					$gambardata="default.jpg";
+				}
+	
+				//--------------------------------------
+	
+				$Id_product=$product->Id_product;
+				$fixharga="";
+				$murah=999999999999;
+				$mahal=0;
+				$ctr=0;
+				foreach ($dtvariasi as $datavariasi) {
+					if($Id_product == $datavariasi->Id_product && $datavariasi->Status == 1)
+					{
+						$ctr++;
+						if($datavariasi->Sell_price < $murah)
+						{
+							$murah= $datavariasi->Sell_price;
+						}
+	
+	
+						if($datavariasi->Sell_price > $mahal)
+						{
+							$mahal= $datavariasi->Sell_price;
+						}
+					}
+				}
+	
+				if($ctr==1)
+				{
+					$fixharga = 'Rp. '. number_format($mahal);
+				}
+				else {
+					$fixharga = 'Rp. '.number_format($murah).' - '.number_format($mahal);
+				}
+				//------------------------------------------------------------
+	
+				$sale=0;
+				$upto= "";
+				$maxrupiah=0;
+				$mahal=0;
+				$tes=0;
+				foreach ($dtpromoheader as $promoheader ) {
+					if($promoheader->Id_product == $product->Id_product)
+					{
+						$sale=1;
+						$model= $promoheader->Model;
+						$Id_variation = $promoheader->Id_variation;
+						$sellprice=0;
+	
+						foreach ($dtvariasi as $vari) {
+							if($vari->Id_variation==$Id_variation)
+							{
+								$sellprice=$vari->Sell_price;
+							}
+						}
+	
+						foreach ($dtpromodetail as $promodetail) {
+							if($promoheader->Id_promo == $promodetail->Id_promo )
+							{
+								if($model=='%')
+								{
+									if(($sellprice * ($promodetail->Discount / 100)) > $mahal)
+									{
+										$mahal= $sellprice * ($promodetail->Discount / 100);
+										$upto=$promodetail->Discount." %";
+										$tes = $mahal;
+									}
+								}
+								else if($model=='RP') {
+									if(($promodetail->Discount) > $mahal)
+									{
+										$mahal= $promodetail->Discount;
+										$upto= "Rp. ". number_format($promodetail->Discount);
+									}
+								}
+								
+							}
+						}
+						
+					}
+				}
+	
+	
+	
+				$temp=$temp."<div class='col-lg-6 col-md-6 col-xl-3'>";
+					$temp=$temp."<div class='product-wrapper mb-30'>";
+						$temp=$temp."<div class='product-img'>";
+	
+						if($sale==1)
+						{
+							$temp=$temp."<span class='badge bg-danger text-white position-absolute' style='top: 0.5rem; right: 0.5rem;align-content: center; font-size:70%; z-index:10'>";
+								$temp=$temp."Sale";
+							$temp=$temp."</span>";
+						}
+						
+	
+							$temp=$temp."<div class='product-img'>";
+								$temp=$temp."<a href='".url('Cust_show_product/'.$product->Id_product)."'>";
+									$temp=$temp. "<img src='".url('Uploads/Product/'.$gambardata)."' alt=''>";
+								$temp=$temp."</a>";
+							$temp=$temp."</div>";
+							$temp=$temp."<div class='product-content'>";
+								$temp=$temp."<a href='".url('Cust_show_product/'.$product->Id_product)."'><b>".$product->Name."</b></a>";
+	
+								$temp=$temp."<div class='quick-view-rating'>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+								$temp=$temp."</div>";
+	
+								$temp=$temp."<span style='font-size:90%'>".$fixharga."</span>";
+	
+								if($sale==1)
+								{
+									$temp=$temp."<br><span style='color: red; font-size:80%'>";
+										$temp=$temp."Discount up to ".$upto; 
+									$temp=$temp."</span>";	
+									
+		
+								}
+								
+							$temp=$temp."</div>";
+						$temp=$temp."</div>";
+					$temp=$temp."</div>";
+				$temp=$temp."</div>";
+			}
+
+			
+		}
+
+		// $temp=$temp."<div class='view-all-product text-center' style='Z-index:10'>";
+		// $temp=$temp."<a href='shop.html' style='Z-index:20'>View More</a>";
+		// $temp=$temp."</div>";
+            
+		if($angkapage>ceil($hitungjumlah/12))
+		{
+			session()->forget('page');
+			session()->put('page',ceil($hitungjumlah/12));
+			$page = "Page ".ceil($hitungjumlah/12)." of ". ceil($hitungjumlah/12);
+		}
+		else
+		{
+			$page = "Page ".$angkapage." of ". ceil($hitungjumlah/12);
+		}
+		
+
+		return $temp."||".$hitungjumlah."||".($page);
+
+	}
+
+
+	public function home(){
+		return view('Cust_home',$this->dthome());
+	}
+
+
+	public function Dashboard_admin(){
+		return view('Dashboard_admin');
+	}
+
+	
+	
+
+
+	public function register(){
+		$param['msg']="";
+		return view('register',$param);
+	}
+	
+
+	public function login(){
+
+		$param['msg']="";
+		return view('login',$param);
+	}
+
+	public function forgot_password(){
+
+		return view('forgot_password');
+	}
+
+	
+
+	public function logout(){
+		session()->forget('cart');
+		session()->forget('userlogin');
+		session()->forget('Id_address');
+		$param['msg']="";
+		return view('login',$param);
+		
+	
+	}
+
+
+
+	public function post_register(Request $request){
+		
+		if($request->register){
+
+			$validator = Validator::make($request->all(),[
+				'txt_username' => ['required','max:20','alpha_dash', new ValidasiUsernameMember("add","")],
+				'txt_email' => ['required','email','max:500', new ValidasiEmailMember("add","")],
+				'txt_phone' => ['required','numeric', new ValidasiPhoneMember("add","")],
+				'txt_password_regist' => ['required','min:8', 'max:20'],
+				'txt_konpassword' => ['required','same:txt_password_regist']
+			],
+			[
+				'txt_username.required' => 'Username cant empty',
+				'txt_username.max' => 'Username max 20 Char',
+				'txt_username.alpha_dash' => 'Username may only contain letters, numbers, dashes and underscores',
+				'txt_email.required' => 'Email cant empty',
+				'txt_email.email' => 'Email format wrong',
+				'txt_phone.required' => 'Phone cant empty',
+				'txt_phone.numeric' => 'Phone must numeric',
+				'txt_phone.max' => 'Phone max 16 char',
+				'txt_password_regist.required' => 'Password cant empty',
+				'txt_password_regist.min' => 'Password min 8 char',
+				'txt_password_regist.min' => 'Password max 20 char',
+				'txt_konpassword.same' => 'Password & Confirmation password not match'
+			]);
+
+			if ($validator->fails())
+			{
+				$param['msg']="";
+				return view('register',$param)
+				->withErrors($validator);
+			}
+			else
+			{
+				$username = $request->txt_username;
+				$email = $request->txt_email;
+				$phone = $request->txt_phone;
+				$password = $request->txt_password_regist;
+
+				$member = new member();
+				$hasil = $member->insertdata($username,$email,$phone,$password);
+
+				if($hasil == "sukses")
+				{
+					$param['msg'] = "Sukses Register !";
+
+
+					$member = new member();
+					$hasil = $member->ceklogin($username,$password);
+
+					session()->put("userlogin",$hasil);
+
+
+					$arr="";
+					try {
+						$arr = json_decode(session()->get('cart'));
+
+						if(count($arr)<1)
+						{
+							$arr="";
+						}
+
+					} catch (\Throwable $th) {
+						$arr="";
+					}
+					
+					if($arr!="")
+					{
+						foreach ($arr as $data) {
+							//adrieljenn
+							$cart = new cart();
+							$carthasil = $cart->add_cart($data->Id_product,$data->Id_variation,$data->Qty,$hasil->Id_member);
+						}
+					}
+
+
+					Cookie::queue(Cookie::make("username_login", $hasil->Username, 1500000));
+					return view('Cust_home',$this->dthome());	
+
+
+				}
+				else
+				{
+					$param['msg'] = "Data ada kembar !";
+					return view('register',$param);
+				}
+			}
+
+
+
+			// if($request->validate(
+			// 	[
+			// 		'txt_username' => ['required','max:20','alpha_dash', new ValidasiUsernameMember("add","")],
+			// 		'txt_email' => ['required','email','max:500', new ValidasiEmailMember("add","")],
+			// 		'txt_phone' => ['required','numeric', new ValidasiPhoneMember("add","")],
+			// 		'txt_password_regist' => ['required','min:8', 'max:20'],
+			// 		'txt_konpassword' => ['required','same:txt_password_regist']
+
+			// 	],
+			// 	[
+			// 		'txt_username.required' => 'Username harus di isi !!',
+			// 		'txt_username.max' => 'Username maksimal 20 karakter !!',
+			// 		'txt_username.alpha_dash' => 'Username may only contain letters, numbers, dashes and underscores !!',
+			// 		'txt_email.required' => 'Email harus di isi !!',
+			// 		'txt_email.email' => 'Format email salah !!',
+			// 		'txt_phone.required' => 'No HP harus di isi !!',
+			// 		'txt_phone.numeric' => 'No HP harus numeric !!',
+			// 		'txt_phone.max' => 'No HP maksimal 16 karakter !!',
+			// 		'txt_password_regist.required' => 'Password harus di isi !!',
+			// 		'txt_password_regist.min' => 'Password harus minimal 8 karakter !!',
+			// 		'txt_password_regist.min' => 'Password harus maksimal 20 karakter !!',
+			// 		'txt_konpassword.same' => 'Password dan konfirmasi password tidak sama !!'
+
+			// 	]))
+			// 	{
+			// 		$username = $request->txt_username;
+			// 		$email = $request->txt_email;
+			// 		$phone = $request->txt_phone;
+			// 		$password = $request->txt_password_regist;
+
+			// 		$member = new member();
+			// 		$hasil = $member->insertdata($username,$email,$phone,$password);
+
+			// 		if($hasil == "sukses")
+			// 		{
+			// 			$param['msg'] = "Sukses Register !";
+			// 			return view('register',$param);
+			// 		}
+			// 		else
+			// 		{
+			// 			$param['msg'] = "Data ada kembar !";
+			// 			return view('register',$param);
+			// 		}
+			// 	}
+		}
+		else if($request->login)
+		{
+			$param['msg']="";
+		return view('login',$param);
+		}
+		
+	}
+
+	public function post_login(Request $request){
+		
+		if($request->login){
+
+
+			$validator = Validator::make($request->all(),[
+				'txt_username_email' => ['required','max:500'],
+				'txt_password' => ['required','min:8', 'max:20']
+			],
+			[
+				'txt_username_email.required' => 'Username / Email cant empty',
+				'txt_username_email.max' => 'Username / Email max 500 char',
+				'txt_password.required' => 'Password cant empty',
+				'txt_password.min' => 'Password min 8 char',
+				'txt_password.min' => 'Password max 20 char',
+			]);
+
+			if ($validator->fails())
+			{
+				return view('login')
+				->withErrors($validator);
+			}
+			else
+			{
+				$username_email = $request->txt_username_email;
+				$password = $request->txt_password;
+
+				$member = new member();
+				$hasil = $member->ceklogin($username_email,$password);
+
+				if($hasil == "failed")
+				{
+					$param['msg'] = "Login Failed !";
+					return view('login',$param);
+				}
+				else
+				{
+					session()->put("userlogin",$hasil);
+					// $request->session()->forget('nama');
+					if($hasil->Role=='ADMIN' ||$hasil->Role=='CUSTOMER SERVICE' ||$hasil->Role=='SHIPPER')
+					{
+						return view('Dashboard_admin');
+					}
+					else
+					{
+						Cookie::queue(Cookie::make("username_login", $hasil->Username, 1500000));
+						return view('Cust_home',$this->dthome());	
+
+						
+					}
+					
+				}
+			}
+
+
+		}
+		
+	}
+
+	public function test()
+	{
+		 echo (session()->get('userlogin'));
+
+		//  session()->forget('cart');
+		// $data="";
+		// if(Cookie::has("username_login"))   
+		// {
+		// 	$data  = Cookie::get('username_login');
+		// }
+
+		// $aff  = Cookie::get('Affiliate');
+
+		
+
+		// echo $data;
+		// echo $aff;
+	
+	}
+
+	public function embedtes()
+	{
+		 
+		return view('embedtes');
+	}
+
+	public function edit_profile()
+	{
+
+		$Id_member =session()->get('userlogin')->Id_member;
+		$param['dtaddress'] = address_member::where('address_member.Id_member','=',$Id_member)
+		->where('address_member.Status','=',1)
+		->join('list_city','address_member.Id_city','list_city.Id_city')
+		// ->join('list_city','address_member.Id_province','list_city.Id_province')
+		->get();
+
+		$db = list_city::all(); 
+		$arr= [];  // array 
+		$arr2= [];  // array 
+		foreach($db as $row) {
+            $arr[0] = "";
+			$arr2[0] = "";
+			$arr[$row->Id_province] = $row->Province_name; 
+			$arr2[$row->Id_city] = $row->City_name; 
+		
+		}
+		
+		$param['arr_province']  = $arr; 
+		$param['arr_city']  = $arr2; 
+
+		return view('Cust_edit_profile',$param);
+	}
+
+	public function update_profile(Request $request)
+	{
+			if($request->validate(
+				[
+					'txt_username' => ['required','max:20','alpha_dash', new ValidasiUsernameMember("edit",$request->Id_member)],
+					'txt_email' => ['required','email','max:500', new ValidasiEmailMember('edit',$request->Id_member)],
+					'txt_phone' => ['required','numeric', new ValidasiPhoneMember("edit",$request->Id_member)],
+
+				],
+				[
+					'txt_username.required' => 'Username cannot be empty !!',
+					'txt_username.max' => 'Username max 20 character !!',
+					'txt_username.alpha_dash' => 'Username may only contain letters, numbers, dashes and underscores !!',
+					'txt_email.required' => 'Email cannot be empty !!',
+					'txt_email.email' => 'Email format wrong !!',
+					'txt_phone.required' => 'Phone number cannot be empty !!',
+					'txt_phone.numeric' => 'Phone number must numeric !!',
+					'txt_phone.max' => 'Phone max 16 character !!',
+
+				]))
+				{
+
+					$id = $request->Id_member;
+					$username = $request->txt_username;
+					$email = $request->txt_email;
+					$phone = $request->txt_phone;
+
+
+					$member = new member();
+					$hasil = $member->edit_team_member_cust($id,$username,$email ,$phone);
+
+					if($hasil == "failed")
+					{
+						return view('Cust_home',$this->dthome());
+					}
+					else
+					{
+						return view('Cust_home',$this->dthome());
+					}
+				}
+		
+	}
+
+	public function logout_team_member(Request $request)
+	{
+		session()->forget('userlogin');
+		session()->forget('cart');
+		$param['msg']="";
+		return view('login',$param);
+	}
+
+	public function validasipromo()
+	{
+		$promo = promo_header::where('Status','<>',0)
+		->get();
+
+		// print_r('aaaaccca');
+		// echo "aadsd";
+		foreach ($promo as $data) {
+			if($data->End_date < date('Y-m-d'))
+			{
+				//expire lewat tanggal
+				$p = new promo_header();
+				$hasil = $p->changestatus($data->Id_promo,2);
+			}
+			else if((date('Y-m-d') >= $data->Start_date) && (date('Y-m-d')<= $data->End_date) && ($data->Status==3))
+			{
+
+				//Ubah jadi active yg dalam range waktu
+				$p = new promo_header();
+				$hasil = $p->changestatus($data->Id_promo,1);
+			}
+		}
+	}
+
+	public function validasivoucher()
+	{
+		$vc = voucher::where('Status','<>',0)
+		->get();
+
+		// print_r('aaaaccca');
+		// echo "aadsd";
+		foreach ($vc as $data) {
+			if($data->Redeem_due_date < date('Y-m-d'))
+			{
+				//expire lewat tanggal
+				$v = new voucher();
+				$hasil = $v->changestatus($data->Id_voucher,2);
+			}
+		}
+	}
+
+
+	public function Cust_show_cat(Request $request)
+	{
+		$type = $request->type;
+		$id = $request->id;
+		$query="";
+		$temp="";
+		$ctrpro=0;
+		$arr1= [];
+		if($type=='cat')
+		{
+			session()->put('id_cat',$id);
+
+			$query = category::where('category.Id_category','=', $id)
+			// ->join('brand','product.Id_brand','brand.Id_brand')
+			->join('sub_category','category.Id_category','sub_category.Id_category')
+			->select('sub_category.Id_sub_category')
+			->where('category.Status','=',1)
+			->where('sub_category.Status','=',1)
+			->get();
+
+			$prosub = product_sub_category::all();
+
+			foreach ($query as $data) {
+				// $temp=$temp."-".$data->Id_sub_category;
+				foreach ($prosub as $data2) {
+					if($data->Id_sub_category == $data2->Id_sub_category)
+					{
+						// $temp=$temp."-".$data->Id_sub_category;
+						
+						array_push($arr1, $data2->Id_product);
+					} 	
+				}
+				
+			}
+
+			for ($i=0; $i < count($arr1); $i++) { 
+				
+				$ctrpro++;
+
+				if($ctrpro<=12)
+				{
+					$product = product::where('Id_product','=',$arr1[$i])
+					->get();
+	
+					try {
+						//code...
+						$img = product_image::where('Id_product','=',$arr1[$i])
+						->where('Image_order','=',1)
+						->select("Image_name")
+						->get();
+						$imgname = $img[0]->Image_name;
+		
+					} catch (\Throwable $th) {
+						//throw $th;
+						$imgname="default.jpg";
+					}
+		
+					if($imgname=="")
+					{
+						$imgname="default.jpg";
+					}
+	
+	
+					$temp=$temp."<div class='custom-col-three-5 custom-col-style-5 mb-65'>";
+						$temp=$temp. "<div class='product-wrapper' style='z-index:100' >";
+							$temp=$temp."<div class='product-img'>";
+
+							$dtpromoheader = promo_header::where('Status','=',1)
+							->get();
+
+							$dtpromodetail = promo_detail::where('Status','=',1)
+							->get();
+
+							$dtvariasi = variation::all();
+
+
+							$sale=0;
+							$upto= "";
+							$maxrupiah=0;
+							$mahal=0;
+							$tes=0;
+							foreach ($dtpromoheader as $promoheader ) {
+								if($promoheader->Id_product == $product[0]['Id_product'])
+								{
+									$sale=1;
+									$model= $promoheader->Model;
+									$Id_variation = $promoheader->Id_variation;
+									$sellprice=0;
+
+									foreach ($dtvariasi as $vari) {
+										if($vari->Id_variation==$Id_variation)
+										{
+											$sellprice=$vari->Sell_price;
+										}
+									}
+
+									foreach ($dtpromodetail as $promodetail) {
+										if($promoheader->Id_promo == $promodetail->Id_promo )
+										{
+											if($model=='%')
+											{
+												if(($sellprice * ($promodetail->Discount / 100)) > $mahal)
+												{
+													$mahal= $sellprice * ($promodetail->Discount / 100);
+													$upto=$promodetail->Discount." %";
+													$tes = $mahal;
+												}
+											}
+											else if($model=='RP') {
+												if(($promodetail->Discount) > $mahal)
+												{
+													$mahal= $promodetail->Discount;
+													$upto= "Rp. ". number_format($promodetail->Discount);
+												}
+											}
+											
+										}
+									}
+									
+								}
+							}
+
+							if($sale==1)
+							{
+
+								$temp=$temp."<span class='badge bg-danger text-white position-absolute' style='top: 0.5rem; right: 0.5rem;align-content: center; font-size:70%'>";
+									$temp=$temp."Sale";
+								$temp=$temp."</span>";
+							}
+
+								$temp=$temp. "<a href='".url('Cust_show_product/'.$arr1[$i])."'>";
+									$temp=$temp. "<img src='".url('Uploads/Product/'.$imgname)."' alt=''>";
+									$temp=$temp. "</a>";
+
+								
+                                
+							$temp=$temp."</div>";
+
+						
+
+							$temp=$temp."<div class='funiture-product-content text-center'>";
+							
+
+								$temp=$temp."<h4><a href='".url('Cust_show_product/'.$arr1[$i])."'>".$product[0]['Name']."</a></h4>";
+								
+								//------------------------------------------------------
+								$temp=$temp."<div class='quick-view-rating'>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+									$temp=$temp."<i class='fas fa-star'></i>";
+								$temp=$temp."</div>";
+
+								$temp=$temp."<div class='quick-view-number'>";
+								$temp=$temp."<span>2 Ratting (S)</span>";
+								$temp=$temp."</div>";
+								//------------------------------------------------------
+
+								
+
+
+
+								$Id_product=$product[0]['Id_product'];
+                                $fixharga="";
+                                $murah=999999999999;
+                                $mahal=0;
+                                $ctr=0;
+                                foreach ($dtvariasi as $datavariasi) {
+                                    if($Id_product == $datavariasi->Id_product && $datavariasi->Status == 1)
+                                    {
+                                        $ctr++;
+                                        if($datavariasi->Sell_price < $murah)
+                                        {
+                                            $murah= $datavariasi->Sell_price;
+                                        }
+
+
+                                        if($datavariasi->Sell_price > $mahal)
+                                        {
+                                            $mahal= $datavariasi->Sell_price;
+                                        }
+                                    }
+                                }
+
+                                if($ctr==1)
+                                {
+                                    $fixharga = 'Rp. '. number_format($mahal);
+                                }
+                                else {
+                                    $fixharga = 'Rp. '.number_format($murah).' - '.number_format($mahal);
+                                }
+
+
+
+
+
+								$temp=$temp."<span>".$fixharga."</span>";
+								
+								
+								if($sale==1)
+								{
+									$temp=$temp."<br><span style='color: red'>";
+										$temp=$temp."Discount up to ".$upto;
+										
+										
+									$temp=$temp."</span>";
+
+								}
+
+
+								$temp=$temp."</div>";
+						$temp=$temp."</div>";
+					$temp=$temp."</div>";
+				}
+			}
+		}
+		else
+		{
+			$prosub = product_sub_category::where('Id_sub_category','=', $id)
+			->get();
+
+		
+			foreach ($prosub as $data) {
+				$ctrpro++;
+
+				if($ctrpro<=12)
+				{
+					$product = product::where('Id_product','=',$data->Id_product)
+					->get();
+	
+					try {
+						//code...
+						$img = product_image::where('Id_product','=',$data->Id_product)
+						->where('Image_order','=',1)
+						->select("Image_name")
+						->get();
+						$imgname = $img[0]->Image_name;
+		
+					} catch (\Throwable $th) {
+						//throw $th;
+						$imgname="default.jpg";
+					}
+		
+					if($imgname=="")
+					{
+						$imgname="default.jpg";
+					}
+	
+	
+					$temp=$temp."<div class='custom-col-three-5 custom-col-style-5 mb-65'>";
+						$temp=$temp. "<div class='product-wrapper' style='z-index:100'>";
+							$temp=$temp."<div class='product-img'>";
+									$temp=$temp. "<a href='".url('Cust_show_product/'.$product[0]['Id_product'])."'>";
+									// $temp=$temp. "<a href='".url('Cust_show_product/'.$product->Id_product)."'>";
+										$temp=$temp. "<img src='".url('Uploads/Product/'.$imgname)."' alt=''>";
+									$temp=$temp. "</a>";
+								$temp=$temp."<div class='product-action'>";
+									$temp=$temp."<a class='animate-left' title='Wishlist' href='#'>";
+										$temp=$temp."<i class='pe-7s-like'></i>";
+										$temp=$temp."</a>";
+									$temp=$temp."<a class='animate-top' title='Add To Cart' href='#'>";
+										$temp=$temp."<i class='pe-7s-cart'></i>";
+									$temp=$temp."</a>";
+									$temp=$temp."<a class='animate-right' title='Quick View' data-bs-toggle='modal' data-bs-target='#exampleModal' href='#'>";
+										$temp=$temp."<i class='pe-7s-look'></i>";
+									$temp=$temp."</a>";
+								$temp=$temp."</div>";
+							$temp=$temp."</div>";
+							$temp=$temp."<div class='funiture-product-content text-center'>";
+								$temp=$temp."<h4><a href='".url('Cust_show_product/'.$product[0]['Id_product'])."'>".$product[0]['Name']."</a></h4>";
+								$temp=$temp."<span>$90.00</span>";
+								$temp=$temp."<div class='product-rating-5'>";
+									$temp=$temp."<i class='pe-7s-star black'></i>";
+									$temp=$temp."<i class='pe-7s-star black'></i>";
+									$temp=$temp."<i class='pe-7s-star'></i>";
+									$temp=$temp."<i class='pe-7s-star'></i>";
+									$temp=$temp."<i class='pe-7s-star'></i>";
+									$temp=$temp."</div>";
+									$temp=$temp."</div>";
+						$temp=$temp."</div>";
+					$temp=$temp."</div>";
+				}
+			}
+
+
+		}
+
+		
+
+
+		echo $temp;
+		
+
+	}
+
+	public function view_more_halaman_home(Request $request)
+	{
+		//adr
+		$id_cat = session()->get('id_cat');
+
+		$query = sub_category::where('Status','=',1)
+		->where('Id_category','=',$id_cat)
+		->get();
+
+		$kumpulan_id_sub_cat="";
+		$ctr=0;
+		foreach ($query as $data) {
+			$ctr++;
+
+			if($ctr==count($query))
+			{
+				$kumpulan_id_sub_cat= $kumpulan_id_sub_cat. $data->Id_sub_category;
+			}
+			else
+			{
+				$kumpulan_id_sub_cat= $kumpulan_id_sub_cat. $data->Id_sub_category.",";
+			}
+		}
+
+
+		session()->forget('search_name');
+		session()->put('search_name','');
+
+		session()->forget('start_price');
+		session()->put('start_price','');
+
+		session()->forget('end_price');
+		session()->put('end_price','');
+
+		session()->forget('kumpulan_id_brand');
+		session()->put('kumpulan_id_brand','');
+
+		session()->forget('kumpulan_id_sub_cat');
+		session()->put('kumpulan_id_sub_cat',$kumpulan_id_sub_cat);
+
+		session()->forget('sortby');
+		session()->put('sortby','');
+
+		session()->forget('page');
+		session()->put('page',1);
+	}
+
+
+
+
+
+	public function Cust_show_product($id)
+	{
+// adriel
+
+	$param['dtproductimage2'] = product_image::all();
+
+	$param['dtvariasi2'] = variation::all();
+
+	$param['dtpromoheader2'] = promo_header::where('Status','=',1)
+	->get();
+
+	$param['dtpromodetail2'] = promo_detail::where('Status','=',1)
+	->get();
+
+
+
+		$param['dtproduct'] = product::where('product.Id_product','=',$id)
+		->join('type','product.Id_type','type.Id_type')
+		->join('brand','product.Id_brand','brand.Id_brand')
+		->get();
+
+		$param['dtproductsubcat'] = product::where('product.Status','=',1)
+		->get();
+
+		$param['dtproductimage'] = product_image::where('Id_product','=',$id)
+		->orderby('Image_order')
+		->get();
+
+
+		$param['dtvariation'] = variation::where('Id_product','=',$id)
+		->where('Status','=',1)
+		->get();
+
+		$param['subcat'] = product_sub_category::where('product_sub_category.Id_product','=',$id)
+		->join('sub_category','product_sub_category.Id_sub_category','sub_category.Id_sub_category')
+		->select('sub_category.Sub_category_name','sub_category.Id_sub_category')
+		->get();
+
+
+		$param['subcat2'] = product_sub_category::all();
+
+
+		$param['dtpromoheader'] = promo_header::where('Status','=',1)
+		->where('Id_product','=',$id)
+		->get();
+
+		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
+		->get();
+
+
+		return view('Cust_show_product',$param);
+	}
+
+
+
+	public function Cust_show_product_affiliate($id,$Random_code)
+	{
+// adriel
+
+	$param['dtproductimage2'] = product_image::all();
+
+	$param['dtvariasi2'] = variation::all();
+
+	$param['dtpromoheader2'] = promo_header::where('Status','=',1)
+	->get();
+
+	$param['dtpromodetail2'] = promo_detail::where('Status','=',1)
+	->get();
+
+
+
+		$param['dtproduct'] = product::where('product.Id_product','=',$id)
+		->join('type','product.Id_type','type.Id_type')
+		->join('brand','product.Id_brand','brand.Id_brand')
+		->get();
+
+		$param['dtproductsubcat'] = product::where('product.Status','=',1)
+		->get();
+
+		$param['dtproductimage'] = product_image::where('Id_product','=',$id)
+		->orderby('Image_order')
+		->get();
+
+
+		$param['dtvariation'] = variation::where('Id_product','=',$id)
+		->where('Status','=',1)
+		->get();
+
+		$param['subcat'] = product_sub_category::where('product_sub_category.Id_product','=',$id)
+		->join('sub_category','product_sub_category.Id_sub_category','sub_category.Id_sub_category')
+		->select('sub_category.Sub_category_name','sub_category.Id_sub_category')
+		->get();
+
+
+		$param['subcat2'] = product_sub_category::all();
+
+
+		$param['dtpromoheader'] = promo_header::where('Status','=',1)
+		->where('Id_product','=',$id)
+		->get();
+
+		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
+		->get();
+
+
+
+		
+
+		if(!Cookie::has("username_login"))   
+		{
+			Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
+		}
+
+
+		return view('Cust_show_product',$param);
+	}
+
+
+	public function getpricevariant(Request $request)
+	{
+		$Id_variation = $request->Id_variation;
+
+		$vari = variation::where('Id_variation','=',$Id_variation)
+		->where('Status','=',1)
+		->get();
+
+		$dtpromoheader = promo_header::where('Status','=',1)
+		->where('Id_variation','=',$Id_variation)
+		->get();
+
+		$dtpromodetail = promo_detail::where('Status','=',1)
+		->orderby('Minimum_qty')
+		->get();
+
+		$sale=0;
+		$model ="";
+		$discount=0;
+		$temp="";
+
+		
+
+		foreach ($dtpromoheader as $promoheader) {
+			if($promoheader->Id_variation == $vari[0]->Id_variation)
+			{
+				$sale=1;
+				$model = $promoheader->Model;
+				foreach ($dtpromodetail as $promodetail) {
+					if($promoheader->Id_promo == $promodetail->Id_promo)
+					{
+						if($promodetail->Minimum_qty == 1)
+						{
+							$discount= $promodetail->Discount;
+							$sale=1;
+							break;
+						}
+						else {
+							$sale=0;
+						}
+					}
+				}
+
+			}
+		}
+
+
+		if($sale==1)
+		{
+			$hargabaru=0;
+			if($model=='%')
+			{
+				$hargabaru = $vari[0]->Sell_price - ($vari[0]->Sell_price * ($discount/100));
+			
+				$temp=$temp."<span style='color: slategrey;font-size:65%'><s>Rp.". number_format($vari[0]->Sell_price)."</s> <b style='font-size:100%;color:red'>(Discount ".number_format($discount)." %)</b></span>";
+				$temp=$temp."<br>";
+				$temp=$temp."<span style='font-size:120%'>Rp. ".number_format($hargabaru)." </span>";
+		
+			}
+			else if($model=="RP")
+			{
+				$hargabaru = $vari[0]->Sell_price - $discount;
+				$temp=$temp."<span style='color: slategrey;font-size:65%'><s>Rp.". number_format($vari[0]->Sell_price)."</s> <b style='font-size:100%;color:red'>(Discount Rp. ".number_format($discount).")</b></span>";
+				$temp=$temp."<br>";
+				$temp=$temp."<span style='font-size:120%'>Rp. ".number_format($hargabaru)." </span>";
+			
+			}
+
+		
+		}
+		else {
+			$temp=$temp."<spanstyle='font-size:120%'>Rp. ".number_format($vari[0]->Sell_price)."</span>";
+			
+			
+		}
+
+		echo $temp."#". ($vari[0]['Stock']-$vari[0]['Stock_atc']-$vari[0]['Stock_pay']);
+		// print_r($temp);
+	}
+
+
+	public function getpromovariant(Request $request)
+	{
+		$temp="";
+		$Id_variation = $request->Id_variation;
+
+		$vari = variation::where('Id_variation','=',$Id_variation)
+		->where('Status','=',1)
+		->get();
+
+		$dtpromoheader = promo_header::where('Status','=',1)
+		->where('Id_variation','=',$Id_variation)
+		->get();
+
+		$dtpromodetail = promo_detail::where('Status','=',1)
+		->orderby('Minimum_qty')
+		->get();
+
+		$ctr=0;
+		foreach ($dtpromoheader as $promoheader) {
+			$ctr=$ctr+1;
+			$temp=$temp."<br>";
+			$temp=$temp. "<b>".date("d-m-Y", strtotime($promoheader->Start_date)) ." - ".date("d-m-Y", strtotime($promoheader->Start_date)). "</b> <br>";
+
+			foreach ($dtpromodetail as $promodetail) {
+				if($promodetail->Id_promo == $promoheader->Id_promo)
+				{
+					if($promoheader->Model=="%")
+					{
+						$temp=$temp."Min qty ". number_format($promodetail->Minimum_qty)."-> [ ".number_format($promodetail->Discount) ."% ] <br>";
+					}
+					else
+					{
+						$temp=$temp."Min qty ". number_format($promodetail->Minimum_qty)."-> [ Rp. ".number_format($promodetail->Discount) ." ] <br>";
+					}
+					
+				}
+			}
+		}
+
+		if($ctr==0)
+		{
+			$temp=$temp."No Active Discount";
+		}
+		
+		echo $temp;
+
+
+	}
+
+	public function getpricechangeqty(Request $request)
+	{
+		$Id_variation = $request->Id_variation;
+		$Jumqty= $request->Jumqty;
+
+		$vari = variation::where('Id_variation','=',$Id_variation)
+		->where('Status','=',1)
+		->get();
+
+		$dtpromoheader = promo_header::where('Status','=',1)
+		->where('Id_variation','=',$Id_variation)
+		->get();
+
+		$dtpromodetail = promo_detail::where('Status','=',1)
+		->orderby('Minimum_qty')
+		->get();
+
+		$sale=0;
+		$model ="";
+		$discount=0;
+		$temp="";
+
+		
+
+		foreach ($dtpromoheader as $promoheader) {
+			if($promoheader->Id_variation == $vari[0]->Id_variation)
+			{
+				$sale=1;
+				$model = $promoheader->Model;
+				foreach ($dtpromodetail as $promodetail) {
+					if($promoheader->Id_promo == $promodetail->Id_promo)
+					{
+						if($Jumqty >= $promodetail->Minimum_qty)
+						{
+							$discount= $promodetail->Discount;
+							$sale=1;
+						}
+					}
+				}
+
+			}
+		}
+
+
+		if($sale==1)
+		{
+			$hargabaru=0;
+			if($model=='%')
+			{
+				$hargabaru = $vari[0]->Sell_price - ($vari[0]->Sell_price * ($discount/100));
+
+				$temp=$temp."<span style='color: slategrey;font-size:65%'><s>Rp.". number_format($vari[0]->Sell_price)."</s> <b style='font-size:100%;color:red'>(Discount ".number_format($discount)." %)</b></span>";
+				$temp=$temp."<br>";
+				$temp=$temp."<span style='font-size:120%'>Rp. ".number_format($hargabaru)." </span>";
+			}
+			else if($model=="RP")
+			{	
+				$hargabaru = $vari[0]->Sell_price - $discount;
+
+				$temp=$temp."<span style='color: slategrey;font-size:65%'><s>Rp.". number_format($vari[0]->Sell_price)."</s> <b style='font-size:100%;color:red'>(Discount Rp. ".number_format($discount).")</b></span>";
+				$temp=$temp."<br>";
+				$temp=$temp."<span style='font-size:120%'>Rp. ".number_format($hargabaru)." </span>";
+			}
+
+		
+			
+			
+		
+		}
+		else {
+			$temp=$temp."<span style='font-size:120%'>Rp.".number_format($vari[0]->Sell_price)."</span>";
+			
+			
+		}
+
+		echo $temp;
+
+	}
+
+	public function Advance_search()
+	{
+		$param['category'] = category::where('Status','=',1)
+		->get();
+
+		$param['subcategory'] = sub_category::where('Status','=',1)
+		->get();
+
+		
+		$param['brand'] = brand::where('Status','=',1)
+		->get();
+
+		return view('Cust_advance_search',$param);
+
+	}
+
+	public function search_multi(Request $request)
+	{
+		$name = $request->name;
+		$start_price = $request->start_price;
+		$end_price = $request->end_price;
+		$kumpulan_id_brand = $request->kumpulan_id_brand;
+		$kumpulan_id_sub_cat = $request->kumpulan_id_sub_cat;
+
+		session()->forget('search_name');
+		session()->put('search_name',$name);
+
+		session()->forget('start_price');
+		session()->put('start_price',$start_price);
+
+		session()->forget('end_price');
+		session()->put('end_price',$end_price);
+
+		session()->forget('kumpulan_id_brand');
+		session()->put('kumpulan_id_brand',$kumpulan_id_brand);
+
+		session()->forget('kumpulan_id_sub_cat');
+		session()->put('kumpulan_id_sub_cat',$kumpulan_id_sub_cat);
+
+		session()->forget('sortby');
+		session()->put('sortby','');
+
+		session()->forget('page');
+		session()->put('page',1);
+
+		//---------------------------------------------------
+
+
+		return $this->hasil_Search(1);
+
+	}
+
+	public function muncul_awal_search()
+	{
+		echo $this->hasil_Search(session()->get('page'));
+	}
+
+	public function page_next_previous(Request $request)
+	{
+		$tipe = $request->tipe;
+
+		if($tipe=="next")
+		{
+			$temp = session()->get('page');
+			$temp++;
+			echo $this->hasil_Search($temp);
+		}
+		else
+		{
+			$temp = session()->get('page');
+			$temp--;
+			if($temp<1)
+			{
+				$temp=1;
+			}
+			echo $this->hasil_Search($temp);
+		}
+	}
+
+	public function search_name(Request $request)
+	{
+		$name = $request->name;
+
+		session()->forget('search_name');
+		session()->put('search_name', $name);
+
+		session()->forget('start_price');
+		session()->put('start_price','');
+
+		session()->forget('end_price');
+		session()->put('end_price','');
+
+		session()->forget('kumpulan_id_brand');
+		session()->put('kumpulan_id_brand','');
+
+		session()->forget('kumpulan_id_sub_cat');
+		session()->put('kumpulan_id_sub_cat','');
+
+		session()->forget('sortby');
+		session()->put('sortby','');
+
+		session()->forget('page');
+		session()->put('page',1);
+	}
+
+	public function clear_search(Request $request)
+	{
+		session()->forget('search_name');
+		session()->put('search_name','');
+
+		session()->forget('start_price');
+		session()->put('start_price','');
+
+		session()->forget('end_price');
+		session()->put('end_price','');
+
+		session()->forget('kumpulan_id_brand');
+		session()->put('kumpulan_id_brand','');
+
+		session()->forget('kumpulan_id_sub_cat');
+		session()->put('kumpulan_id_sub_cat','');
+
+		session()->forget('sortby');
+		session()->put('sortby','');
+
+		session()->forget('page');
+		session()->put('page',1);
+
+	}
+
+	public function ganti_Sort(Request $request)
+	{
+		$urutan = $request->urutan;
+
+		if($urutan==2)
+		{
+			session()->forget('sortby');
+			session()->put('sortby','ASC');
+		}
+		else if($urutan==3)
+		{
+			session()->forget('sortby');
+			session()->put('sortby','DESC');
+		}
+		else if($urutan==4)
+		{
+			session()->forget('sortby');
+			session()->put('sortby','EXP');
+		}
+		else if($urutan==5)
+		{
+			session()->forget('sortby');
+			session()->put('sortby','CHEAP');
+		}
+		else
+		{
+			session()->forget('sortby');
+			session()->put('sortby','');
+		}
+
+		return $this->hasil_Search(1);
+	}
+
+	public function open_wishlist(Request $request)
+	{
+		try {
+			if(session()->get('userlogin')->Role=="CUST")
+			{
+				echo "yes";
+				// return view('Cust_wishlist');
+			}
+			else
+			{
+				echo "no";
+			}
+		} catch (\Throwable $th) {
+			echo "no";
+		}
+		
+		
+	}
+
+	public function open_wishlist2(Request $request)
+	{
+		$Id_member =session()->get('userlogin')->Id_member;
+		$param['wishlist'] = wishlist::where('Id_member','=',$Id_member)
+		->get();
+
+		$param['product'] = product::where('Status','=',1)
+		->get();
+
+		$param['productimage'] = product_image::where('Image_order','=',1)
+		->get();
+
+		$param['variation'] = variation::where('Status','=',1)
+		->get();
+
+		$param['dtpromoheader'] = promo_header::where('Status','=',1)
+		->get();
+
+		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
+		->get();
+
+		return view('Cust_wishlist',$param);
+	}
+
+
+	public function update_wishlist(Request $request)
+	{
+		$Id_member="";
+		try {
+			if(session()->get('userlogin')->Role=="CUST")
+			{
+				$Id_member =session()->get('userlogin')->Id_member;
+
+				$wish = wishlist::where('Id_member','=',$Id_member)
+				->get();
+
+				echo (Count($wish));
+			}
+			else
+			{
+				echo('0');
+			}
+			
+		} catch (\Throwable $th) {
+			echo('0');
+		}
+
+		
+	}
+
+	public function add_wishlist(Request $request)
+	{
+		$Id_variation= $request->Id_variation;
+		$Qty= $request->Qty;
+
+		$var = variation::where('Id_variation','=',$Id_variation)
+		->get();
+
+		$Id_product = $var[0]['Id_product'];
+
+		try {
+			//code...
+			$Id_member =session()->get('userlogin')->Id_member;
+		} catch (\Throwable $th) {
+			//throw $th;
+			$Id_member="";
+		}
+	
+
+
+		$temp=0;
+		$wi = wishlist::where('Id_member','=',$Id_member)
+		->get();
+
+		foreach ($wi as $data) {
+			if ($data->Id_variation == $Id_variation)
+			{
+				$temp=1;
+			}
+		}
+
+		if($Id_member=="")
+		{
+			echo "mustlogin";
+		}
+		else if($temp==0)
+		{
+			$wish = new wishlist();
+			$hasil = $wish->add_wishlist ($Id_product,$Id_variation,$Qty,$Id_member);
+	
+		}
+		else
+		{
+			echo "double";
+		}
+
+
+
+		
+	}
+
+	public function updateqtywishlist(Request $request)
+	{
+		$Id_wishlist = $request->Id_wishlist;
+		$Qty = $request->Qty;
+
+		$wish = new wishlist();
+		$hasil = $wish->edit_wishlist($Id_wishlist,$Qty);
+
+	}
+
+	public function deletewishlist(Request $request)
+	{
+		$Id_wishlist = $request->Id_wishlist;
+
+		$wish = new wishlist();
+		$hasil = $wish->delete_wishlist($Id_wishlist);
+	}
+
+
+	public function updateqtycart(Request $request)
+	{
+		$Id_cart = $request->Id_cart;
+		$Qty = $request->Qty;
+
+
+		if(session()->get('userlogin'))
+		{
+			$cart = new cart();
+			$hasil = $cart->edit_cart($Id_cart,$Qty);
+		}
+		else
+		{
+			$arr = json_decode(session()->get('cart'));
+
+			foreach ($arr as $data) {
+				if($Id_cart==$data->Id_cart)
+				{
+					$data->Qty = $Qty;
+				}
+			}
+		}
+		session()->put('cart',json_encode($arr));
+
+	}
+
+
+	public function cart(Request $request)
+	{
+		$Id_member="";
+		try {
+			//code...
+			$Id_member =session()->get('userlogin')->Id_member;
+		} catch (\Throwable $th) {
+			//throw $th;
+			$Id_member="";
+		}
+		
+
+		if($Id_member!="")
+		{
+
+			$param['cart'] = cart::where('Id_member','=',$Id_member)
+			->get();
+	
+		}
+		else
+		{
+			if(session()->get('cart'))
+			{
+				$param['cart'] = json_decode(session()->get('cart'));
+			}
+			else
+			{
+				$param['cart'] =[];
+			}
+			
+		}
+
+
+
+		$param['product'] = product::where('Status','=',1)
+		->get();
+
+		$param['productimage'] = product_image::where('Image_order','=',1)
+		->get();
+
+		$param['variation'] = variation::where('Status','=',1)
+		->get();
+
+		$param['dtpromoheader'] = promo_header::where('Status','=',1)
+		->get();
+
+		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
+		->get();
+
+		return view('Cust_cart',$param);
+	}
+
+	public function add_cart(Request $request)
+	{
+		$Id_variation= $request->Id_variation;
+		$Qty= $request->Qty;
+
+		$var = variation::where('Id_variation','=',$Id_variation)
+		->get();
+
+		$Id_product = $var[0]['Id_product'];
+
+		try {
+			//code...
+			$Id_member =session()->get('userlogin')->Id_member;
+		} catch (\Throwable $th) {
+			//throw $th;
+			$Id_member="";
+		}
+	
+
+
+		$temp=0;
+		$cr = cart::where('Id_member','=',$Id_member)
+		->get();
+
+		foreach ($cr as $data) {
+			if ($data->Id_variation == $Id_variation)
+			{
+				$temp=1;
+			}
+		}
+
+		if($Id_member=="")
+		{
+			$kembar=0;
+			$ctr=0;
+			$arr = json_decode(session()->get('cart')) ?? []; 
+			for($i = 0; $i < count($arr); $i++) {
+				$ctr++;
+				if(($arr[$i]->Id_variation == $Id_variation) && ($arr[$i]->Id_cart>0))
+				{
+					$kembar=1;
+				}
+			}
+
+			if($var[0]->Stock*1<$Qty*1)
+			{
+				echo "stok habis";
+			}
+			else if($kembar==0)
+			{
+				$baru       = array(
+				'Id_cart' => ($ctr+1),
+				'Id_product' => $Id_product, 
+				'Id_variation' => $Id_variation, 
+				'Qty' => $Qty, 
+				);
+				array_push($arr, $baru); 
+				session()->put('cart', json_encode($arr));
+		
+		
+			}
+			else
+			{
+				echo "double";
+			}
+
+
+		}
+		else 
+		{
+			if($var[0]->Stock*1<$Qty*1)
+			{
+				echo "stok habis";
+			}
+			else if($temp==0)
+			{
+				$cart = new cart();
+				$hasil = $cart->add_cart($Id_product,$Id_variation,$Qty,$Id_member);
+			}
+			else
+			{
+				echo "double";
+			}
+			
+	
+		}
+
+		
+	}
+
+
+	public function deletecart(Request $request)
+	{
+		$Id_cart = $request->Id_cart;
+
+		if(session()->get('userlogin'))
+		{
+			$cart = new cart();
+			$hasil = $cart->delete_cart($Id_cart);
+		}
+		else
+		{
+			$arr = json_decode(session()->get('cart'));
+			foreach ($arr as $data) {
+				if($Id_cart==$data->Id_cart)
+				{
+					$data->Id_cart =-1;
+				}
+			}
+			session()->put('cart',json_encode($arr));
+
+		}
+		
+	}
+
+	
+
+
+	public function update_cart(Request $request)
+	{
+		$Id_member="";
+		try {
+			if(session()->get('userlogin')->Role=="CUST")
+			{
+				$Id_member =session()->get('userlogin')->Id_member;
+
+				$cart = cart::where('Id_member','=',$Id_member)
+				->get();
+
+				echo (Count($cart));
+			}
+			else
+			{
+				
+				if(session()->get('cart'))
+				{
+					$hitung=0;
+
+					foreach (json_decode(session()->get('cart')) as $data) {
+						if($data->Id_cart<0)
+						{
+
+						}
+						else
+						{
+							$hitung++;
+						}
+					}
+					echo($hitung);
+				}
+				else
+				{
+					echo('0');
+				}
+				
+			}
+			
+		} catch (\Throwable $th) {
+			if(session()->get('cart'))
+			{
+				$hitung=0;
+
+					foreach (json_decode(session()->get('cart')) as $data) {
+						if($data->Id_cart<0)
+						{
+
+						}
+						else
+						{
+							$hitung++;
+						}
+					}
+					echo($hitung);
+			}
+			else
+			{
+				echo('0');
+			}
+			
+		}
+
+		
+	}
+
+
+
+	public function Affiliate_marketing(Request $request)
+	{
+		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
+		->join('product','affiliate.Id_product','product.Id_product')
+		->get();
+
+		$param['dtproduct'] = product::where('product.Status','=', '1')
+		->join('brand','product.Id_brand','brand.Id_brand')
+		->join('type','product.Id_type','type.Id_type')
+		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
+		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+			->get();
+
+
+		$param['dtvariation']= variation::where('Status','=',1)
+		// ->select("Option_name","Id_product")
+		->get();
+
+
+		$param['dtproductimage'] = Product_image::all();
+
+		return view('Cust_affiliate',$param);
+	}
+
+	public function point(Request $request)
+	{
+		$this->validasivoucher();
+		$Id = session()->get('userlogin')->Id_member;
+
+		$param['dtmember'] = member::where('Id_member','=',$Id)
+		->get();
+
+		$param['dtmember_all'] = member::all();
+
+		$param['dtvoucher'] = voucher::where('Status','=',1)
+		->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
+		->get();
+
+		$param['dtvoucher_all'] = voucher::all();
+
+		$param['dtpoint_card'] = point_card::where('Id_member','=',$Id)
+		->get();
+
+		return view('Cust_point',$param);
+	}
+
+	public function claim_voucher(Request $request)
+	{
+		$Id_voucher = $request->Id_voucher;
+		$vc = voucher::where('Id_voucher','=',$Id_voucher)
+		->get();
+
+		$vcpoint = $vc[0]->Point;
+
+
+	
+		// $pointmember = session()->get('userlogin')->Point;
+		$Id_member = session()->get('userlogin')->Id_member;
+		$fp= member::where('Id_member','=',$Id_member)
+		->get();
+
+		$pointmember = $fp[0]->Point;
+
+
+
+		$lolosvalidasivoucher = 1;
+		$vc = voucher::where('Status','<>',0)
+		->get();
+
+		// print_r('aaaaccca');
+		// echo "aadsd";
+		foreach ($vc as $data) {
+			if($data->Redeem_due_date < date('Y-m-d') && $Id_voucher== $data->Id_voucher)
+			{
+				//expire lewat tanggal
+				$lolosvalidasivoucher =0;
+			}
+		}
+
+		if($lolosvalidasivoucher==0)
+		{
+			echo "gagal validasi voucher";
+		}
+		else if($pointmember<$vcpoint)
+		{
+			echo "ga cukup";
+		}
+		else
+		{
+			$vm = new voucher_member;
+			$hasil = $vm->add_voucher_member($Id_member, $Id_voucher);
+
+			$First_point = 0;
+			$fp= member::where('Id_member','=',$Id_member)
+			->get();
+
+			$First_point = $fp[0]->Point;
+			
+
+			try {
+				//code...
+				$pc = point_card::where('Id_member','=',$Id_member)
+				->orderBy('Id_point_card')
+				->get();
+
+				
+				foreach ($pc as $datapc) {
+					# code...
+					$First_point = $datapc->Last_point;
+				}
+			} catch (\Throwable $th) {
+				//throw $th;
+			}
+			
+
+			$Last_point = $First_point-$vcpoint;
+
+			$memberpoint = new member;
+			$hasil = $memberpoint->edit_point($Id_member,$Last_point);
+
+
+
+			$tgl= date('d/m/Y');
+			$tglfix = $tgl[6].$tgl[7].$tgl[8].$tgl[9]."/".$tgl[3].$tgl[4]."/".$tgl[0].$tgl[1];
+			
+			$pointcard = new point_card;
+			$hasil = $pointcard->add_point_card($Id_member,$tglfix,$First_point,0,$vcpoint,$Last_point,"Claim voucher",$Id_voucher);
+
+
+
+
+
+			//--------------------------------------------
+
+			//update history point modal
+
+			$temp="";
+
+
+			
+			$temp=$temp."<table class='table_id_2' class='table table-striped display'>";
+				$temp=$temp."<thead>";
+					$temp=$temp."<tr>";
+						$temp=$temp."<th>Date</th>";
+						$temp=$temp."<th>Description</th>";
+						$temp=$temp."<th>+ / -</th>";
+					$temp=$temp."</tr>";
+				$temp=$temp."</thead>";
+				$temp=$temp."<tbody>";
+
+					$pc = point_card::where('Id_member','=',$Id_member)
+					->get();
+					foreach ($pc as $data) {
+						$temp=$temp."<tr>";
+
+							$simpandulu= date('d-m-Y', strtotime($data->Date_card));
+							$temp=$temp."<td>".$simpandulu."</td>";
+							$txt="";
+							if($data->Type == "Claim voucher")
+							{
+								$dtvoucher_all = voucher::all();
+							foreach ($dtvoucher_all as $dtvc) {
+								if($dtvc->Id_voucher == $data->No_reference)
+								{
+								$txt = "Claim voucher - ".$dtvc->Voucher_name;
+								}
+							}
+							}
+							$temp=$temp."<td>".$txt."</td>";
+
+							$plusmines="";
+							if($data->Debet==0)
+							{
+								$temp=$temp."<td style='color: red'>";
+									$temp=$temp."<b>-".$data->Credit."</b>";
+								$temp=$temp."</td>";
+										
+							}
+							else {
+							
+								$temp=$temp."<td style='color: green'>";
+									$temp=$temp."<b>+".$data->Debet."</b>";
+								$temp=$temp."</td>";
+
+
+							
+							}
+
+						$temp=$temp."</tr>";
+					}
+					$temp=$temp."</tbody>";
+				$temp=$temp."</table>";
+                      
+                echo $Last_point."#".$temp;
+
+                      
+             
+			
+		}
+
+	}
+
+	public function get_voucher_selected_product(Request $request)
+	{
+		$Id_voucher = $request->Id_voucher;
+
+		$voucher = voucher::where('Id_voucher','=',$Id_voucher)
+		->get();
+
+		$vp = voucher_product::where('Id_voucher','=',$Id_voucher)
+		->get();
+
+	
+		$product = product::join('brand','product.Id_brand','brand.Id_brand')
+		->join('type','product.Id_type','type.Id_type')
+		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
+		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+			->get();
+
+
+		$variation= variation::where('Status','=',1)
+		->select("Option_name","Id_product")
+		->get();
+
+		$dtproductimage = Product_image::all();
+
+		$temp="";
+
+
+		$temp=$temp."<table class='table table-striped display table_id_3'>";
+		$temp=$temp."<thead>";
+			$temp=$temp."<tr>";
+				$temp=$temp."<th>Product Image</th>";
+				$temp=$temp."<th>Name</th>";
+				$temp=$temp."<th>Brand</th>";
+				$temp=$temp."<th>Type</th>";
+				$temp=$temp."<th>Variation</th>";
+			$temp=$temp."</tr>";
+		$temp=$temp."</thead>";
+		$temp=$temp."<tbody>";
+		foreach ($vp as $datavp) {
+		
+
+			foreach ($product as $dataproduct) {
+				
+				if($datavp->Id_product == $dataproduct->Id_product)
+				{
+					$imgname = "default.jpg";
+					foreach ($dtproductimage as $img)
+					{
+						$idi = $img->Id_product;
+						$urutan = $img->Image_order;
+						
+						if (($datavp->Id_product == $idi) && ($urutan==1))
+						{
+						$imgname = $img->Image_name;
+						}
+					}
+
+					
+
+						$temp=$temp."<tr>";
+
+
+							$temp=$temp."<td width='150px'>";
+							
+								$temp=$temp."<img src='".url('Uploads/Product/'.$imgname)."' width='150px' height='150px' class='center'>";
+
+							$temp=$temp."</td>";
+
+
+							$temp=$temp."<td>";
+
+								$temp=$temp.$dataproduct->Name;
+
+							$temp=$temp."</td>";
+
+							$temp=$temp."<td>";
+
+								$temp=$temp.$dataproduct->Brand_name;
+
+							$temp=$temp."</td>";
+
+							$temp=$temp."<td>";
+
+								$temp=$temp.$dataproduct->Type_name;
+
+							$temp=$temp."</td>";
+
+							$temp=$temp."<td>";
+								$vari="";
+								$vari2="";
+								if($dataproduct->Variation == "NONE")
+								{
+									$vari2="NONE";
+								}
+								else
+								{
+								foreach ($variation as $datavar) {
+									if($datavar->Id_product == $dataproduct->Id_product )
+									{
+									$vari.=$datavar->Option_name." , ";
+									}
+								}
+								$vari2=substr($vari,0,-2);
+								}
+
+
+								$temp=$temp."(".$vari2.")";
+
+							// $temp=$temp."</td>";
+
+
+						$temp=$temp."</tr>";
+					
+					
+					
+					
+				 
+					
+				}
+			}
+			
+		}
+
+		
+		$temp=$temp."</tbody>";
+					
+		$temp=$temp."</table>";
+
+
+		echo($temp."#".$voucher[0]->Voucher_name);
+
+	}
+
+	public function My_voucher(Request $request)
+	{
+		$param['dtvoucher'] = voucher::where('Status','=',1)
+		->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
+		->get();
+
+
+		$Id_member = session()->get('userlogin')->Id_member;
+		$param['dtvouchermember'] = voucher_member::where('Id_member','=',$Id_member)
+		->get();
+
+		return view('Cust_my_voucher',$param);
+	}
+
+	public function get_city(Request $request)
+	{
+		$Id_province = $request->Id_province;
+
+		$city = list_city::where('Id_province','=',$Id_province)
+		->get();
+
+		return $city;
+	}
+
+	public function add_address(Request $request)
+	{
+		$Id_province = $request->Id_province;
+		$Id_city =  $request->Id_city;
+		$Address =  $request->Address;
+		$Id_member = session()->get('userlogin')->Id_member;
+
+
+		$dtaddress = address_member::where('Status','=',1)
+		->where('Id_member','=',$Id_member)
+		->get();
+
+		$ctr=0;
+		foreach ($dtaddress as $key ) {
+			# code...
+
+			$ctr++;
+		}
+
+		if($ctr<3)
+		{
+			$add = new address_member();
+			$hasil= $add->add_address($Id_member,$Id_city,$Id_province,$Address);
+			echo "sukses";
+		}
+		else
+		{
+			echo "lebih 3";
+		}
+	}
+
+
+	public function edit_address(Request $request)
+	{
+		$Id_address = $request->Id_address;
+		$Id_province = $request->Id_province;
+		$Id_city =  $request->Id_city;
+		$Address =  $request->Address;
+		$Id_member = session()->get('userlogin')->Id_member;
+
+		$add = new address_member();
+		$hasil= $add->edit_address($Id_address,$Id_city,$Id_province,$Address);
+		echo "sukses";
+	}
+
+
+	public function delete_address(Request $request)
+	{
+		$Id_address = $request->Id_address;
+
+		$add = new address_member();
+		$hasil= $add->delete_address($Id_address);
+		echo "sukses";
+	}
+	
+
+	public function getaddress(Request $request)
+	{
+		$Id_address= $request->Id_address;
+
+
+		$add = address_member::where('Id_address','=',$Id_address)
+		->get();
+
+		$Id_province = $add[0]->Id_province;
+
+		$add2 = list_city::where('Id_province','=',$Id_province)
+		->get();
+
+		return $add."#".$add2;
+	}
+
+	public function to_checkout(Request $request)
+	{
+		$Id_member="";
+		try {
+			//code...
+			$Id_member =session()->get('userlogin')->Id_member;
+		} catch (\Throwable $th) {
+			//throw $th;
+			$Id_member="";
+		}
+
+		if($Id_member!="") //login
+		{
+			$cart = cart::where('Id_member','=',$Id_member)
+			->get();
+
+
+		}
+		else //guess
+		{
+			$cart = json_decode(session()->get('cart'));
+		}
+
+		
+		$masalah="";
+		foreach ($cart as $datacart) {
+			
+			$cek = $this->cek_stok($datacart->Id_variation,$datacart->Qty);
+
+			if($cek=="sukses")
+			{
+
+			}
+			else
+			{
+				$masalah = $cek;
+			}
+
+		}
+
+		echo $masalah;
+
+	}
+
+	public function cek_stok($Id_variation,$qty)
+	{
+		$var = variation::where('Id_variation','=',$Id_variation)
+		->get();
+
+		if($qty <= ($var[0]->Stock - $var[0]->Stock_atc - $var[0]->Stock_pay))
+		{
+			return "sukses";
+		}
+		else
+		{
+			$pro = product::where('Id_product','=',$var[0]->Id_product)
+			->get();
+
+			return $pro[0]->Name." - ".$var[0]->Option_name." Available stock is ".($var[0]->Stock - $var[0]->Stock_atc - $var[0]->Stock_pay);
+		}
+	}
+
+	public function Cust_checkout(Request $request)
+	{
+		$Id_member="";
+		try {
+			//code...
+			$Id_member =session()->get('userlogin')->Id_member;
+		} catch (\Throwable $th) {
+			//throw $th;
+			$Id_member="";
+		}
+		
+
+		if($Id_member!="")
+		{
+
+			$param['cart'] = cart::where('Id_member','=',$Id_member)
+			->get();
+
+			$Id_member = session()->get('userlogin')->Id_member;
+
+			$param['Id_member'] = $Id_member;
+	
+		}
+		else
+		{
+			$param['Id_member'] ="";
+			if(session()->get('cart'))
+			{
+				$param['cart'] = json_decode(session()->get('cart'));
+			}
+			else
+			{
+				$param['cart'] =[];
+			}
+			
+		}
+
+
+
+		$param['product'] = product::where('Status','=',1)
+		->get();
+
+		$param['productimage'] = product_image::where('Image_order','=',1)
+		->get();
+
+		$param['variation'] = variation::where('Status','=',1)
+		->get();
+
+		$param['dtpromoheader'] = promo_header::where('Status','=',1)
+		->get();
+
+		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
+		->get();
+
+		$param['dtaddress'] = address_member::where('address_member.Status','=',1)
+		->where('address_member.Id_member','=',$Id_member)
+		->Join('list_city','address_member.Id_city','list_city.Id_city')
+		->get();
+
+		try {
+			session()->put('Id_address',$param['dtaddress'][0]->Id_address);
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
+
+
+		$param['dtvoucher'] = voucher::where('Status','=',1)
+		->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
+		->get();
+
+
+	
+		$param['dtvouchermember'] = voucher_member::where('Id_member','=',$Id_member)
+		->get();
+		
+
+		$db = list_city::all(); 
+		$arr= [];  // array 
+		$arr2= [];  // array 
+		foreach($db as $row) {
+            $arr[0] = "";
+			$arr2[0] = "";
+			$arr[$row->Id_province] = $row->Province_name; 
+			$arr2[$row->Id_city] = $row->City_name; 
+		
+		}
+		
+		$param['arr_province']  = $arr; 
+		$param['arr_city']  = $arr2; 
+		return view('Cust_checkout',$param);
+	}
+
+	public function Get_address(Request $request)
+	{
+		$Id_address = $request->Id_address;
+
+		$add = address_member::where('address_member.Id_address','=',$Id_address)
+		->join('list_city','address_member.Id_city','list_city.Id_city')
+		->get();
+
+		$Address="";
+		$City_name="";
+		$Province_name="";
+
+		foreach ($add as $data) {
+			$Address = $data->Address;
+			$City_name = $data->City_name;
+			$Province_name = $data->Province_name;
+		}
+		session()->put('Id_address',$Id_address);
+		echo $Address."#".$City_name."#".$Province_name;
+	}
+	
+	// public function getCost($destination,$weight,$courier) {
+	// 	$apikey = "43071cec4b1eddf220044c10ee25dfb1"; 
+	// 	$curl = curl_init();
+	// 	curl_setopt_array($curl, array(
+	// 	  CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
+	// 	  CURLOPT_RETURNTRANSFER => true,
+	// 	  CURLOPT_ENCODING => "",
+	// 	  CURLOPT_MAXREDIRS => 10,
+	// 	  CURLOPT_TIMEOUT => 30,
+	// 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	// 	  CURLOPT_CUSTOMREQUEST => "POST",
+	// 	  CURLOPT_POSTFIELDS => "origin=444&destination=444&weight=1000&courier=jne",
+	// 	  CURLOPT_HTTPHEADER => array(
+	// 		"content-type: application/x-www-form-urlencoded",
+	// 		"key: $apikey"
+	// 	  ),
+	// 	));
+	
+	// 	$response = curl_exec($curl);
+	// 	$err = curl_error($curl);
+	// 	curl_close($curl); 
+		
+	// 	return $response; 
+	// }
+
+
+	// function getCost($apikey, $origin) {
+	// 	$curl = curl_init();
+	// 	curl_setopt_array($curl, array(
+	// 	  CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
+	// 	  CURLOPT_RETURNTRANSFER => true,
+	// 	  CURLOPT_ENCODING => "",
+	// 	  CURLOPT_MAXREDIRS => 10,
+	// 	  CURLOPT_TIMEOUT => 30,
+	// 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	// 	  CURLOPT_CUSTOMREQUEST => "POST",
+	// 	  CURLOPT_POSTFIELDS => "origin=$origin&destination=114&weight=1700&courier=pos",
+	// 	  CURLOPT_HTTPHEADER => array(
+	// 		"content-type: application/x-www-form-urlencoded",
+	// 		"key: $apikey"
+	// 	  ),
+	// 	));
+	
+	// 	$response = curl_exec($curl);
+	// 	$err = curl_error($curl);
+	// 	curl_close($curl); 
+		
+	// 	return $response; 
+	// }
+
+
+	function getCost($apikey, $destination, $weight, $courier) {
+		$curl = curl_init();
+		curl_setopt_array($curl, array(
+		  CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
+		  CURLOPT_RETURNTRANSFER => true,
+		  CURLOPT_ENCODING => "",
+		  CURLOPT_MAXREDIRS => 10,
+		  CURLOPT_TIMEOUT => 30,
+		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+		  CURLOPT_CUSTOMREQUEST => "POST",
+		  CURLOPT_POSTFIELDS => "origin=444&destination=$destination&weight=$weight&courier=$courier",
+		  CURLOPT_HTTPHEADER => array(
+			"content-type: application/x-www-form-urlencoded",
+			"key: $apikey"
+		  ),
+		));
+	
+		$response = curl_exec($curl);
+		$err = curl_error($curl);
+		curl_close($curl); 
+		
+		return $response; 
+	}
+
+
+	public function Get_cost_shipping(Request $request)
+	{
+		$str_courier = $request->courier;
+		$weight = $request->weight * 1000;
+
+		$Address_dest = session()->get('Id_address');
+
+		$add= address_member::where('Id_address','=',$Address_dest)
+		->get();
+
+
+		if($request->Id_city == 0)
+		{
+			$Id_city = $add[0]['Id_city']; //member
+		}
+		else
+		{
+			$Id_city = $request->Id_city; //Guess
+		}
+	
+
+
+
+
+		$temp="";
+		$apikey = "5871496d6aeddd58790a98a8ea36ccd9"; 
+		$res = $this->getCost($apikey, $Id_city, $weight,$str_courier);
+		$arr = json_decode($res); 
+		$jumresults = count($arr->rajaongkir->results); 
+
+		for($i = 0; $i < $jumresults; $i++) 
+		{
+			$kurir = $arr->rajaongkir->results[$i]->costs; 
+			$jumservice= count($kurir); 
+			for($i = 0; $i < $jumservice; $i++) {
+
+				$kurirservice = $kurir[$i]->service;
+				$kurirservice_2 = str_replace(" ", "_", $kurirservice);
+
+				$temp=$temp."<div class='form-check'>";
+					$temp=$temp."<input class='form-check-input' type='radio' id='flexRadioDefault1' name='1' onclick={{pilih_paket_kurir('".$kurirservice_2."-".$kurir[$i]->cost[0]->value."')}}>";
+						$temp=$temp."<label class='form-check-label' for='flexRadioDefault1'>";
+							$temp=$temp.$kurir[$i]->service." - ".$kurir[$i]->cost[0]->value ;
+						$temp=$temp."</label>";
+				$temp=$temp."</div>";
+					
+					
+
+
+
+
+
+				// echo $kurir[$i]->service."-".$kurir[$i]->cost[0]->value;
+				// echo $kurir[$i]->cost[0]->value."#";
+			}
+		}
+
+		echo $temp;
+	}
+
+	public function Use_voucher(Request $request)
+	{
+		$Id_voucher = $request->Id_voucher;
+
+		$dtvoucher = voucher::where('Id_voucher','=',$Id_voucher)
+		->get();
+
+		$dtvoucherproduct = voucher_product::where('Id_voucher','=',$Id_voucher)
+		->get();
+
+		$Id_member = session()->get('userlogin')->Id_member;
+
+		$cart = cart::where('Id_member','=',$Id_member)
+		->get();
+
+		$dtpromoheader = promo_header::where('Status','=',1)
+		->get();
+
+		$dtpromodetail = promo_detail::where('Status','=',1)
+		->get();
+
+		$pakaivoucher=1;
+		$voucherselectedproduct=0;
+		$selectedproduct =0;
+		foreach ($cart as $datacart) {
+
+			foreach ($dtpromoheader as $datapromoheader) {
+				if($datacart->Id_product == $datapromoheader->Id_product && $dtvoucher[0]->Joinpromo==0)
+				{
+					//product ada promo dan tidak boleh di gabung dengan promo
+					$pakaivoucher=0;
+
+				}
+			}
+		}
+
+
+		foreach ($dtvoucherproduct as $datavoucherpro) {
+
+			if($dtvoucher[0]->Voucher_type==2)
+			{
+				foreach ($cart as $datacart) {
+
+					if($datavoucherpro->Id_product == $datacart->Id_product)
+					{
+						$voucherselectedproduct=1;
+					}
+				}
+
+			}
+			else
+			{
+				$voucherselectedproduct=1;
+			}
+			
+		}
+
+		if(count($dtvoucherproduct)<=0)
+		{
+			$voucherselectedproduct=1;
+		}
+
+		if ($voucherselectedproduct==0)
+		{
+			echo "no product selected";
+		}
+		else if($pakaivoucher==0)
+		{
+			echo "no join promo";
+		}
+		else
+		{
+			echo $dtvoucher[0]->Id_voucher."#".$dtvoucher[0]->Voucher_name."#".$dtvoucher[0]->Voucher_type."#".$dtvoucher[0]->Discount;
+		}
+	}
+
+
+	
+}
