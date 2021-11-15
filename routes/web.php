@@ -327,7 +327,7 @@ Route::get('get_shipper_data', ["uses"=>"ControllerTransaction@get_shipper_data"
 Route::get('set_status_receive', ["uses"=>"ControllerTransaction@set_status_receive"]);
 Route::get('void_receive_detail', ["uses"=>"ControllerTransaction@void_receive_detail"]);
 
-
+Route::get('chat_list', ['uses' => "ControllerCustomerService@index_chat"]);
 
 
 
