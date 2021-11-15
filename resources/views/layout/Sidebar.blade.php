@@ -284,6 +284,12 @@
                   <p>Live Chat</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{!! url('list_request_assist'); !!}" class="nav-link  @yield('request_assist_atv')">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Request Assists</p>
+                </a>
+              </li>
              
               
             </ul>

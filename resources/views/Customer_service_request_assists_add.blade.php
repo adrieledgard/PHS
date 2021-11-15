@@ -1,7 +1,7 @@
 @extends('layout.Master')
 
 {{-- UNTUK SIDEBAR --}}
-@section('live_chat_atv')
+@section('masterproduct_atv')
   active
 @endsection
 
@@ -12,13 +12,19 @@
 
 
 @section('title2')
-    List Chat
+    Add Request Assist
 @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item active">Live Chat</li>
+    <li class="breadcrumb-item active">Add Request Assist</li>
 @endsection
+
+
+@section('title')
+  Add Request Assist
+@endsection
+
 
 @push('custom-css')
     <!-- overlayScrollbars -->
@@ -42,11 +48,50 @@
 
 
 @section('Content')
-  <div class="container-fluid" style="height:100%;">
-    <iframe src="https://dashboard.tawk.to/#/messaging/61923a4e6885f60a50bbd753" frameborder="0" style="width:85%; height:80%; position:absolute"></iframe>
-  </div>
+  <div class="container-fluid">
+    
+      @if(count($errors)>0)
+      <div class="alert alert-danger">
+        <ul>
+          @foreach ($errors->all() as $error)
+            <li>{{$error}}</li>
+          @endforeach
+        </ul>
+      </div>
+      @endif
+  
+  
+      @if (isset($msg))
+        <div class="alert alert-success">
+          <p>{{$msg}}</p>
+        </div>
+      @endif
+  
+  
+  
+      <div class="jumbotron">
+       {{Form::open(array('url'=>'add_request_assist','method'=>'post','class'=>'row g-3'))}}
+        <div class="col-md-12">
+          {{ Form::label('Title :','') }}
+          {{ Form::text('title', '', ['class'=>'form-control','id'=>'title', 'placeholder' => "Title", 'required' => 'required']) }}
+        </div>
+        <div class="col-md-6">
+          {{ Form::label('Description :','') }}
+          {{ Form::textarea('description', '', ['class'=>'form-control','id'=>'description', 'placeholder' => "Description", 'required' => 'required']) }}
+        </div>
+      </div>
+      <div class="col-12">
+        {{ Form::submit('Insert', ['name'=>'add_request_assists', 'class'=>'btn btn-primary btn-lg float-right']) }}
+      
+      </div>
+    {{Form::close()}}
+      
+    
+  </div><!-- /.container-fluid -->
 
 @endsection
+
+
 
 @push('custom-script')
 
@@ -84,7 +129,6 @@
     <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script> 
-    <!--End of Tawk.to Script-->
 
-    
 @endpush
+
