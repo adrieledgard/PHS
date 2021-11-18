@@ -30,16 +30,17 @@
                     if($Id_member=="")
                     {
                         ?>
+                            <input type="hidden" id="guess" value="yes">
                             <div class="jumbotron col-md-12 row">
                                 <div class="col-md-6">
                                     {{ Form::label('Full name','') }}
-                                    {{ Form::text('txt_name', '', ['class'=>'form-control']) }}
+                                    {{ Form::text('txt_name', '', ['class'=>'form-control','Id'=>'txt_name']) }}
                                     <br>
                                     {{ Form::label('Email','') }}
-                                    {{ Form::text('txt_email', '', ['class'=>'form-control']) }}
+                                    {{ Form::text('txt_email', '', ['class'=>'form-control','Id'=>'txt_email']) }}
                                     <br>
                                     {{ Form::label('Phone','') }}
-                                    {{ Form::Number('txt_phone', '', ['class'=>'form-control']) }}
+                                    {{ Form::Number('txt_phone', '', ['class'=>'form-control','Id'=>'txt_phone']) }}
                                     <br>
                                 </div>
                                 <div class="col-md-6">
@@ -278,13 +279,6 @@
                                                         }
                                                     ?>
 
-
-
-
-
-
-
-
                                                     <td class="product-quantity">
                                                         <input value="{{$cr->Qty}}" readonly="true" type="number" id="qtycart{{$Id_variation}}" onchange="updateqtycart('{{$Id_variation}}','{{$cr->Id_cart}}')">
                                                     </td>
@@ -330,7 +324,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     Total weight:
-        
+                                    <input type="hidden" id="weight_hidden" value="{{$totalweight}}"> {{--weight--}}
                                     <span id="totalweight">{{$totalweight / 1000}}</span> Kg
                                 </div>
                             </div>
@@ -357,7 +351,8 @@
                            <br><br>
                            <div class="row">
                                <div class="col-md-12">
-                                <input type="hidden" id="courier_packet_text" value="">
+                                <input type="hidden" id="courier_hidden" value=""> {{--nama kurir--}}
+                                <input type="hidden" id="courier_packet_text_hidden" value=""> {{--nama paket kurir--}}
                                     <div id="courier_packet">
                                        
                                     </div>
@@ -479,6 +474,13 @@
                Rp.
             </div>
             <input type="hidden" id="grand_total_hidden" value="0">
+        </div>
+
+        <br><br>
+        <div class="row">
+            <div class="col-md-12 float-right">
+                <button class="btn btn-primary float-right" onclick="pay()">Pay</button>
+            </div>
         </div>
         
     </div>
@@ -761,7 +763,7 @@
   function load_city()
   {
 
-    $('#courier_packet_text').val('');
+    $('#courier_packet_text_hidden').val('');
     $('#courier_packet').html('');
     $('#cb_courier').val('');
 
@@ -824,7 +826,7 @@
     function select_address(Id_address)
     {
         // alert(Id_address);
-        $('#courier_packet_text').val('');
+        $('#courier_packet_text_hidden').val('');
         $('#courier_packet').html('');
         $('#cb_courier').val('');
         $('#ongkir').html("");
@@ -857,7 +859,7 @@
         //POS 1
         //TIKI 2
 
-        $('#courier_packet_text').val('');
+        $('#courier_packet_text_hidden').val('');
         $('#ongkir').html("");
         $('#ongkir_hidden').val("");
 
@@ -953,6 +955,7 @@
                 $('#voucher_hidden').val(cut[3]);
                 $('#voucher_hidden_asli').val(cut[3]);
 
+
                 $('#discount_voucher').html("Rp."+cut[3].toString().number_format());
                 update_grand_total();
             }
@@ -963,7 +966,8 @@
 
     function pilih_paket_kurir(kode)
     {
-        $('#courier_packet_text').val(kode);
+        $('#courier_packet_text_hidden').val(kode);
+        $('#courier_hidden').val($('#cb_courier').val());
         alert(kode);
 
         var cut = kode.split("-");
@@ -976,7 +980,7 @@
 
     function choose_city() //guess
     {
-        $('#courier_packet_text').val('');
+        $('#courier_packet_text_hidden').val('');
         $('#courier_packet').html('');
         $('#cb_courier').val('');
 
@@ -989,17 +993,19 @@
     function update_grand_total()
     {
 
-        if($('#cb_city').val()!="" || $('#cb_city').val()!=0 || $('#cb_city').val()!= null)
+        if($('#guess').val()=="yes") //GUESS(no login)
         {
-            // alert('aaaa');
+            // alert('1');
             var grand_total =  $('#total_awal_hidden').val()*1 + $('#ongkir_hidden').val()*1;
         }
         else
         {
             if($('#Type_voucher_hidden').val()*1 == 3)
             {
+                
                 if($('#ongkir_hidden').val()*1 == 0)
                 {
+                    // alert('2');
                     //kembalikan voucher asli normal
                     var voucher_asli = $('#voucher_hidden_asli').val();
                     $('#voucher_hidden').val(voucher_asli);
@@ -1007,14 +1013,17 @@
                 }
                 else
                 {
-                    if(($('#ongkir_hidden').val()*1 < $('#voucher_hidden').val()*1))
+                   
+                    if(($('#ongkir_hidden').val()*1 < $('#voucher_hidden_asli ').val()*1))
                     {
+                        // alert('3');
                         var ong = $('#ongkir_hidden').val()*1;
                         $('#voucher_hidden').val(ong);
                         $('#discount_voucher').html("Rp."+ong.toString().number_format());
                     }
                     else
                     {
+                        // alert('4');
                         //kembalikan voucher asli normal
                         var voucher_asli = $('#voucher_hidden_asli').val();
                         $('#voucher_hidden').val(voucher_asli);
@@ -1025,8 +1034,10 @@
             }
             else
             {
+                // alert('5');
                 //kembalikan voucher asli normal
                 var voucher_asli = $('#voucher_hidden_asli').val();
+               
                 $('#voucher_hidden').val(voucher_asli);
                 $('#discount_voucher').html("Rp."+voucher_asli.toString().number_format());
             }
@@ -1059,6 +1070,49 @@
         $('#voucher_show').html("");
 
          update_grand_total();
+    }
+
+    function pay()
+    {
+        var Address= "";
+        var Id_city= 0;
+        var Id_province = 0;
+        var Phone = 0;
+        var Email = "";
+        var Name = "";
+        var Courier = $('#courier_hidden').val();
+
+        var Courier_packet = $('#courier_packet_text_hidden').val();
+        var cut = Courier_packet.split('-');
+        var Courier_packet = cut[0];
+
+
+        var Id_voucher= $('#Id_voucher_hidden').val();
+        var Weight =$('#weight_hidden').val();
+        var Gross_total = $('#total_awal_hidden').val();
+        var Shipping_cost = $('#ongkir_hidden').val();
+        var Discount = $('#voucher_hidden').val();
+        var Grand_total =  $('#grand_total_hidden').val();
+
+        if($('#guess').val()=="yes")
+        {
+            var Address= $('#txt_address').val();
+            var Id_city= $('#cb_city').val();
+            var Id_province = $('#cb_province').val();
+            var Phone = $('#txt_phone').val();
+            var Email = $('#txt_email').val();
+            var Name = $('#txt_name').val();    
+        }
+
+
+        $.get(myurl + '/Pay_cust',
+        {Address:Address,Id_city:Id_city,Id_province:Id_province,Phone:Phone,Email:Email,Name:Name,Courier:Courier,
+            Courier_packet:Courier_packet,Id_voucher:Id_voucher,Weight:Weight,Gross_total:Gross_total,Shipping_cost:Shipping_cost
+            ,Discount:Discount,Grand_total:Grand_total},
+        function(result){
+            alert(result);
+        });
+
     }
 
     

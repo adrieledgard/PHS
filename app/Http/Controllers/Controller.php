@@ -33,6 +33,10 @@ use App\voucher_product;
 use App\point_card;
 use App\address_member;
 use App\list_city;
+use App\cust_order_header;
+use App\cust_order_detail;
+use DateTime;
+
 
 
 
@@ -2624,55 +2628,6 @@ class Controller extends BaseController
 		echo $Address."#".$City_name."#".$Province_name;
 	}
 	
-	// public function getCost($destination,$weight,$courier) {
-	// 	$apikey = "43071cec4b1eddf220044c10ee25dfb1"; 
-	// 	$curl = curl_init();
-	// 	curl_setopt_array($curl, array(
-	// 	  CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
-	// 	  CURLOPT_RETURNTRANSFER => true,
-	// 	  CURLOPT_ENCODING => "",
-	// 	  CURLOPT_MAXREDIRS => 10,
-	// 	  CURLOPT_TIMEOUT => 30,
-	// 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	// 	  CURLOPT_CUSTOMREQUEST => "POST",
-	// 	  CURLOPT_POSTFIELDS => "origin=444&destination=444&weight=1000&courier=jne",
-	// 	  CURLOPT_HTTPHEADER => array(
-	// 		"content-type: application/x-www-form-urlencoded",
-	// 		"key: $apikey"
-	// 	  ),
-	// 	));
-	
-	// 	$response = curl_exec($curl);
-	// 	$err = curl_error($curl);
-	// 	curl_close($curl); 
-		
-	// 	return $response; 
-	// }
-
-
-	// function getCost($apikey, $origin) {
-	// 	$curl = curl_init();
-	// 	curl_setopt_array($curl, array(
-	// 	  CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
-	// 	  CURLOPT_RETURNTRANSFER => true,
-	// 	  CURLOPT_ENCODING => "",
-	// 	  CURLOPT_MAXREDIRS => 10,
-	// 	  CURLOPT_TIMEOUT => 30,
-	// 	  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	// 	  CURLOPT_CUSTOMREQUEST => "POST",
-	// 	  CURLOPT_POSTFIELDS => "origin=$origin&destination=114&weight=1700&courier=pos",
-	// 	  CURLOPT_HTTPHEADER => array(
-	// 		"content-type: application/x-www-form-urlencoded",
-	// 		"key: $apikey"
-	// 	  ),
-	// 	));
-	
-	// 	$response = curl_exec($curl);
-	// 	$err = curl_error($curl);
-	// 	curl_close($curl); 
-		
-	// 	return $response; 
-	// }
 
 
 	function getCost($apikey, $destination, $weight, $courier) {
@@ -2834,6 +2789,100 @@ class Controller extends BaseController
 		{
 			echo $dtvoucher[0]->Id_voucher."#".$dtvoucher[0]->Voucher_name."#".$dtvoucher[0]->Voucher_type."#".$dtvoucher[0]->Discount;
 		}
+	}
+
+	public function Pay_cust(Request $request)
+	{
+		$member =0;
+		try {
+			$member = session()->get('userlogin')->Id_member;
+		
+		
+		} catch (\Throwable $th) {
+			$member =0;
+		}
+
+		$Courier = $request->Courier;
+		if($Courier==0)
+		{
+			$Courier = "JNE";
+		}
+		else if($Courier==1)
+		{
+			$Courier = "POS";
+		}
+		else
+		{
+			$Courier = "TIKI";
+		}
+
+		$Courier_packet = $request->Courier_packet;
+
+
+		$Id_voucher = $request->Id_voucher;
+		$Weight = $request->Weight;
+		$Gross_total = $request->Gross_total;
+		$Shipping_cost = $request->Shipping_cost;
+		$Discount = $request->Discount;
+		$Grand_total = $request->Grand_total;
+		$Affiliate="";
+		$Shipper=0;
+		$Status=1; //Status 1- belum bayar
+		$Date_time = now();
+		
+
+		if($member==0) //GUESS - No Login
+		{
+			$Address = $request->Address;
+			$Id_city = $request->Id_city;
+			$Id_province = $request->Id_province;
+			$Phone = $request->Phone;
+			$Email = $request->Email;
+			$Name = $request->Name;
+			$Id_member = 0;
+			$Discount =0;
+			$Id_voucher=0;
+
+
+
+			$cust_header = new cust_order_header();
+			$hasil = $cust_header->insertdata($Date_time, $Id_member, $Address, $Id_province,$Id_city,
+			$Name,$Email, $Phone, $Courier, $Courier_packet, $Affiliate, $Id_voucher, $Weight, $Gross_total, $Shipping_cost,$Discount,$Grand_total,$Shipper,$Status);
+
+
+			$arr = json_decode(session()->get('cart'));
+
+			foreach ($arr as $datacart) {
+
+				$cust_header_2 = new cust_order_header();
+				$Id_order =  $cust_header_2->getlastinvoice();
+
+				$cust_detail = new cust_order_detail();
+				$hasil = $cust_detail->insertdata($Id_order, $datacart->Id_product, $datacart->Id_variation,$datacart->Qty,
+				$Normal_price,$Id_promo, $Discount_promo, $Fix_price);
+			}
+			
+		}
+		else //Member
+		{
+			$Id_member =$member;
+
+			$me = member::where('Id_member','=',$Id_member)
+			->get();
+
+
+			$Address_dest = session()->get('Id_address');
+
+			$add = address_member::where('Id_address','=',$Address_dest)
+			->get();
+
+			$cust_header = new cust_order_header();
+			$hasil = $cust_header->insertdata($Date_time, $Id_member, $add[0]->Address, $add[0]->Id_province,$add[0]->Id_city,
+			$me[0]->Username,$me[0]->Email, $me[0]->Phone, $Courier, $Courier_packet, $Affiliate, $Id_voucher, $Weight, $Gross_total, $Shipping_cost,$Discount,$Grand_total,$Shipper,$Status);
+
+		}
+
+		 echo "sukses";
 	}
 
 

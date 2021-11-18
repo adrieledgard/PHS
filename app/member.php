@@ -10,7 +10,7 @@ class member extends Model
     public $table = 'member';
     public $primaryKey = 'Id_member';
     public $timestamps = false;
-    public $fillable = ['Id_member','Username','Email','Phone','Password','Role','Status','Random_code','Referral'];
+    public $fillable = ['Id_member','Username','Email','Phone','Password','Role','Status','Random_code','Referral','First_transaction','Point'];
     public $incrementing = true;
 
 

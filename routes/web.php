@@ -119,6 +119,9 @@ Route::get('Use_voucher', ["uses"=>"Controller@Use_voucher"]);
 
 
 
+Route::get('Pay_cust', ["uses"=>"Controller@Pay_cust"]);
+
+
 
 Route::get('master_product', ["uses"=>"ControllerMaster@master_product"])->middleware('CheckLogin','CheckRoleAdmin');
 Route::get('master_product_add', ["uses"=>"ControllerMaster@master_product_add"])->middleware('CheckLogin','CheckRoleAdmin');
