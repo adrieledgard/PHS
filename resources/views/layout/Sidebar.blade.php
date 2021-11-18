@@ -263,6 +263,42 @@
          }
         ?>
 
+        <?php 
+        if(session()->get('userlogin')->Role =="CUSTOMER SERVICE" || session()->get('userlogin')->Role =="ADMIN")
+        {
+          ?>
+          <li class="nav-item @yield('menu_master')">
+            {{-- menu-open --}}
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-shopping-basket"></i>
+              <p>
+                Assist
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+             
+              <li class="nav-item">
+                <a href="{!! url('chat_list'); !!}" class="nav-link  @yield('live_chat_atv')">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Live Chat</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{!! url('list_request_assist'); !!}" class="nav-link  @yield('request_assist_atv')">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Request Assists</p>
+                </a>
+              </li>
+             
+              
+            </ul>
+          </li>
+         
+        <?php 
+         }
+        ?>
+
 
 
 <?php 

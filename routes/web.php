@@ -330,7 +330,13 @@ Route::get('get_shipper_data', ["uses"=>"ControllerTransaction@get_shipper_data"
 Route::get('set_status_receive', ["uses"=>"ControllerTransaction@set_status_receive"]);
 Route::get('void_receive_detail', ["uses"=>"ControllerTransaction@void_receive_detail"]);
 
-
+Route::get('chat_list', ['uses' => "ControllerCustomerService@index_chat"]);
+Route::get('list_request_assist', ['uses' => "ControllerCustomerService@index_request_assist"])->name('list_request_assist');
+Route::get('request_assist_add', ['uses' => "ControllerCustomerService@create_request_assist"]);
+Route::post('add_request_assist', ['uses' => "ControllerCustomerService@insert"]);
+Route::get('request_assist_update/{id}', ['uses' => "ControllerCustomerService@update_request_assist"]);
+Route::post('update_request_assist/{id}', ['uses' => "ControllerCustomerService@update"]);
+Route::post('closed_request_assist', ['uses' => "ControllerCustomerService@closed"]);
 
 
 
