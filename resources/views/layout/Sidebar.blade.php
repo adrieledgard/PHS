@@ -264,7 +264,7 @@
         ?>
 
         <?php 
-        if(session()->get('userlogin')->Role =="CUSTOMER SERVICE")
+        if(session()->get('userlogin')->Role =="CUSTOMER SERVICE" || session()->get('userlogin')->Role =="ADMIN")
         {
           ?>
           <li class="nav-item @yield('menu_master')">
