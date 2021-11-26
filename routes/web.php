@@ -120,6 +120,8 @@ Route::get('Use_voucher', ["uses"=>"Controller@Use_voucher"]);
 
 
 Route::get('Pay_cust', ["uses"=>"Controller@Pay_cust"]);
+Route::get('atc_from_wishlist', ["uses"=>"Controller@atc_from_wishlist"]);
+
 
 
 
@@ -273,6 +275,8 @@ Route::get('master_affiliate', ["uses"=>"ControllerMaster@master_affiliate"])->m
 Route::get('getaffiliatedata', ["uses"=>"ControllerMaster@getaffiliatedata"]);
 Route::post('edit_affiliate', ["uses"=>"ControllerMaster@edit_affiliate"]);
 
+
+Route::post('master_ebook', ["uses"=>"ControllerMaster@master_ebook"]);
 
 
 

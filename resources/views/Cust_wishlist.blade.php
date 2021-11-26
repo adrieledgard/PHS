@@ -20,7 +20,6 @@
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h1 class="cart-heading">wishlist</h1>
-                <form action="#">
                     <div class="table-content table-responsive">
                         <table>
                             {{-- <thead>
@@ -195,7 +194,7 @@
                                         
                                     
                                     </td>
-                                    <td class=""><button class="btn btn-primary" onclick="">Add to cart</button></td>
+                                    <td class=""><button class="btn btn-primary" onclick="atc('{{$wish->Id_wishlist}}')">Add to cart</button></td>
                                 </tr>
                                 @endforeach
                                 
@@ -203,7 +202,6 @@
                             </tbody>
                         </table>
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -259,6 +257,27 @@
         {Id_wishlist: id_wish},
         function(result){
             location.reload();
+        });
+    }
+
+    function atc(Id_wishlist)
+    {
+        $.get(myurl + '/atc_from_wishlist',
+        {Id_wishlist: Id_wishlist},
+        function(result){
+            if(result=="sukses")
+            {
+                location.reload();
+            }
+            else if(result=="stok tidak cukup")
+            {
+                toastr["error"]("Stock no enough", "Error");
+            }
+            else if(result=="kembar")
+            {
+                toastr["error"]("Proucts & variation already in your cart", "Error");
+            }
+            // 
         });
     }
 </script>

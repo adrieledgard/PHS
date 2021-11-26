@@ -17,7 +17,7 @@ class cust_order_detail extends Model
 
 
     
-    public function insertdata ($Id_order, $Id_product, $Id_variation,$Qty,
+    public function insertdata($Id_order, $Id_product, $Id_variation,$Qty,
     $Normal_price,$Id_promo, $Discount_promo, $Fix_price)
     {
        

@@ -38,7 +38,7 @@
                                 
                                 @foreach ($cart as $cr)
                                 <?php 
-                                    if($cr->Id_cart!=-1)
+                                    if($cr->Id_cart!=-1) //-1 itu cart yang di delete
                                     {
                                         ?>
                                             @php

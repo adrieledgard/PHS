@@ -47,10 +47,12 @@
                         <div class="product-details-large tab-content">
                             @php
                                 $ctr=1;
+                                $ada=0;
                             @endphp
 
                             @foreach ($dtproductimage as $img)
                                 @php
+                                    $ada=1;
                                     if($ctr==1)
                                     {
                                         $act = "active";
@@ -79,6 +81,24 @@
                                 @endphp
                             @endforeach
 
+                            <?php
+
+                                if($ada==0)
+                                {
+                                    ?>
+
+                                        <div class="tab-pane active show fade"  role="tabpanel">
+                                            <div class="easyzoom easyzoom--overlay">
+                                                <a href="{{asset('Uploads/Product/default.jpg')}}">
+                                                    <img src="{{asset('Uploads/Product/default.jpg')}}" alt="" width="600px" height="656px">
+                                                    {{-- <img src="{{ asset('assets/img/product-details/l1.jpg')}}" alt=""> --}}
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    <?php
+                                }
+                            ?>
                         </div>
                         <div class="product-details-small nav mt-12" role="tablist">
                             @php
@@ -217,7 +237,7 @@
                        <br>
                         <div class="row">
                             <div class="col-md-12">
-                                <b id="stock">Stock : {{$dtvariation[0]['Stock']}}</b> 
+                                <b id="stock">Stock : {{$dtvariation[0]['Stock']*1 - $dtvariation[0]['Stock_atc']*1 - $dtvariation[0]['Stock_pay']*1}}</b> 
                             </div>
                         </div>
                         
@@ -829,7 +849,7 @@
         {
             toastr["error"]("The item already in cart", "Error");
         }
-        else if (result=="stok habis")
+        else if(result=="stok habis")
         {
             toastr["error"]("Out of stock", "Error");
         }

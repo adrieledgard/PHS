@@ -1880,7 +1880,7 @@ class Controller extends BaseController
 				}
 			}
 
-			if($var[0]->Stock*1<$Qty*1)
+			if(($var[0]->Stock*1 - $var[0]->Stock_atc*1 - $var[0]->Stock_pay*1)<$Qty*1)
 			{
 				echo "stok habis";
 			}
@@ -1906,7 +1906,7 @@ class Controller extends BaseController
 		}
 		else 
 		{
-			if($var[0]->Stock*1<$Qty*1)
+			if(($var[0]->Stock*1 - $var[0]->Stock_atc*1 - $var[0]->Stock_pay*1)<$Qty*1)
 			{
 				echo "stok habis";
 			}
@@ -2854,12 +2854,65 @@ class Controller extends BaseController
 
 			foreach ($arr as $datacart) {
 
-				$cust_header_2 = new cust_order_header();
-				$Id_order =  $cust_header_2->getlastinvoice();
+				if($datacart->Id_cart!=-1) //-1 itu cart yg di delete di session
+				{
+					$cust_header_2 = new cust_order_header();
+					$Id_order =  $cust_header_2->getlastinvoice();
+	
+	
+					$dtpromoheader = promo_header::where('Status','=',1)
+					->where('Id_variation','=',$datacart->Id_variation)
+					->get();
+			
+					$dtpromodetail = promo_detail::where('Status','=',1)
+					->get();
+	
+					$variation = variation::where('Id_variation','=',$datacart->Id_variation)
+					->where('Status','=',1)
+					->get();
+	
+	
+					$Normal_price = $variation[0]->Sell_price;
+					$Id_promo =0;
+					$Discount_promo=0;
+					$Fix_price = $Normal_price;
+					if(count($dtpromoheader)>=1)
+					{
+						foreach ($dtpromoheader as $promhead) {
+							
+							foreach ($dtpromodetail as $promdetail) {
+								if($promhead->Id_promo == $promdetail->Id_promo)
+								{
+									if($datacart->Qty>= $promdetail->Minimum_qty)
+									{
+										$Id_promo = $promhead->Id_promo;
+	
+										if($promhead->Model == "%")
+										{
+											$Discount_promo = $variation[0]->Sell_price * ($promdetail->Discount/100);
+											
+											$Fix_price = $variation[0]->Sell_price - ($variation[0]->Sell_price * ($promdetail->Discount/100));
+										}
+										else
+										{
+											$Discount_promo = $promdetail->Discount;
+											$Fix_price = $variation[0]->Sell_price -$promdetail->Discount;
+										}
+	
+									}
+									
+								}
+							}
+						}
+					}
+	
+					$cust_detail = new cust_order_detail();
+					$hasil = $cust_detail->insertdata($Id_order, $datacart->Id_product, $datacart->Id_variation,$datacart->Qty,
+					$Normal_price,$Id_promo, $Discount_promo, $Fix_price);
+	
+				}
+				
 
-				$cust_detail = new cust_order_detail();
-				$hasil = $cust_detail->insertdata($Id_order, $datacart->Id_product, $datacart->Id_variation,$datacart->Qty,
-				$Normal_price,$Id_promo, $Discount_promo, $Fix_price);
 			}
 			
 		}
@@ -2880,11 +2933,134 @@ class Controller extends BaseController
 			$hasil = $cust_header->insertdata($Date_time, $Id_member, $add[0]->Address, $add[0]->Id_province,$add[0]->Id_city,
 			$me[0]->Username,$me[0]->Email, $me[0]->Phone, $Courier, $Courier_packet, $Affiliate, $Id_voucher, $Weight, $Gross_total, $Shipping_cost,$Discount,$Grand_total,$Shipper,$Status);
 
+
+			$arr = cart::where('Id_member','=',$Id_member)
+			->get();
+
+			foreach ($arr as $datacart) {
+
+				if($datacart->Id_cart!=-1) //-1 itu cart yg di delete di session
+				{
+					$cust_header_2 = new cust_order_header();
+					$Id_order =  $cust_header_2->getlastinvoice();
+	
+	
+					$dtpromoheader = promo_header::where('Status','=',1)
+					->where('Id_variation','=',$datacart->Id_variation)
+					->get();
+			
+					$dtpromodetail = promo_detail::where('Status','=',1)
+					->get();
+	
+					$variation = variation::where('Id_variation','=',$datacart->Id_variation)
+					->where('Status','=',1)
+					->get();
+	
+	
+					$Normal_price = $variation[0]->Sell_price;
+					$Id_promo =0;
+					$Discount_promo=0;
+					$Fix_price = $Normal_price;
+					if(count($dtpromoheader)>=1)
+					{
+						foreach ($dtpromoheader as $promhead) {
+							
+							foreach ($dtpromodetail as $promdetail) {
+								if($promhead->Id_promo == $promdetail->Id_promo)
+								{
+									if($datacart->Qty>= $promdetail->Minimum_qty)
+									{
+										$Id_promo = $promhead->Id_promo;
+	
+										if($promhead->Model == "%")
+										{
+											$Discount_promo = $variation[0]->Sell_price * ($promdetail->Discount/100);
+											
+											$Fix_price = $variation[0]->Sell_price - ($variation[0]->Sell_price * ($promdetail->Discount/100));
+										}
+										else
+										{
+											$Discount_promo = $promdetail->Discount;
+											$Fix_price = $variation[0]->Sell_price -$promdetail->Discount;
+										}
+	
+									}
+									
+								}
+							}
+						}
+					}
+	
+					$cust_detail = new cust_order_detail();
+					$hasil = $cust_detail->insertdata($Id_order, $datacart->Id_product, $datacart->Id_variation,$datacart->Qty,
+					$Normal_price,$Id_promo, $Discount_promo, $Fix_price);
+	
+				}
+				
+
+			}
+
+
+
 		}
 
 		 echo "sukses";
 	}
 
+
+	public function atc_from_wishlist(Request $request)
+	{
+		$Id_wishlist = $request->Id_wishlist;
+
+		$wish = wishlist::where('Id_wishlist','=',$Id_wishlist)
+		->get();
+
+		$vari = variation::where('Id_variation','=',$wish[0]->Id_variation)
+		->get();
+
+		$Id_member = session()->get('userlogin')->Id_member;
+
+		$cart = cart::where('Id_member','=',$Id_member)
+		->get();
+
+		$kembar=0;
+		$Stock = $vari[0]->Stock*1 - $vari[0]->Stock_atc*1 - $vari[0]->Stock_pay*1;
+		if($Stock < $wish[0]->Qty)
+		{
+			echo "stok tidak cukup";
+		}
+		else
+		{
+			foreach ($cart as $datacart) {
+				if($datacart->Id_variation == $wish[0]->Id_variation)
+				{
+					$kembar=1;
+				
+				}
+			}
+
+			if($kembar==1)
+			{
+				echo "kembar";
+			}
+			else
+			{
+				$cart = new cart();
+				$carthasil = $cart->add_cart($wish[0]->Id_product,$wish[0]->Id_variation,$wish[0]->Qty,$Id_member);
+			
+
+				$deletewish = new wishlist();
+				$hasil = $deletewish->delete_wishlist($wish[0]->Id_wishlist);
+
+
+				echo "sukses";
+			}
+			
+		}
+
+		
+
+	}
 
 	
 }

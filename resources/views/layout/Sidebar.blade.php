@@ -91,6 +91,13 @@
                       </a>
                     </li>
 
+                    <li class="nav-item">
+                      <a href="{!! url('master_ebook'); !!}" class="nav-link  @yield('masterebook_atv')">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Master Ebook</p>
+                      </a>
+                    </li>
+
 
                     <li class="nav-item">
                       <a href="{!! url('master_promo'); !!}" class="nav-link  @yield('masterpromo_atv')">
