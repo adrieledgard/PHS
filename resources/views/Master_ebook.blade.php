@@ -50,7 +50,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-        {{ Form::button('<i class="fa fa-plus" aria-hidden="true"></i> Insert', ['class'=>'btn btn-primary','data-toggle'=>'modal','data-target'=>'#add_modal']) }}
+        <a href="{{ url('master_ebook/create')}}" class="btn btn-primary btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> Insert</a>
       </div>
         
         <br>
@@ -64,23 +64,20 @@
             <tr>
               <th>Image</th> 
               <th>Title Ebook</th>
+              <th>Sub-Category</th>
               <th>Action</th>
             </tr>
           </thead>
       
           <tbody>
-            @foreach ($dtbank as $data)
+            @foreach ($ebooks as $data)
             <tr>
-              <td>{{$data->Bank_name}}</td>
-              <td>{{$data->Account_number}}</td>
-              <td>{{$data->Account_name}}</td>
-              <td>{{$data->Bank_branch}}</td>
-        
+              <td><img src="{{ asset('Uploads/Ebook/'.$data->Image )}}" width='150px' height='150px' class="center"> </td>
+              <td>{{$data->Title}}</td>
+              <td>{{$data->sub_category->Sub_category_name}}</td>
               <td>
-                {{-- <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit_modal" data-cat="{{$data->Id_category}}">Edit</button> --}}
-                {{ Form::button('Edit', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-cat'=>$data->Id_bank,'data-toggle'=>'modal','data-target'=>'#edit_modal']) }}
-                {{ Form::button('Delete', ['name'=>'btn_delete','class'=>'btn btn-danger btn-sm ','onclick'=>'deletebank('.$data->Id_bank.')']) }}
-              
+                <a href="{{url('master_ebook/edit/' . $data->Id_ebook)}}" class="btn btn-warning btn-sm">Edit</a>
+                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{$data->Title}}', {{$data->Id_ebook}})">Delete</button>
               </td>
             </tr>
             @endforeach
@@ -92,10 +89,8 @@
     </div>
   </div>
 
-
-
-<!--ADD Modal -->
-  <div class="modal fade" id="add_modal">
+  <!--ADD Modal -->
+  <div class="modal fade" id="confirm_delete">
     <div class="modal-dialog modal-md">
       <div class="modal-content">
         <div class="modal-header">
@@ -104,97 +99,17 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-          <form class="" method='post' action='add_bank'>
-            @csrf
-            <div class="modal-body">
-              <div class="col-md-6">
-                {{ Form::label('Bank Name','') }}
-                {{ Form::text('txt_bank_name', '', ['class'=>'form-control']) }}
-              </div>
-
-              <div class="col-md-6">
-                {{ Form::label('Account Number','') }}
-                {{ Form::number('txt_account_number', '', ['class'=>'form-control']) }}
-              </div>
-
-              <div class="col-md-6">
-                {{ Form::label('Account Name','') }}
-                {{ Form::text('txt_account_name', '', ['class'=>'form-control']) }}
-              </div>
-
-
-              <div class="col-md-6">
-                {{ Form::label('Bank branch','') }}
-                {{ Form::text('txt_bank_branch', '', ['class'=>'form-control']) }}
-              </div>
-              
-              
-            </div>
-            <div class="modal-footer">
-              {{ Form::button('Close', ['class'=>'btn btn-secondary','data-dismiss'=>'modal','aria-label'=>'Close']) }}
-              {{ Form::submit('Insert', ['name'=>'add_bank', 'class'=>'btn btn-primary']) }}
-            </div>
-          </form>
-        <div class="container-fluid">
-          
+        <div class="modal-body">
+          Are you sure to delete <label class="title-ebook"></label>
+          {!! Form::hidden('id', '', ['class' => 'id_ebook']) !!}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button onclick="deleteebook()">Confirm</button>
         </div>
       </div>
     </div>
   </div>
-
-
-  <!--EDIT Modal -->
-  <div class="modal fade" id="edit_modal">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Edit Bank</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-          <form class="" method='post' action='edit_bank'>
-            @csrf
-            <div class="modal-body">
-              <div class="col-md-6">
-                {{ Form::hidden('id_bank', '', ['class'=>'form-control','id'=>'id_bank']) }}
-                {{ Form::label('Bank Name','') }}
-                {{ Form::text('txt_bank_name', '', ['class'=>'form-control','id'=>'txt_bank_name']) }}
-              </div>
-
-              <div class="col-md-6">
-                {{ Form::label('Account Number','') }}
-                {{ Form::number('txt_account_number', '', ['class'=>'form-control','id'=>'txt_account_number']) }}
-              </div>
-
-              <div class="col-md-6">
-                {{ Form::label('Account Name','') }}
-                {{ Form::text('txt_account_name', '', ['class'=>'form-control','id'=>'txt_account_name']) }}
-              </div>
-
-              <div class="col-md-6">
-                {{ Form::label('Bank Branch','') }}
-                {{ Form::text('txt_bank_branch', '', ['class'=>'form-control','id'=>'txt_bank_branch']) }}
-              </div>
-
-              
-            </div>
-            <div class="modal-footer">
-              {{ Form::button('Close', ['class'=>'btn btn-secondary','data-dismiss'=>'modal','aria-label'=>'Close']) }}
-              {{ Form::submit('Edit', ['name'=>'edit_bank', 'class'=>'btn btn-primary']) }}
-            </div>
-        </form>
-        <div class="container-fluid">
-          
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-
-
 @endsection
 
 
@@ -236,87 +151,16 @@
     <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
- 
+  <script>
+    function deleteebook() {
+      let id = $(".id_ebook").val();
 
-    <script>
-      $('#edit_modal').on('show.bs.modal', function(event){
-    
-    var button = $(event.relatedTarget);
-    var id = button.data('cat');
-    var modal = $(this);
-    //modal.find('.modal-body #id_category').val(id);
-
-
-    var myurl = "<?php echo URL::to('/'); ?>";
-
-      $.get(myurl + '/getbank',
-      {id: id},
-      function(result){
-      var arr = JSON.parse(result);
-    
-      var bank_name ="";
-      var account_number=0;
-      var account_name="";
-      var bank_branch="";
-
-      for(var i =0;i< arr.length;i++)
-      {
-        bank_name= arr[i]['Bank_name'];
-        account_number= arr[i]['Account_number'];
-        account_name= arr[i]['Account_name'];
-        bank_branch= arr[i]['Bank_branch'];
-      }
-
-      $("#id_bank").val(id);
-      $("#txt_bank_name").val(bank_name);
-      $("#txt_account_number").val(account_number);
-      $("#txt_account_name").val(account_name);
-      $("#txt_bank_branch").val(bank_branch);
-
-
-      });
-
-  })
-    
-    </script>
-<script>
-  var myurl = "<?php echo URL::to('/'); ?>";
-  function deletebank(id)
-  {
-
-    swal({
-  title: "Are you sure to Delete this?",
-  text: '',
-  icon: "warning",
-  buttons: true,
-  dangerMode: true,
-})
-.then((willDelete) => {
-  if (willDelete) {
-    
-    $.get(myurl + '/delete_bank',
-    {Id_bank:id},
-    function(result){
-      
-      if(result=="sukses")
-      {
-        toastr["success"]("Success to delete", "Delete");
-        window.location = myurl + "/master_bank/";
-      }
-      else
-      {
-        toastr["error"]("Delete failed", "Failed");
-      // window.location = myurl + "/Purchase/";
-      }
-      
-    });
-
-
-  } else {
-   // swal("Cancelled");
-  }
-});      
-
-  }
-</script>
+      window.location.href=`{!! url('master_ebook/delete/${id}') !!}`
+    }
+    function confirmDelete(title, id){
+      $(".title-ebook").html(title);
+      $(".id_ebook").val(id);
+      $("#confirm_delete").modal("show");
+    }
+  </script>
 @endpush

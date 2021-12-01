@@ -23,8 +23,7 @@ use App\promo_detail;
 use App\voucher;
 use App\voucher_product;
 use App\affiliate;
-
-
+use App\ebook;
 use App\Rules\ValidasiEmailMember;
 use App\Rules\ValidasiPasswordEditTeamMember;
 use App\Rules\ValidasiUsernameMember;
@@ -4181,6 +4180,109 @@ class ControllerMaster extends Controller
 		}
 	}
 
+	public function master_ebook()
+	{
+		$ebooks = ebook::where('status', '1')->get();
+		foreach ($ebooks as $book) {
+			$book->sub_category = sub_category::find($book->Id_sub_category);
+		}
+		return view('master_ebook', compact('ebooks'));
+	}
+
+	public function create_ebook()
+	{
+		$sub_category = sub_category::pluck('Sub_category_name', 'Id_sub_category');
+		return view('Ebook_add', compact('sub_category'));
+	}
+
+	public function edit_ebook($id)
+	{
+		$ebook = ebook::find($id);
+		$sub_category = sub_category::pluck('Sub_category_name', 'Id_sub_category');
+		return view('Ebook_edit', compact('ebook', 'sub_category'));
+	}
+	
+	public function delete_ebook($id)
+	{
+		$ebook = new ebook();
+		$ebook->delete_ebook($id);
+		return redirect()->route('master_ebook');
+	}
+
+	public function ebook_store(Request $request)
+	{
+		if($request->validate(
+		[
+			'image' => ['required', 'mimes:jpeg,png,jpg'],
+			'pdf' => ['required', 'mimes:pdf'],
+		
+		],
+		[
+			'image.required' => 'Please choose image file',
+		]))
+		{
+			$title = str_replace(' ', '-', $request->title);
+			//FOTO
+			$filefoto = $request->file('image');
+			$extfile = $filefoto->getClientOriginalExtension();
+
+			$despath = 'Uploads/Ebook';
+			$namafilefoto = $title. '-'. date('Y-m-d-H-i-s') .'-image' .'.'.$extfile;
+			$filefoto->move($despath,$namafilefoto);
+
+			//PDF
+			$filepdf = $request->file('pdf');
+			$extfile = $filepdf->getClientOriginalExtension();
+
+			$despath = 'Uploads/Ebook';
+			$namafilepdf = $title.'-'. date('Y-m-d-H-i-s') .'-pdf' . '.'.$extfile;
+			$filepdf->move($despath,$namafilepdf);
+
+			$ebook = new ebook();
+			$ebook->add_ebook($request->id_template, $request->sub_catgory,$request->title, $request->content, $namafilefoto, $namafilepdf, $request->call_to_action);
+
+			return redirect()->route('master_ebook');
+		}
+	}
+
+	public function ebook_update(Request $request, $id)
+	{
+		$current_ebook = ebook::find($id);
+		$title = str_replace(' ', '-', $request->title);
+		//FOTO
+		if($request->hasFile('image')){
+			unlink(public_path() ."/Uploads/Ebook/". $current_ebook->Image);
+
+			$filefoto = $request->file('image');
+			$extfile = $filefoto->getClientOriginalExtension();
+
+			$despath = 'Uploads/Ebook';
+			$namafilefoto = $title. '-'. date('Y-m-d-H-i-s') .'-image' .'.'.$extfile;
+			$filefoto->move($despath,$namafilefoto);
+		} else {
+			$namafilefoto = $current_ebook->Image;
+		}
+
+		//PDF
+		if($request->hasFile('pdf')){
+			unlink(public_path() ."/Uploads/Ebook/". $current_ebook->Pdf_file);
+
+			$filepdf = $request->file('pdf');
+			$extfile = $filepdf->getClientOriginalExtension();
+
+			$despath = 'Uploads/Ebook';
+			$namafilepdf = $title.'-'. date('Y-m-d-H-i-s') .'-pdf' . '.'.$extfile;
+			$filepdf->move($despath,$namafilepdf);
+		}else {
+			$namafilepdf = $current_ebook->Pdf_file;
+		}
+
+
+		$ebook = new ebook();
+		$ebook->edit_ebook($id, $request->id_template, $request->sub_catgory,$request->title, $request->content, $namafilefoto, $namafilepdf, $request->call_to_action);
+
+		return redirect()->route('master_ebook');
+	}
 
 	public function ajaxsubcategory(Request $request) //Untuk dropdown subcategori event dari onchange kategori
 	{
