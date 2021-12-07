@@ -25,6 +25,7 @@ use App\voucher_product;
 use App\affiliate;
 use App\ebook;
 use App\email_ebook;
+use App\Mail\SendEbook;
 use App\Rules\ValidasiEmailMember;
 use App\Rules\ValidasiPasswordEditTeamMember;
 use App\Rules\ValidasiUsernameMember;
@@ -35,8 +36,7 @@ use App\Rules\ValidasiOptionSession;
 use App\Rules\ValidasiSupplierName;
 use App\Rules\ValidasiInsertPhotoMasterProduct;
 use App\Rules\ValidasiCbProduct;
-
-
+use Illuminate\Support\Facades\Mail;
 
 class ControllerMaster extends Controller
 {
@@ -4213,6 +4213,8 @@ class ControllerMaster extends Controller
 			return redirect()->back()->with('error', 'Email existed');	
 		}
 		
+		Mail::to($request->email)->send(new SendEbook($ebook_id));
+
 		return redirect()->back()->with('success', 'Email submitted');
 	}
 
