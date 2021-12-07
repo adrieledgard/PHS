@@ -285,7 +285,7 @@ Route::get('master_ebook/edit/{id}', ["uses"=>"ControllerMaster@edit_ebook"]);
 Route::post('master_ebook/update/{id}', ["uses"=>"ControllerMaster@ebook_update"]);
 Route::get('master_ebook/delete/{id}', ["uses"=>"ControllerMaster@delete_ebook"]);
 
-
+Route::get('Ebook_marketing', ["uses"=>"Controller@Ebook_marketing"]);
 
 
 

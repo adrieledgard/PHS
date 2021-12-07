@@ -295,6 +295,7 @@
                                           <li><a href="index.html">My order</a></li>
                                           <li><a href="{!!url('edit_profile')!!}">Edit profile</a></li>
                                           <li><a href="{!!url('Affiliate_marketing')!!}">Affiliate Marketing</a></li>
+                                          <li><a href="{!!url('Ebook_marketing')!!}">Ebook Marketing</a></li>
                                           <li><a href="{!!url('point')!!}">Point</a></li>
                                           <li><a href="{!!url('logout')!!}">Logout</a></li>
                                       </ul>

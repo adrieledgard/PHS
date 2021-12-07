@@ -35,6 +35,7 @@ use App\address_member;
 use App\list_city;
 use App\cust_order_header;
 use App\cust_order_detail;
+use App\ebook;
 use DateTime;
 
 
@@ -2020,7 +2021,14 @@ class Controller extends BaseController
 		
 	}
 
-
+	public function Ebook_marketing()
+	{
+		$ebooks = ebook::where('status', 1)->get();
+		foreach ($ebooks as $book) {
+			$book->sub_category = sub_category::find($book->Id_sub_category);
+		}
+		return view('Cust_ebook', compact('ebooks'));
+	}
 
 	public function Affiliate_marketing(Request $request)
 	{
