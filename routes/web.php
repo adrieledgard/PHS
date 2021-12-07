@@ -277,6 +277,8 @@ Route::post('edit_affiliate', ["uses"=>"ControllerMaster@edit_affiliate"]);
 
 
 Route::get('master_ebook', ["uses"=>"ControllerMaster@master_ebook"])->name('master_ebook');
+Route::get('master_ebook/{ebook_id}/show/{user_token}', ["uses"=>"ControllerMaster@show_ebook"]);
+Route::post('master_ebook/{ebook_id}/email_submitted/{user_token}', ["uses"=>"ControllerMaster@submit_email_ebook"]);
 Route::get('master_ebook/create', ["uses"=>"ControllerMaster@create_ebook"]);
 Route::post('master_ebook/store', ["uses"=>"ControllerMaster@ebook_store"]);
 Route::get('master_ebook/edit/{id}', ["uses"=>"ControllerMaster@edit_ebook"]);

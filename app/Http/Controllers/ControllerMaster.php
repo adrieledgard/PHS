@@ -24,6 +24,7 @@ use App\voucher;
 use App\voucher_product;
 use App\affiliate;
 use App\ebook;
+use App\email_ebook;
 use App\Rules\ValidasiEmailMember;
 use App\Rules\ValidasiPasswordEditTeamMember;
 use App\Rules\ValidasiUsernameMember;
@@ -4187,6 +4188,32 @@ class ControllerMaster extends Controller
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 		}
 		return view('master_ebook', compact('ebooks'));
+	}
+
+	public function show_ebook($ebook_id, $user_token)
+	{
+		$ebook = ebook::find($ebook_id);
+		if($ebook->Id_template == "1"){
+			$view = "Ebook_template1";
+		}else if($ebook->Id_template == "2"){
+			$view = "Ebook_template2";
+		}else {
+			$view = "Ebook_template3";
+		}
+		return view($view, compact('ebook', 'user_token'));
+	}
+
+	public function submit_email_ebook(Request $request, $ebook_id, $user_token)
+	{
+		$existed_user_ebook = email_ebook::where('email', $request->email)->where('user_token', $user_token)->where('ebook_id', $ebook_id)->get();
+		if(count($existed_user_ebook) == 0){
+			$email_ebook = new email_ebook();
+			$email_ebook->add_email_ebook($request->ebook_id, $request->email, $request->user_token);
+		}else {
+			return redirect()->back()->with('error', 'Email existed');	
+		}
+		
+		return redirect()->back()->with('success', 'Email submitted');
 	}
 
 	public function create_ebook()
