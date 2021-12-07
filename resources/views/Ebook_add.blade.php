@@ -98,9 +98,12 @@
           <button type="button" onclick="previewPDF();">Preview</button>
         </div>
         <div class="col-md-12">
-          {{Form::radio('id_template', '1', true)}} Tempalte 1
+          {{ Form::label('Template :','') }}
+          {{Form::radio('id_template', '1', true)}} Template 1
           {{Form::radio('id_template', '2', false)}} Template 2
           {{Form::radio('id_template', '3', false)}} Template 3
+          <br>
+          {{Form::button("Preview Selected Template", ["onclick" => "previewTemplate()", "class" => "btn btn-secondary btn-sm"])}}
         </div>
       </div>
       <div class="col-12">
@@ -149,6 +152,133 @@
       </div>
     </div>
   </div>
+  
+  <div class="modal fade" id="preview_template1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Preview Template 1</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12">
+              <div style="width: 100%; height:200px; border:1px solid black; display:block; margin-left:auto; margin-right:auto">
+                PICTURE
+              </div>
+            </div>
+          </div>
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12 mt-3">
+              <div style="width: 100%; height:50px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                TITLE
+              </div>
+            </div>
+          </div>
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12 mt-3">
+              <div style="width: 100%; height:150px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                CONTENT
+              </div>
+            </div>
+          </div>
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12 mt-3">
+              <div style="width: 100%; height:100px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                SUBMIT EMAIL
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="preview_template2" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Preview Template 2</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12">
+              <div style="width: 100%; height:50px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                TITLE
+              </div>
+            </div>
+          </div>
+          <div class="row  mt-3"  style=" text-align:center">
+            <div class="col-md-12">
+              <div style="width: 100%; height:200px; border:1px solid black; display:block; margin-left:auto; margin-right:auto">
+                PICTURE
+              </div>
+            </div>
+          </div>
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12 mt-3">
+              <div style="width: 100%; height:150px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                CONTENT
+              </div>
+            </div>
+          </div>
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12 mt-3">
+              <div style="width: 100%; height:100px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                SUBMIT EMAIL
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="preview_template3" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Preview Template 3</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12">
+              <div style="width: 100%; height:50px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                TITLE
+              </div>
+            </div>
+          </div>
+          <div class="row  mt-3"  style=" text-align:center">
+            <div class="col-md-6">
+              <div style="width: 100%; height:150px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                CONTENT
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div style="width: 100%; height:150px; border:1px solid black; display:block; margin-left:auto; margin-right:auto">
+                PICTURE
+              </div>
+            </div>
+          </div>
+          <div class="row"  style=" text-align:center">
+            <div class="col-md-12 mt-3">
+              <div style="width: 100%; height:100px; border:1px solid black; display:block; margin-left:auto; margin-right:auto;">
+                SUBMIT EMAIL
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 
@@ -191,6 +321,11 @@
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script> 
 
     <script>
+      function previewTemplate() {
+        let template = $('input[name="id_template"]:checked').val();
+        $("#preview_template" + template).modal("show");
+      }
+
       function readURL() {
         let input = document.getElementById('image_upload');
         
