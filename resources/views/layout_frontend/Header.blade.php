@@ -292,7 +292,7 @@
                                     @endphp
                                     <li><a href="#">{{$username}}</a>
                                       <ul class="single-dropdown">
-                                          <li><a href="index.html">My order</a></li>
+                                          <li><a href="{!!url('My_order')!!}">My order</a></li>
                                           <li><a href="{!!url('edit_profile')!!}">Edit profile</a></li>
                                           <li><a href="{!!url('Affiliate_marketing')!!}">Affiliate Marketing</a></li>
                                           <li><a href="{!!url('Ebook_marketing')!!}">Ebook Marketing</a></li>

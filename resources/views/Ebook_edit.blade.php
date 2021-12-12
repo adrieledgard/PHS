@@ -87,15 +87,16 @@ Edit Ebook
           {{ Form::label('Content :','') }}
           {{ Form::textarea('content', $ebook->Content, ['class'=>'form-control','id'=>'content', 'placeholder' => "content", 'required' => 'required']) }}
         </div>
+
         <div class="col-md-6">
           {{ Form::label('Image :','') }}
           {{ Form::file('image', ['id' => 'image_upload'])}}
-          <button type="button" onclick="readURL();">Preview</button>
+          <button type="button" class="btn btn-warning" onclick="readURL();">Preview</button>
         </div>
         <div class="col-md-6">
           {{ Form::label('PDF :','') }}
           {{ Form::file('pdf', ['id' => 'pdf_upload'])}}
-          <button type="button" onclick="previewPDF();">Preview</button>
+          <button type="button" class="btn btn-warning" onclick="previewPDF();">Preview</button>
         </div>
         <div class="col-md-12">
           @php

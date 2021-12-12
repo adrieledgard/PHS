@@ -288,8 +288,8 @@ Route::get('master_ebook/delete/{id}', ["uses"=>"ControllerMaster@delete_ebook"]
 Route::get('Ebook_marketing', ["uses"=>"Controller@Ebook_marketing"]);
 
 
-
-
+Route::get('My_order', ["uses"=>"Controller@My_order"]);
+Route::get('get_cust_detail_order', ["uses"=>"Controller@get_cust_detail_order"]);
 
 
 

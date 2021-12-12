@@ -87,6 +87,7 @@
           {{ Form::label('Content :','') }}
           {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'content', 'placeholder' => "content", 'required' => 'required']) }}
         </div>
+        <br><br>
         <div class="col-md-6">
           {{ Form::label('Image :','') }}
           {{ Form::file('image', ['id' => 'image_upload'])}}
