@@ -4209,7 +4209,7 @@ class ControllerMaster extends Controller
 		$existed_user_ebook = email_ebook::where('email', $request->email)->where('user_token', $user_token)->where('ebook_id', $ebook_id)->get();
 		if(count($existed_user_ebook) == 0){
 			$email_ebook = new email_ebook();
-			$email_ebook->add_email_ebook($request->ebook_id, $request->email, $request->user_token);
+			$email_ebook->add_email_ebook($request->ebook_id, $request->name, $request->phone, $request->email, $request->user_token);
 		}else {
 			return redirect()->back()->with('error', 'Email existed');	
 		}

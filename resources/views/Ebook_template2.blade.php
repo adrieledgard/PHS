@@ -76,12 +76,18 @@
 		    <div class="lead-form-wrapper single-col-max mx-auto theme-bg-light rounded p-5">
 			    <div class="form-wrapper mx-auto">		
                     {{Form::open(array('url'=>"master_ebook/$ebook->Id_ebook/email_submitted/$user_token",'method'=>'post','class'=>'signup-form row g-2 align-items-center'))}}			
-	                    <div class="col-12 col-lg-9">
+                        <div class="col-12 col-lg-12">
+                            {{ Form::text('name', '', ["required" => "required",  "class" => "form-control me-md-1 semail", "placeholder" => "Your Name"]) }}
+                        </div>
+                        <div class="col-12 col-lg-12">
+                            {{ Form::text('phone', '', ["required" => "required",  "class" => "form-control me-md-1 semail", "placeholder" => "Your Phone Number"]) }}
+                        </div>
+                        <div class="col-12 col-lg-12">
                             {{ Form::email('email', '', ["required" => "required",  "class" => "form-control me-md-1 semail", "placeholder" => "Your Email"]) }}
-	                    </div>
-	                    <div class="col-12 col-lg-3">
-	                        <button type="submit" class="btn btn-primary btn-submit w-100">{{ $ebook->Call_to_action }}</button>
-	                    </div>
+                        </div>
+                        <div class="col-12 col-lg-12">
+                            <button type="submit" class="btn btn-primary btn-submit w-100">{{ $ebook->Call_to_action }}</button>
+                        </div>
 	                </form><!--//signup-form-->
 			    </div><!--//form-wrapper-->
 		    </div><!--//lead-form-wrapper-->
