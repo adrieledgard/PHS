@@ -3439,17 +3439,36 @@ class Controller extends BaseController
 		$order->Status = "2";
 		$order->save();
 
-		//EBOOK MODULE TEMPORARY (?)
+		//EBOOK MODULE (HANDLING POINT SYSTEM)
 		if(Cookie::has('Ebook')){
 			$cookie = Cookie::get('Ebook');
 			$session_member = session()->get('userlogin');
 			
 			if($session_member->Random_code != $cookie){
 				$member = member::find($session_member->Id_member);
-				$receive_point_member = member::where('Random_code', $cookie);
+				$receive_point_member = member::where('Random_code', $cookie)->first();
+				$point = $receive_point_member->Point;
 				
 				if($member->First_transaction == 0){
-					$point = $receive_point_member->Point + 100;
+					$order = cust_order_header::where('cust_order_header.Id_order',$request->order_id)
+							->join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+							->get();
+							
+					foreach ($order as $detail) {
+						$affiliate = affiliate::where('Id_product', $detail->Id_product)
+									->where('Id_variation', $detail->Id_variation)
+									->where('Status', 1)
+									->get();
+
+						if(count($affiliate) > 0){
+							foreach ($affiliate as $aff) {
+								$point += $aff->Poin;
+							}
+						}else {
+							$point += 100;
+						}
+					}
+					
 					(new member)->edit_point($receive_point_member->Id_member, $point);
 					member::where('Id_member', $member->Id_member)->update(array(
 						'First_transaction' => 1
