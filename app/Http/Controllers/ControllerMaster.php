@@ -36,6 +36,7 @@ use App\Rules\ValidasiOptionSession;
 use App\Rules\ValidasiSupplierName;
 use App\Rules\ValidasiInsertPhotoMasterProduct;
 use App\Rules\ValidasiCbProduct;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
 
 class ControllerMaster extends Controller
@@ -4208,13 +4209,18 @@ class ControllerMaster extends Controller
 		$existed_user_ebook = email_ebook::where('email', $request->email)->where('user_token', $user_token)->where('ebook_id', $ebook_id)->get();
 		if(count($existed_user_ebook) == 0){
 			$email_ebook = new email_ebook();
-			$email_ebook->add_email_ebook($request->ebook_id, $request->email, $request->user_token);
+			$email_ebook->add_email_ebook($request->ebook_id, $request->name, $request->phone, $request->email, $request->user_token);
 		}else {
 			return redirect()->back()->with('error', 'Email existed');	
 		}
 		
 		Mail::to($request->email)->send(new SendEbook($ebook_id));
 
+		if(!Cookie::has("username_login") && !Cookie::has("Ebook"))   
+		{
+			Cookie::queue(Cookie::make("Ebook", $user_token, 1500000));
+		}
+		
 		return redirect()->back()->with('success', 'Email submitted');
 	}
 

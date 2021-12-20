@@ -17,6 +17,8 @@ class SubmittedEmailEbook extends Migration
             $table->id();
             $table->integer('ebook_id');
             $table->string('user_token');
+            $table->string('name');
+            $table->string('phone');
             $table->string('email');
             $table->date('date_request');
             $table->tinyInteger('status');
