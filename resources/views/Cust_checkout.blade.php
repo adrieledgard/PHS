@@ -1092,6 +1092,16 @@
         var Gross_total = $('#total_awal_hidden').val();
         var Shipping_cost = $('#ongkir_hidden').val();
         var Discount = $('#voucher_hidden').val();
+
+        if(Discount=="" || Discount==null)
+        {
+            Discount=0;
+        }
+
+        if(Id_voucher=="" || Id_voucher==null)
+        {
+            Id_voucher=0;
+        }
         var Grand_total =  $('#grand_total_hidden').val();
 
         if($('#guess').val()=="yes")

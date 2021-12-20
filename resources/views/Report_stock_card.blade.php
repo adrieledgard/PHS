@@ -56,7 +56,20 @@
   {{ Form::label('Variation :','') }}
   {{ Form::select('cb_variation', [], 'Kosong', [ 'class'=>'form-control', 'id'=>'cb_variation' ]) }}
   <br>
+  <div class="input-group date" id="reservationdate" data-target-input="nearest">
+    {{ Form::text('txt_invoice_date', '', ['class'=>'form-control datetimepicker-input','data-target' => '#reservationdate','readonly' => 'true']) }}
+      {{-- <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/> --}}
+      <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+          <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+      </div>
+  </div>
+  
+  
+  
   {{ Form::button('Process', ['name'=>'process','id'=>'process', 'class'=>'btn btn-primary', 'onclick' => 'process()']) }}
+
+
+  
 </div>
 <br>
 <div class="row">
@@ -103,10 +116,9 @@
     <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
        <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-<script>
- 
 
-  </script>
+
+
     <!-- ChartJS -->
     <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
     <!-- Sparkline -->
@@ -129,6 +141,71 @@
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
  
 
+  <script>
+  $(function () {
+   
+   //Datemask dd/mm/yyyy
+   $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+   //Datemask2 mm/dd/yyyy
+   $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+   //Money Euro
+   $('[data-mask]').inputmask()
+
+   //Date picker
+   $('#reservationdate').datetimepicker({
+     defaultDate: new Date(),
+       viewMode: 'days',
+       format: 'DD/MM/YYYY'
+   });
+
+
+   $('#reservationdate2').datetimepicker({
+     defaultDate: new Date(),
+       viewMode: 'days',
+       format: 'DD/MM/YYYY'
+   });
+
+  
+
+   //Date and time picker
+   $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+   //Date range picker
+   $('#reservation').daterangepicker()
+   //Date range picker with time picker
+   $('#reservationtime').daterangepicker({
+     timePicker: true,
+     timePickerIncrement: 30,
+     locale: {
+       format: 'MM/DD/YYYY hh:mm A'
+     }
+   })
+   //Date range as a button
+   $('#daterange-btn').daterangepicker(
+     {
+       ranges   : {
+         'Today'       : [moment(), moment()],
+         'Yesterday'   : [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+         'Last 7 Days' : [moment().subtract(6, 'days'), moment()],
+         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+         'This Month'  : [moment().startOf('month'), moment().endOf('month')],
+         'Last Month'  : [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+       },
+       startDate: moment().subtract(29, 'days'),
+       endDate  : moment()
+     },
+     function (start, end) {
+       $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+     }
+   )
+
+   //Timepicker
+   $('#timepicker').datetimepicker({
+     format: 'LT'
+   })
+ })
+  </script>
+    
 <script>
   function loadvariation()
   {

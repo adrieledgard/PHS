@@ -26,9 +26,9 @@
                             <thead>
                                 <tr>
                                     <th>Image</th>
-                                    <th>Subcategory</th>
+                                    {{-- <th>Subcategory</th> --}}
                                     <th>Title</th>
-                                    <th>Content</th>
+                                    {{-- <th>Content</th> --}}
                                     {{-- <th>Price</th>
                                     <th>Poin</th> --}}
                                     <th>Share Link</th>
@@ -42,15 +42,15 @@
                                     <td>
                                         <img src="{{ asset('Uploads/Ebook/'.$ebook->Image )}}" width='150px' height='150px' class="center"> 
                                     </td>
-                                    <td style="text-align: left">
+                                    {{-- <td style="text-align: left">
                                         <b>{{$ebook->sub_category->Sub_category_name}}</b>
-                                    </td>
+                                    </td> --}}
                                     <td style="text-align: left">
                                         <b>{{$ebook->Title}}</b>
                                     </td>
-                                    <td style="text-align: left">
+                                    {{-- <td style="text-align: left">
                                         <b>{{$ebook->Content}}</b>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <?php
                                         $username="";

@@ -65,10 +65,11 @@ class ControllerReport extends Controller
         //   $stockcard = stock_card::where('Id_variation','=',$Id_variation)
         //   ->get();
 
+        {{  }}
 		for ($i=0; $i < count($stockcard) ; $i++) { 
 			$temp =$temp. "<tr>";
                 $temp =$temp. "<td>";
-                    $temp =$temp. $stockcard[$i]['Date_card'];
+                    $temp =$temp. date("d-m-Y", strtotime($stockcard[$i]['Date_card']));
                 $temp =$temp. "</td>";
                 $temp =$temp. "<td>";
                     $temp =$temp. $stockcard[$i]['Type_card'];
@@ -80,7 +81,7 @@ class ControllerReport extends Controller
                      $temp =$temp. $stockcard[$i]['Option_name'];
                 $temp =$temp. "</td>";
                 $temp =$temp. "<td>";
-                    $temp =$temp. $stockcard[$i]['Expire_date'];
+                    $temp =$temp. date("d-m-Y", strtotime($stockcard[$i]['Expire_date']));
                 $temp =$temp. "</td>";
                 $temp =$temp. "<td>";
                     $temp =$temp. $stockcard[$i]['First_stock'];

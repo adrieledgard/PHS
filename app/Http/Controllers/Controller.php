@@ -2837,7 +2837,7 @@ class Controller extends BaseController
 		$Shipper=0;
 		$Status=1; //Status 1- belum bayar
 		$Date_time = now();
-		
+		// echo $Date_time;
 
 		if($member==0) //GUESS - No Login
 		{
@@ -3070,5 +3070,133 @@ class Controller extends BaseController
 
 	}
 
+	// 0 cancel
+	// 1 pending (masih kurang 2 hari)
+	// 2 processing (di pick shipper)
+	// 3 shipping (resi sdh di inputkan)
+	// 4 Orderan yang sudah di konfirmasi oleh pembeli / orderan tidak di konfirmasi selama 5 hari sejak produk tiba
+	
+	
+	public function My_order() {
+
+		$Id_member = session()->get('userlogin')->Id_member;
+		// $datatransaksi = \DB::select("select * from cust_order_header where Status = 1 and Id_member"); 
+
+
+		$datatransaksi = cust_order_header::where('Status','=',1)
+		->where('Id_member','=',$Id_member)
+		->orderby('Id_order','desc')
+		->get();
+
+
+
+		foreach($datatransaksi as $row) {
+		 $tglskrg = $row->Date_time; 
+		 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+2 hour'));
+	  
+		 $row->jatuhtempo = $tgljatuhtempo;
+	  
+		//  echo $tglskrg."<br>";
+		//  echo $tgljatuhtempo."<br>";
+		}
+		$params['datatransaksi'] = $datatransaksi;
+		return view('My_order', $params); 
+	   }
+
+	public function get_cust_detail_order(Request $request)
+	{
+		$Id_order = $request->id;
+
+		$headerorder = cust_order_header::where('Id_order','=',$Id_order)
+		->get();
+
+		$detailorder = cust_order_detail::where('Id_order','=',$Id_order)
+		->join('product','cust_order_detail.Id_product','product.Id_product')
+		->join('variation_product','cust_order_detail.Id_variation','variation_product.Id_variation')
+		->get();
+		$temp="";
+		$total=0;
+
+		for ($i=0; $i < count($detailorder); $i++) { 
+
+			$temp=$temp."<tr>";
+				
+				$temp=$temp."<td>";
+					$temp=$temp.$detailorder[$i]['Name'];
+				$temp=$temp."</td>";
+				$temp=$temp."<td>";
+					$temp=$temp.$detailorder[$i]['Option_name'];
+				$temp=$temp."</td>";
+				$temp=$temp."<td>";
+					$temp=$temp.number_format($detailorder[$i]['Normal_price']);
+				$temp=$temp."</td>";
+				$temp=$temp."<td>";
+					$temp=$temp."Rp. ".number_format($detailorder[$i]['Discount_promo']);
+				$temp=$temp."</td>";
+				$temp=$temp."<td>";
+					$temp=$temp.number_format($detailorder[$i]['Fix_price']);
+				$temp=$temp."</td>";
+				$temp=$temp."<td>";
+					$temp=$temp.number_format($detailorder[$i]['Qty']);
+				$temp=$temp."</td>";
+				$temp=$temp."<td>";
+					$temp=$temp.number_format(($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']));
+				$temp=$temp."</td>";
+
+
+				$total=$total+ ($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']);
+				
+		$temp=$temp."</tr>";
+
+
+
+		}
+		$temp=$temp."<tr>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td> TOTAL :</td>";
+		$temp=$temp."<td>"."Rp. ".number_format($total)."</td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."</tr>";
+		
+		$temp=$temp."<tr>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td> Shipping Cost :</td>";
+		$temp=$temp."<td>"."Rp. ".number_format($headerorder[0]['Shipping_cost'])."</td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."</tr>";
+
+		$temp=$temp."<tr>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td> Discount Voucher :</td>";
+		$temp=$temp."<td>"."Rp. -".number_format($headerorder[0]['Discount'])."</td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."</tr>";
+
+		$temp=$temp."<tr>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."<td> Grand total :</td>";
+		$temp=$temp."<td>"."Rp. ".number_format($total+$headerorder[0]['Shipping_cost']-$headerorder[0]['Discount'])."</td>";
+		$temp=$temp."<td></td>";
+		$temp=$temp."</tr>";
+
+
+		print_r($temp);
+	}
 	
 }
