@@ -30,17 +30,56 @@
 <!-- shopping-cart-area start -->
 <div class="cart-main-area pt-95 pb-100 wishlist">
     <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+
+          <?php
+            $ix=0;
+            if(session()->get('Filter_my_order'))
+            {
+              $ix = session()->get('Filter_my_order');
+            }
+          ?>
+          {{ Form::select('Choose Status', ['Cancelled','Pending','Payment receive','Processing','Shipping','Complete','All'], $ix,['class'=>'form-control','id'=>'filter', 'placeholder' => "Choose Status",'onchange' => 'ganti_filter()']) }}
+         
+        </div>
+        <div class="col-md-2">
+          {{ Form::button('Filter', ['name'=>'btn_filter','class'=>'btn btn-info btn-sm','onclick'=>'filter()']) }}
+        </div>
+      </div>
+      <br><br>
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+           
                 <form action="#">
                             @php $no = 0; @endphp
                             @foreach ($datatransaksi as $cr)
                                 <div class="card" id='card{{ $no }}'>
                                     <div class="card-body">
                                         <?php
-                                        if($cr->Status ==1)
+                                        if($cr->Status ==0)
+                                        {
+                                          echo "<td><button type='button' class='btn btn-danger btn-sm' disabled>Canceled</button></td>";
+                                        }
+                                        else if($cr->Status ==1)
                                         {
                                           echo "<td><button type='button' class='btn btn-warning btn-sm' disabled>Pending</button></td>";
+                                        }
+                                        else if($cr->Status ==2)
+                                        {
+                                          echo "<td><button type='button' class='btn btn-light btn-sm' disabled>Payment Receive</button></td>";
+                                        }
+                                        else if($cr->Status ==3)
+                                        {
+                                          echo "<td><button type='button' class='btn btn-primary btn-sm' disabled>Processing</button></td>";
+                                        }
+                                        else if($cr->Status ==4)
+                                        {
+                                          echo "<td><button type='button' class='btn btn-secondary btn-sm' disabled>Shipping</button></td>";
+                                        }
+                                        else if($cr->Status ==5)
+                                        {
+                                          echo "<td><button type='button' class='btn btn-success btn-sm' disabled>Complete</button></td>";
                                         }
 
                                         ?>
@@ -51,6 +90,7 @@
                                         </p>
                                         {{-- <button data-toggle="modal" data-target="#View_detail" class="btn-primary" data-Idorder="{{$cr->Id_order}}">View detail</button> --}}
                                         {{ Form::button('View detail', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.viewdetail']) }}
+                                        {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm']) }}
                                         <hr size="10px"  style="margin-top: 2%">
                                         <h6>Please finish transaction before : </h6>
                                         <input type='hidden' id='txtnomernota{{ $no }}' value='{{ $cr->Id_order }}'>
@@ -80,7 +120,56 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+        <div class="row">
+          <div class="col-md-2">
+            <b style="font-size: 100%">Name:</b> 
+          </div>
+          <div class="col-md-4">
+            <b id="name">  </b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <b style="font-size: 100%">Phone:</b> 
+          </div>
+          <div class="col-md-4">
+            <b id="phone">  </b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <b style="font-size: 100%">Email:</b> 
+          </div>
+          <div class="col-md-4">
+            <b id="email">  </b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <b style="font-size: 100%">Address:</b> 
+          </div>
+          <div class="col-md-10">
+            <b id="address">  </b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <b style="font-size: 100%">Total weight:</b> 
+          </div>
+          <div class="col-md-10">
+            <b id="weight">  </b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <b style="font-size: 100%">Expedition:</b> 
+          </div>
+          <div class="col-md-10">
+            <b id="ekspedisi">  </b>
+          </div>
+        </div>
         <div class="modal-body">
+            
             <div class="row">
                 <div class="col-md-12">
                   <table class='table table-dark'>
@@ -188,7 +277,14 @@
     {id: id},
     function(result){
         // alert(result);
-         $("#detail_order").html(result);
+        var cut = result.split("#");
+         $("#detail_order").html(cut[0]);
+         $("#name").html(cut[1]);
+         $("#phone").html(cut[2]);
+         $("#email").html(cut[3]);
+         $("#address").html(cut[4]);
+         $("#ekspedisi").html(cut[5]);
+         $("#weight").html(cut[6] + "Gr");
     });
      
  })
@@ -230,8 +326,14 @@
             $("#txtselisih" + i).val(formatSelisih(dtk)); 
             if(dtk == 0) {
                 // lakukan ajax utk update status = 0 
-                // utk id = $("#txtnomernota" + i).val()
+                var Id_order = $("#txtnomernota" + i).val()
+                // alert(Id_order);
                 $("#card" + i).fadeOut(); 
+                $.get(myurl + '/update_status',
+                {Id_order:Id_order,Status: 0},
+                function(result){
+                  
+                });
             }
         }
     }
@@ -239,6 +341,26 @@
     $(document).ready(function(){
         var tmr = setInterval("animasi()", 1000); 
     });
+
+    function ganti_filter()
+    {
+     
+    }
+
+
+    function filter()
+    {
+      // alert();
+
+      var stat = $('#filter').val();
+      $.get(myurl + '/update_filter_session',
+      {Status: stat},
+      function(result){
+           alert(result);
+
+          window.location = myurl + "/My_order/";
+      });
+    }
 </script>
 
 @endpush

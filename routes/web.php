@@ -290,7 +290,8 @@ Route::get('Ebook_marketing', ["uses"=>"Controller@Ebook_marketing"]);
 
 Route::get('My_order', ["uses"=>"Controller@My_order"]);
 Route::get('get_cust_detail_order', ["uses"=>"Controller@get_cust_detail_order"]);
-
+Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]);
+Route::get('update_status', ["uses"=>"Controller@update_status"]);
 
 
 
@@ -374,8 +375,10 @@ Route::get('show_table_stock_card', ["uses"=>"ControllerReport@show_table_stock_
 
 
 
-
-
+Route::get('Pick_order_shipper', ["uses"=>"Controller@Pick_order_shipper"]);
+Route::get('filter_cust_order', ["uses"=>"Controller@filter_cust_order"]);
+Route::get('Proccess_cust_order', ["uses"=>"Controller@Proccess_cust_order"]);
+Route::get('save_receipt_number', ["uses"=>"Controller@save_receipt_number"]);
 
 
 

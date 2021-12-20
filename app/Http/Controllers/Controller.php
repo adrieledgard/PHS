@@ -3072,27 +3072,87 @@ class Controller extends BaseController
 
 	// 0 cancel
 	// 1 pending (masih kurang 2 hari)
-	// 2 processing (di pick shipper)
-	// 3 shipping (resi sdh di inputkan)
-	// 4 Orderan yang sudah di konfirmasi oleh pembeli / orderan tidak di konfirmasi selama 5 hari sejak produk tiba
-	
+	// 2 Payment receive (lunas)
+	// 3 processing (di pick shipper)
+	// 4 shipping (resi sdh di inputkan)
+	// 5 Orderan yang sudah di konfirmasi oleh pembeli / orderan tidak di konfirmasi selama 5 hari sejak produk tiba
+	// 6 All
 	
 	public function My_order() {
-
 		$Id_member = session()->get('userlogin')->Id_member;
-		// $datatransaksi = \DB::select("select * from cust_order_header where Status = 1 and Id_member"); 
+		
 
+		try {
+			if(session()->get('Filter_my_order')==6)
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else if(session()->get('Filter_my_order')==0)
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->where('cust_order_header.Status','=',0)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else if(session()->get('Filter_my_order')==1)
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->where('Status','=',1)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else if(session()->get('Filter_my_order')==2)
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->where('Status','=',2)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else if(session()->get('Filter_my_order')==3)
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->where('Status','=',3)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else if(session()->get('Filter_my_order')==4)
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->where('Status','=',4)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else if(session()->get('Filter_my_order')==5)
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->where('Status','=',5)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->orderby('Id_order','desc')
+				->get();
+			}
 
-		$datatransaksi = cust_order_header::where('Status','=',1)
-		->where('Id_member','=',$Id_member)
-		->orderby('Id_order','desc')
-		->get();
+		} catch (\Throwable $th) {
 
+			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				->orderby('Id_order','desc')
+				->get();
+		}
+
+		
+	
+	
 
 
 		foreach($datatransaksi as $row) {
 		 $tglskrg = $row->Date_time; 
-		 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+2 hour'));
+		 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+48 hour'));
 	  
 		 $row->jatuhtempo = $tgljatuhtempo;
 	  
@@ -3100,7 +3160,7 @@ class Controller extends BaseController
 		//  echo $tgljatuhtempo."<br>";
 		}
 		$params['datatransaksi'] = $datatransaksi;
-		return view('My_order', $params); 
+		return view('Cust_my_order', $params); 
 	   }
 
 	public function get_cust_detail_order(Request $request)
@@ -3108,6 +3168,8 @@ class Controller extends BaseController
 		$Id_order = $request->id;
 
 		$headerorder = cust_order_header::where('Id_order','=',$Id_order)
+		->join('list_city','cust_order_header.Id_city','list_city.Id_city')
+		// ->join('list_city','cust_order_header.Id_province','list_city.Id_province')
 		->get();
 
 		$detailorder = cust_order_detail::where('Id_order','=',$Id_order)
@@ -3134,13 +3196,13 @@ class Controller extends BaseController
 					$temp=$temp."Rp. ".number_format($detailorder[$i]['Discount_promo']);
 				$temp=$temp."</td>";
 				$temp=$temp."<td>";
-					$temp=$temp.number_format($detailorder[$i]['Fix_price']);
+					$temp=$temp."Rp. ".number_format($detailorder[$i]['Fix_price']);
 				$temp=$temp."</td>";
 				$temp=$temp."<td>";
 					$temp=$temp.number_format($detailorder[$i]['Qty']);
 				$temp=$temp."</td>";
 				$temp=$temp."<td>";
-					$temp=$temp.number_format(($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']));
+					$temp=$temp."Rp. ".number_format(($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']));
 				$temp=$temp."</td>";
 
 
@@ -3196,7 +3258,178 @@ class Controller extends BaseController
 		$temp=$temp."</tr>";
 
 
-		print_r($temp);
+		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']);
+	}
+
+	public function update_filter_session(Request $request)
+	{
+		session()->forget('Filter_my_order');
+		session()->put('Filter_my_order',$request->Status);
+
+		echo $request->Status;
+	}
+
+	public function Pick_order_shipper()
+	{
+		
+		$datatransaksi = cust_order_header::where('Status','=',2)
+		->orderby('Id_order','desc')
+		->get();
+	
+	
+
+
+		foreach($datatransaksi as $row) {
+		 $tglskrg = $row->Date_time; 
+		 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+2 hour'));
+	  
+		 $row->jatuhtempo = $tgljatuhtempo;
+	  
+		//  echo $tglskrg."<br>";
+		//  echo $tgljatuhtempo."<br>";
+		}
+		$params['datatransaksi'] = $datatransaksi;
+		return view('Pick_order_shipper', $params); 
 	}
 	
+	public function filter_cust_order(Request $request)
+	{
+		$query = cust_order_header::query();
+
+        if($request->Status != "")
+        { 
+			if($request->Status == 0) //payment receive
+			{
+				$query  = $query->where('Status', '=',2 ); 
+			}
+			else if($request->Status == 1) //processing
+			{
+				$query  = $query->where('Status', '=', 3); 
+			}
+			else if($request->Status == 2) //shipping
+			{
+				$query  = $query->where('Status', '=', 4); 
+			}
+        }
+		else
+		{
+			$query  = $query->where(function($query)
+			{
+				$query->where('Status','=',2);
+				$query->orwhere('Status','=', 3);
+				$query->orwhere('Status','=', 4);
+			});
+		}
+
+
+		if($request->Kurir != "")
+		{
+			if($request->Kurir == 0) //JNE
+			{
+				$query  = $query->where('Courier', '=','JNE' ); 
+			}
+			else if($request->Kurir == 1) //POS
+			{
+				$query  = $query->where('Courier', '=', 'POS'); 
+			}
+			else if($request->Kurir == 2) //TIKI
+			{
+				$query  = $query->where('Courier', '=', 'TIKI'); 
+			}
+		}
+
+		if($request->Resi != "")
+		{
+			$query  = $query->where('Receipt_number', '=',$request->Resi); 
+		
+		}
+
+		if($request->Nama != "")
+		{
+			$query  = $query->where('Name', 'like', '%'.$request->Nama.'%'); 
+		
+		}
+
+		$query  = $query->get();
+
+		$no=0;
+		$temp="";
+		foreach ($query as $data) {
+			 $temp=$temp."<div class='card' id='card".$no."'>";
+				$temp=$temp."<div class='card-body'>";
+				$temp=$temp."<input type='checkbox' class='cb_child' value='".$data->Id_order."' style='transform: scale(1.5)'>";
+			$temp=$temp."<br>";
+			if($data->Status==2)
+			{
+				$temp=$temp."<button type='button' class='btn btn-light btn-sm' disabled>Payment Receive</button>";
+			}
+			else if($data->Status==3)
+			{
+				$temp=$temp."<button type='button' class='btn btn-primary btn-sm' disabled>Processing</button>";
+			}
+			else if($data->Status==4)
+			{
+				$temp=$temp."<button type='button' class='btn btn-secondary btn-sm' disabled>Shipping</button>";
+			}
+
+			$temp=$temp."<br><br>";
+			$temp=$temp."<h5 class='card-title'>Nota : ". $data->Id_order." </h5>";
+			$temp=$temp."<p class='card-text'>";
+				$temp=$temp."<b><h5>". date("d-m-Y", strtotime($data->Date_time))."</h5></b>";
+				$temp=$temp."<b><h5>Name : ".$data->Name." </h5></b>";
+				$temp=$temp." <b><h5>Grand Total : Rp. ".number_format($data->Grand_total)." </h5></b>";
+			$temp=$temp."</p>";
+			$temp=$temp."<button type='button' class='btn btn-warning btn-sm' data-toggle='modal' data-idorder='".$data->Id_order."' data-target='.viewdetail'> View detail </button>";
+			$temp=$temp."<hr size='10px style='margin-top: 2%'>";
+			$temp=$temp."</div>";
+			$temp=$temp."</div>";
+			$temp=$temp."<br> <br>";
+		
+		
+			$no=$no+1;
+		
+		}
+
+		echo $temp;
+
+	}
+
+	public function Proccess_cust_order(Request $request)
+	{
+		$kumpulan_id_order = $request->kumpulan_id_order;
+
+		$arr_id_order = explode("," ,$kumpulan_id_order);
+
+		foreach ($arr_id_order as $data) {
+			
+			$ch = new cust_order_header();
+			$hasil = $ch->ganti_status($data,3);
+
+
+			$ch2 = new cust_order_header();
+			$hasil2 = $ch2->ganti_shipper($data,session()->get('userlogin')->Id_member);
+
+
+			$ch = new cust_order_header();
+			$hasil = $ch->update_receipt_number($data,"");
+		}
+
+
+	}
+
+	public function save_receipt_number(Request $request)
+	{
+		$Id_order = $request->Id_order;
+		$Receipt_number = $request->Receipt_number;
+
+		$ch = new cust_order_header();
+		$hasil = $ch->ganti_status($Id_order,4);
+
+		$ch = new cust_order_header();
+		$hasil = $ch->update_receipt_number($Id_order,$Receipt_number);
+
+		$ch = new cust_order_header();
+		$hasil = $ch->update_resi_input_shipper($Id_order,session()->get('userlogin')->Id_member);
+
+	}
 }

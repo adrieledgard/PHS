@@ -13,7 +13,7 @@ class cust_order_header extends Model
     public $timestamps = false;
     public $fillable = ['Id_order','Date_time','Id_member','Address','Id_province',
                         'Id_city','Name','Email','Phone','Courier','Courier_packet','Affiliate','Id_voucher'
-                        ,'Weight','Gross_total','Shipping_cost','Discount','Grand_total','Shipper','Status'];
+                        ,'Weight','Gross_total','Receipt_number','Shipping_cost','Discount','Grand_total','Shipper','Resi_input_shipper','Status'];
     public $incrementing = true;
 
 
@@ -52,6 +52,46 @@ class cust_order_header extends Model
         return "sukses";
        
 
+    }
+
+    public function ganti_status($Id_order,$Status)
+    {
+     
+        cust_order_header::where('Id_order','=',$Id_order)->update(array(
+            'Status'=>($Status),
+        ));
+        return "sukses";
+     
+    }
+
+    public function ganti_shipper($Id_order,$Id_member)
+    {
+     
+        cust_order_header::where('Id_order','=',$Id_order)->update(array(
+            'Shipper'=>($Id_member),
+        ));
+        return "sukses";
+     
+    }
+
+    public function update_receipt_number($Id_order,$Receipt_number)
+    {
+     
+        cust_order_header::where('Id_order','=',$Id_order)->update(array(
+            'Receipt_number'=>($Receipt_number),
+        ));
+        return "sukses";
+     
+    }
+
+    public function update_resi_input_shipper($Id_order,$Id_member)
+    {
+     
+        cust_order_header::where('Id_order','=',$Id_order)->update(array(
+            'Resi_input_shipper'=>($Id_member),
+        ));
+        return "sukses";
+     
     }
 
     public function getlastinvoice()

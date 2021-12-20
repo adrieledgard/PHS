@@ -265,6 +265,28 @@
               
             </ul>
           </li>
+
+          <li class="nav-item @yield('menu_Cust_order')">
+            {{-- menu-open --}}
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-bell"></i>
+              <p>
+                Cust order
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+             
+              <li class="nav-item">
+                <a href="{!! url('Pick_order_shipper'); !!}" class="nav-link  @yield('cust_order_atv')">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Cust order</p>
+                </a>
+              </li>
+             
+              
+            </ul>
+          </li>
          
         <?php 
          }

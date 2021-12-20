@@ -1120,7 +1120,7 @@
             Courier_packet:Courier_packet,Id_voucher:Id_voucher,Weight:Weight,Gross_total:Gross_total,Shipping_cost:Shipping_cost
             ,Discount:Discount,Grand_total:Grand_total},
         function(result){
-            alert(result);
+            window.location = myurl + "/My_order/";
         });
 
     }

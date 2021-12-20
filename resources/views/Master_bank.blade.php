@@ -287,37 +287,37 @@
   {
 
     swal({
-  title: "Are you sure to Delete this?",
-  text: '',
-  icon: "warning",
-  buttons: true,
-  dangerMode: true,
-})
-.then((willDelete) => {
-  if (willDelete) {
-    
-    $.get(myurl + '/delete_bank',
-    {Id_bank:id},
-    function(result){
+    title: "Are you sure to Delete this?",
+    text: '',
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willDelete) => {
+    if (willDelete) {
       
-      if(result=="sukses")
-      {
-        toastr["success"]("Success to delete", "Delete");
-        window.location = myurl + "/master_bank/";
-      }
-      else
-      {
-        toastr["error"]("Delete failed", "Failed");
-      // window.location = myurl + "/Purchase/";
-      }
-      
-    });
+      $.get(myurl + '/delete_bank',
+      {Id_bank:id},
+      function(result){
+        
+        if(result=="sukses")
+        {
+          toastr["success"]("Success to delete", "Delete");
+          window.location = myurl + "/master_bank/";
+        }
+        else
+        {
+          toastr["error"]("Delete failed", "Failed");
+        // window.location = myurl + "/Purchase/";
+        }
+        
+      });
 
 
-  } else {
-   // swal("Cancelled");
-  }
-});      
+    } else {
+    // swal("Cancelled");
+    }
+  });      
 
   }
 </script>
