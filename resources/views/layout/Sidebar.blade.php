@@ -334,6 +334,15 @@
 if(session()->get('userlogin')->Role =="ADMIN")
 {
   ?>
+    <li class="nav-item">
+      {{-- menu-open --}}
+      <a href="{!! url('broadcast') !!}" class="nav-link  @yield('menu_broadcast')">
+        <i class="nav-icon fas fa-broadcast-tower"></i>
+        <p>
+          Broadcast 
+        </p>
+      </a>
+    </li>
     <li class="nav-item @yield('menu_report')">
       {{-- menu-open --}}
       <a href="#" class="nav-link">

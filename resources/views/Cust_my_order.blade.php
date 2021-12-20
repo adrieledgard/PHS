@@ -28,6 +28,7 @@
 
 @section('Content')
 <!-- shopping-cart-area start -->
+<input type="hidden" class="csrf_token" value="{{csrf_token()}}">
 <div class="cart-main-area pt-95 pb-100 wishlist">
     <div class="container">
       <div class="row">
@@ -90,7 +91,7 @@
                                         </p>
                                         {{-- <button data-toggle="modal" data-target="#View_detail" class="btn-primary" data-Idorder="{{$cr->Id_order}}">View detail</button> --}}
                                         {{ Form::button('View detail', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.viewdetail']) }}
-                                        {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm']) }}
+                                        {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm', 'onclick' => 'pay_now('. $cr->Id_order . ')']) }}
                                         <hr size="10px"  style="margin-top: 2%">
                                         <h6>Please finish transaction before : </h6>
                                         <input type='hidden' id='txtnomernota{{ $no }}' value='{{ $cr->Id_order }}'>
@@ -347,6 +348,21 @@
      
     }
 
+    function pay_now(id) {
+      $.ajaxSetup({
+            headers:
+            { 'X-CSRF-TOKEN': $(".csrf_token").val() }
+        });
+      $.ajax({
+            type: "POST",
+            url: myurl + '/pay_now',
+            data: { order_id : id}
+        })
+        .done(function( msg ) {
+            console.log(msg);
+        });
+
+    }
 
     function filter()
     {

@@ -36,6 +36,8 @@ use App\list_city;
 use App\cust_order_header;
 use App\cust_order_detail;
 use App\ebook;
+use App\email_ebook;
+use App\Mail\BroadcastMail;
 use DateTime;
 
 
@@ -50,12 +52,9 @@ use App\Rules\ValidasiProductName;
 use App\Rules\ValidasiSubCategorySession;
 use App\Rules\ValidasiOptionSession;
 use App\Rules\ValidasiSupplierName;
-
-
-
+use Illuminate\Support\Facades\Mail;
 use resources\lang\en\validation;
-
-
+use SubmittedEmailEbook;
 
 class Controller extends BaseController
 {
@@ -3431,5 +3430,68 @@ class Controller extends BaseController
 		$ch = new cust_order_header();
 		$hasil = $ch->update_resi_input_shipper($Id_order,session()->get('userlogin')->Id_member);
 
+	}
+
+	public function pay_now(Request $request)
+	{
+		//TEMPORARY STATUS CHANGER
+		$order = cust_order_header::find($request->order_id);
+		$order->Status = "2";
+		$order->save();
+
+		//EBOOK MODULE TEMPORARY (?)
+		if(Cookie::has('Ebook')){
+			$cookie = Cookie::get('Ebook');
+			$session_member = session()->get('userlogin');
+			
+			if($session_member->Random_code != $cookie){
+				$member = member::find($session_member->Id_member);
+				$receive_point_member = member::where('Random_code', $cookie);
+				
+				if($member->First_transaction == 0){
+					$point = $receive_point_member->Point + 100;
+					(new member)->edit_point($receive_point_member->Id_member, $point);
+					member::where('Id_member', $member->Id_member)->update(array(
+						'First_transaction' => 1
+					));
+					
+				}
+			}
+			
+		}
+
+		return response()->json('success', 200);
+	}
+
+	public function broadcastView()
+	{
+		$product = product::pluck('Name', 'Id_product');
+
+		return view('Broadcast', compact('product'));
+	}
+
+	public function broadcast(Request $request)
+	{
+		$count_user = 0;
+		$products = product::join('product_sub_category', 'product.Id_product', 'product_sub_category.Id_product')
+					->join('sub_category', 'sub_category.Id_sub_category', 'product_sub_category.Id_sub_category')
+					->where('product.Id_product', $request->product)
+					->get();
+
+		
+		
+		foreach ($products as $product) {
+			$submitted_email_ebook = email_ebook::join('ebook', 'ebook.Id_ebook', 'submitted_email_ebook.ebook_id')
+					->where('ebook.Id_sub_category', $product->Id_sub_category)
+					->get();
+			$count_user += count($submitted_email_ebook);
+			foreach ($submitted_email_ebook as $user) {
+				$link_product = "https://localhost/PHS/public/Cust_show_product/$request->product/$user->user_token";
+				Mail::to($user->email)->send(new BroadcastMail($request->subject, $request->content, $link_product));
+			}
+		}
+		
+
+		return redirect()->route('broadcast_view')->with('success', "Success send to $count_user users");
 	}
 }

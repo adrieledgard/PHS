@@ -293,6 +293,8 @@ Route::get('get_cust_detail_order', ["uses"=>"Controller@get_cust_detail_order"]
 Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]);
 Route::get('update_status', ["uses"=>"Controller@update_status"]);
 
+//TEMPORARY ROUTE
+Route::post('pay_now', ['uses' => 'Controller@pay_now']);
 
 
 
@@ -380,7 +382,8 @@ Route::get('filter_cust_order', ["uses"=>"Controller@filter_cust_order"]);
 Route::get('Proccess_cust_order', ["uses"=>"Controller@Proccess_cust_order"]);
 Route::get('save_receipt_number', ["uses"=>"Controller@save_receipt_number"]);
 
-
+Route::get('broadcast-view', ['uses' => 'Controller@broadcastView'])->name('broadcast_view');
+Route::post('broadcast', ['uses' => 'Controller@broadcast']);
 
 
 

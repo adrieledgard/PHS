@@ -4218,7 +4218,7 @@ class ControllerMaster extends Controller
 
 		if(!Cookie::has("username_login") && !Cookie::has("Ebook"))   
 		{
-			Cookie::queue(Cookie::make("Ebook", $user_token, 1500000));
+			Cookie::queue(Cookie::make("Ebook", $user_token));
 		}
 		
 		return redirect()->back()->with('success', 'Email submitted');
