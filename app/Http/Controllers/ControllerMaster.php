@@ -36,6 +36,7 @@ use App\Rules\ValidasiOptionSession;
 use App\Rules\ValidasiSupplierName;
 use App\Rules\ValidasiInsertPhotoMasterProduct;
 use App\Rules\ValidasiCbProduct;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Mail;
 
 class ControllerMaster extends Controller
@@ -4215,6 +4216,11 @@ class ControllerMaster extends Controller
 		
 		Mail::to($request->email)->send(new SendEbook($ebook_id));
 
+		if(!Cookie::has("username_login") && !Cookie::has("Ebook"))   
+		{
+			Cookie::queue(Cookie::make("Ebook", $user_token, 1500000));
+		}
+		
 		return redirect()->back()->with('success', 'Email submitted');
 	}
 
