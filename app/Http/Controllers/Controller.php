@@ -1236,7 +1236,7 @@ class Controller extends BaseController
 
 		
 
-		if(!Cookie::has("username_login"))   
+		if(!Cookie::has("username_login"))   //cookie username_login untuk mengecek bahwa browser bersih, blmpernah ada yg login/regist
 		{
 			Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
 		}
@@ -2070,7 +2070,10 @@ class Controller extends BaseController
 		$param['dtvoucher_all'] = voucher::all();
 
 		$param['dtpoint_card'] = point_card::where('Id_member','=',$Id)
+		->orderby('Id_point_card','asc')
 		->get();
+
+		$param['dtcustheader'] = cust_order_header::all();
 
 		return view('Cust_point',$param);
 	}
@@ -3011,7 +3014,10 @@ class Controller extends BaseController
 
 		}
 
-		 echo "sukses";
+
+		$cust_header = new cust_order_header();
+		$last_id = $cust_header->getlastinvoice();
+		 echo $last_id;
 	}
 
 
@@ -3439,47 +3445,185 @@ class Controller extends BaseController
 		$order->Status = "2";
 		$order->save();
 
-		//EBOOK MODULE (HANDLING POINT SYSTEM)
-		if(Cookie::has('Ebook')){
-			$cookie = Cookie::get('Ebook');
-			$session_member = session()->get('userlogin');
-			
-			if($session_member->Random_code != $cookie){
-				$member = member::find($session_member->Id_member);
-				$receive_point_member = member::where('Random_code', $cookie)->first();
-				$point = $receive_point_member->Point;
-				
-				if($member->First_transaction == 0){
-					$order = cust_order_header::where('cust_order_header.Id_order',$request->order_id)
-							->join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
-							->get();
-							
-					foreach ($order as $detail) {
-						$affiliate = affiliate::where('Id_product', $detail->Id_product)
-									->where('Id_variation', $detail->Id_variation)
-									->where('Status', 1)
-									->get();
+		// (HANDLING POINT SYSTEM)
+		$penambahanpoin=0;
+		if(Cookie::has('Affiliate')){
+			$cookie = Cookie::get('Affiliate');
 
-						if(count($affiliate) > 0){
-							foreach ($affiliate as $aff) {
-								$point += $aff->Poin;
+			$member =0;
+			try {
+				// $member = session()->get('userlogin')->Id_member;
+				$session_member = session()->get('userlogin');
+				$member =1;
+			
+			} catch (\Throwable $th) {
+				$member =0;
+			}
+
+			if($member!=0) //login
+			{
+				if($session_member->Random_code != $cookie){ //untuk menghindari cookie sama dgn random code user
+					$member = member::find($session_member->Id_member); //member pemberi
+	
+					$receive_point_member = member::where('Random_code', $cookie)->first(); //member yang menerima
+					$point = $receive_point_member->Point;
+					
+					if($member->First_transaction == 0){
+						$order = cust_order_header::where('cust_order_header.Id_order',$request->order_id)
+								->join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+								->get();
+								
+						foreach ($order as $detail) {
+							$affiliate = affiliate::where('Id_product', $detail->Id_product)
+										->where('Id_variation', $detail->Id_variation)
+										->where('Status', 1)
+										->get();
+	
+							if(count($affiliate) > 0){
+								foreach ($affiliate as $aff) {
+									$point += $aff->Poin;
+									$penambahanpoin += $aff->Poin;
+								}
+							}else {
+								// $point += 100;
 							}
-						}else {
-							$point += 100;
 						}
+						
+						$me = new member();
+						$hasil = $me->edit_point($receive_point_member->Id_member, $point);
+						// (new member)->edit_point($receive_point_member->Id_member, $point);
+	
+	
+						$First_point = 0;
+						$fp= member::where('Id_member','=',$receive_point_member->Id_member)
+						->get();
+	
+						$First_point = $fp[0]->Point;
+						
+	
+						try {
+							//code...
+							$pc = point_card::where('Id_member','=',$receive_point_member->Id_member)
+							->orderBy('Id_point_card')
+							->get();
+	
+							
+							foreach ($pc as $datapc) {
+								# code...
+								$First_point = $datapc->Last_point;
+							}
+						} catch (\Throwable $th) {
+							//throw $th;
+						}
+						
+	
+						$Last_point = $point;
+	
+	
+	
+						$tgl= date('d/m/Y');
+						$tglfix = $tgl[6].$tgl[7].$tgl[8].$tgl[9]."/".$tgl[3].$tgl[4]."/".$tgl[0].$tgl[1];
+						
+						$pointcard = new point_card;
+						$hasil = $pointcard->add_point_card($receive_point_member->Id_member,$tglfix,$First_point,$penambahanpoin,0,$Last_point,"Affiliate Success",$request->order_id);
+	
+	
+						member::where('Id_member', $member->Id_member)->update(array(
+							'First_transaction' => 1
+						));
+						
 					}
-					
-					(new member)->edit_point($receive_point_member->Id_member, $point);
-					member::where('Id_member', $member->Id_member)->update(array(
-						'First_transaction' => 1
-					));
-					
 				}
 			}
+			
 			
 		}
 
 		return response()->json('success', 200);
+	}
+
+
+	public function pay_now_guess(Request $request)
+	{
+		//TEMPORARY STATUS CHANGER
+		$order = cust_order_header::find($request->order_id);
+		$order->Status = "2";
+		$order->save();
+
+
+		if(!Cookie::has('Affiliate')){
+			$cookie = Cookie::get('Affiliate');
+
+			$penambahanpoin=0;
+			$receive_point_member = member::where('Random_code', $cookie)->first(); //member yang menerima
+			$point = $receive_point_member->Point;
+			
+			if(Cookie::has('First_transaction'))
+			{
+				$order = cust_order_header::where('cust_order_header.Id_order',$request->order_id)
+				->join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+				->get();
+						
+				foreach ($order as $detail) {
+					$affiliate = affiliate::where('Id_product', $detail->Id_product)
+								->where('Id_variation', $detail->Id_variation)
+								->where('Status', 1)
+								->get();
+	
+					if(count($affiliate) > 0){
+						foreach ($affiliate as $aff) {
+							$point += $aff->Poin;
+							$penambahanpoin += $aff->Poin;
+						}
+					}else {
+						// $point += 100;
+					}
+				}
+				
+				$me = new member();
+				$hasil = $me->edit_point($receive_point_member->Id_member, $point);
+				// (new member)->edit_point($receive_point_member->Id_member, $point);
+	
+	
+				$First_point = 0;
+				$fp= member::where('Id_member','=',$receive_point_member->Id_member)
+				->get();
+	
+				$First_point = $fp[0]->Point;
+				
+	
+				try {
+					//code...
+					$pc = point_card::where('Id_member','=',$receive_point_member->Id_member)
+					->orderBy('Id_point_card')
+					->get();
+	
+					
+					foreach ($pc as $datapc) {
+						# code...
+						$First_point = $datapc->Last_point;
+					}
+				} catch (\Throwable $th) {
+					//throw $th;
+				}
+				
+	
+				$Last_point = $point;
+	
+	
+	
+				$tgl= date('d/m/Y');
+				$tglfix = $tgl[6].$tgl[7].$tgl[8].$tgl[9]."/".$tgl[3].$tgl[4]."/".$tgl[0].$tgl[1];
+				
+				$pointcard = new point_card;
+				$hasil = $pointcard->add_point_card($receive_point_member->Id_member,$tglfix,$First_point,$penambahanpoin,0,$Last_point,"Affiliate Success",$request->order_id);
+	
+				Cookie::queue(Cookie::make("First_transaction", "1", 1500000));
+
+
+			}
+		}
+		
 	}
 
 	public function broadcastView()
@@ -3505,7 +3649,7 @@ class Controller extends BaseController
 					->get();
 			$count_user += count($submitted_email_ebook);
 			foreach ($submitted_email_ebook as $user) {
-				$link_product = "https://localhost/PHS/public/Cust_show_product/$request->product/$user->user_token";
+				$link_product = "https://localhost/PusatHerbalStore/public/Cust_show_product/$request->product/$user->user_token";
 				Mail::to($user->email)->send(new BroadcastMail($request->subject, $request->content, $link_product));
 			}
 		}

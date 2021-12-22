@@ -1120,7 +1120,23 @@
             Courier_packet:Courier_packet,Id_voucher:Id_voucher,Weight:Weight,Gross_total:Gross_total,Shipping_cost:Shipping_cost
             ,Discount:Discount,Grand_total:Grand_total},
         function(result){
-            window.location = myurl + "/My_order/";
+
+            if($('#guess').val()=="yes")
+            {
+                var order_id = result;
+                //langsung jalankan midtrans
+                $.get(myurl + '/pay_now_guess',
+                {order_id:result},
+                function(result){
+                    alert('berhasil');
+                });
+
+            }
+            else
+            {
+                window.location = myurl + "/My_order/";
+            }
+            
         });
 
     }

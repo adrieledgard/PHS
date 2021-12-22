@@ -155,6 +155,16 @@
                             }
                           }
                         }
+                        else if($data->Type == "Affiliate Success")
+                        {
+                          
+                          foreach ($dtcustheader as $dtch) {
+                            if($dtch->Id_order == $data->No_reference)
+                            {
+                              $txt = "Affiliate Success - ".$dtch->Name;
+                            }
+                          }
+                        }
 
 
                       ?>

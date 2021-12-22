@@ -4216,9 +4216,10 @@ class ControllerMaster extends Controller
 		
 		Mail::to($request->email)->send(new SendEbook($ebook_id));
 
-		if(!Cookie::has("username_login") && !Cookie::has("Ebook"))   
+		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
 		{
-			Cookie::queue(Cookie::make("Ebook", $user_token));
+			Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
+			// Cookie::queue(Cookie::make("Ebook", $user_token));
 		}
 		
 		return redirect()->back()->with('success', 'Email submitted');
@@ -4226,15 +4227,61 @@ class ControllerMaster extends Controller
 
 	public function create_ebook()
 	{
-		$sub_category = sub_category::pluck('Sub_category_name', 'Id_sub_category');
-		return view('Ebook_add', compact('sub_category'));
+		// $sub_category = sub_category::pluck('Sub_category_name', 'Id_sub_category');
+		// return view('Ebook_add', compact('sub_category'));
+
+
+		$db = sub_category::all(); 
+		$arr= [];  // array 
+		foreach($db as $row) {
+			if($row->Status==1)
+			{
+				$arr[$row->Id_sub_category] = $row->Sub_category_name; 
+			}
+		
+		}
+		
+		$param['sub_category']  = $arr; 
+
+
+
+
+		// $param['sub_category'] = sub_category::select('Sub_category_name','Id_sub_category')
+		// ->where('Status','=',1)
+		// ->get();
+
+
+		return view('Ebook_add', $param);
+
+
 	}
 
 	public function edit_ebook($id)
 	{
-		$ebook = ebook::find($id);
-		$sub_category = sub_category::pluck('Sub_category_name', 'Id_sub_category');
-		return view('Ebook_edit', compact('ebook', 'sub_category'));
+
+		// $ebook = ebook::find($id);
+		// $sub_category = sub_category::pluck('Sub_category_name', 'Id_sub_category');
+		// // ->where('Status','=',1);
+		// return view('Ebook_edit', compact('ebook', 'sub_category'));
+
+
+
+		$param['ebook'] = ebook::find($id);
+
+		$db = sub_category::all(); 
+		$arr= [];  // array 
+		foreach($db as $row) {
+			if($row->Status==1)
+			{
+				$arr[$row->Id_sub_category] = $row->Sub_category_name; 
+			}
+		
+		}
+		
+		$param['sub_category']  = $arr; 
+
+		return view('Ebook_edit', $param);
+
 	}
 	
 	public function delete_ebook($id)

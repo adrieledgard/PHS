@@ -25,12 +25,9 @@ class member extends Model
             $dm = member::where('Random_code','=', $kodeaff)
             ->get();
 
-            $Id_member_affiliate = $dm[0]['Id_member'];
+            $Id_member_affiliate = $dm[0]['Random_code'];
 		}
 
-
-        $data  = Cookie::get('username_login');
-       
         $du = member::where('Username','=', $username)
                 ->orwhere('Email','=',$email)
                 ->orwhere('Phone','=',$phone)
