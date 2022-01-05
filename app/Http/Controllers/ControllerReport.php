@@ -59,7 +59,7 @@ class ControllerReport extends Controller
          ->join('variation_product','stock_card.Id_variation','variation_product.Id_variation')
         // ->orderBy('stock_card.Id_stock_card')
         ->orderBy('stock_card.Id_stock_card')
-         ->select('stock_card.Date_card','Product.Name','variation_product.Option_name','stock_card.Expire_date','stock_card.Type_card','stock_card.First_stock','stock_card.Debet','stock_card.Credit','stock_card.Last_stock','stock_card.Transaction_price','stock_card.Capital','stock_card.Fifo_stock')
+         ->select('stock_card.Id_stock_card','stock_card.Date_card','Product.Name','variation_product.Option_name','stock_card.Expire_date','stock_card.Type_card','stock_card.First_stock','stock_card.Debet','stock_card.Credit','stock_card.Last_stock','stock_card.Transaction_price','stock_card.Capital','stock_card.Fifo_stock')
         ->get();
 
         //   $stockcard = stock_card::where('Id_variation','=',$Id_variation)
@@ -68,6 +68,9 @@ class ControllerReport extends Controller
         {{  }}
 		for ($i=0; $i < count($stockcard) ; $i++) { 
 			$temp =$temp. "<tr>";
+                $temp =$temp. "<td>";
+                    $temp =$temp. $stockcard[$i]['Id_stock_card'];
+                $temp =$temp. "</td>";
                 $temp =$temp. "<td>";
                     $temp =$temp. date("d-m-Y", strtotime($stockcard[$i]['Date_card']));
                 $temp =$temp. "</td>";

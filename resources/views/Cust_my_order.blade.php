@@ -93,10 +93,18 @@
                                         {{ Form::button('View detail', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.viewdetail']) }}
                                         {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm', 'onclick' => 'pay_now('. $cr->Id_order . ')']) }}
                                         <hr size="10px"  style="margin-top: 2%">
-                                        <h6>Please finish transaction before : </h6>
-                                        <input type='hidden' id='txtnomernota{{ $no }}' value='{{ $cr->Id_order }}'>
-                                        <input type='hidden' id='txtdatetime{{ $no }}' value='{{ $cr->jatuhtempo }}'>
-                                        <input type='text' id='txtselisih{{ $no }}' value='0'>
+                                        <?php
+                                        if($cr->Status ==1)
+                                        {
+                                          ?>
+                                              <h6>Please finish transaction before : </h6>
+                                              <input type='hidden' id='txtnomernota{{ $no }}' value='{{ $cr->Id_order }}'>
+                                              <input type='hidden' id='txtdatetime{{ $no }}' value='{{ $cr->jatuhtempo }}'>
+                                              <input type='text' id='txtselisih{{ $no }}' value='0'>
+                                          <?php
+                                        }
+                                        ?>
+                                      
                                     </div>
                                 </div>           
                                 <br><br>                 
@@ -324,17 +332,32 @@
         for(var i = 0; i < maxno; i++) {
             var tgl2 = $("#txtdatetime" + i).val(); 
             var dtk  = cariSelisih(tgl2);
+            var temp="";
             $("#txtselisih" + i).val(formatSelisih(dtk)); 
-            if(dtk == 0) {
+            if(dtk <= 0) {
+
+
                 // lakukan ajax utk update status = 0 
                 var Id_order = $("#txtnomernota" + i).val()
                 // alert(Id_order);
-                $("#card" + i).fadeOut(); 
                 $.get(myurl + '/update_status',
                 {Id_order:Id_order,Status: 0},
                 function(result){
-                  
+                  // alert(result);
+                  if(result=="sukses")
+                  {
+                    temp=result;
+                   
+                  }
+                 
                 });
+
+                if(temp=="sukses")
+                {
+                  $("#card" + i).fadeOut();
+                }
+
+
             }
         }
     }
@@ -349,17 +372,26 @@
     }
 
     function pay_now(id) {
-      $.ajaxSetup({
-            headers:
-            { 'X-CSRF-TOKEN': $(".csrf_token").val() }
-        });
-      $.ajax({
-            type: "POST",
-            url: myurl + '/pay_now',
-            data: { order_id : id}
-        })
-        .done(function( msg ) {
-            console.log(msg);
+      // $.ajaxSetup({
+      //       headers:
+      //       { 'X-CSRF-TOKEN': $(".csrf_token").val() }
+      //   });
+      // $.ajax({
+      //       type: "POST",
+      //       url: myurl + '/pay_now',
+      //       data: { order_id : id}
+      //   })
+      //   .done(function( msg ) {
+      //     alert(msg);
+      //       console.log(msg);
+      //   });
+
+
+        $.get(myurl + '/pay_now',
+        {order_id: id},
+        function(result){
+            alert(result);
+
         });
 
     }

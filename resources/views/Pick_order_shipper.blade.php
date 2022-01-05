@@ -240,6 +240,13 @@
                   <br>
                   {{ Form::button('Save', ['name'=>'btn_filter','id'=>'btn_save','class'=>'btn btn-info btn-sm','onclick'=>'save_receipt_number()']) }}
                 </div>
+
+                <div class="col-md-6">
+                  <div id="isi_exp_date">
+                      -
+                  </div>
+
+                </div>
               </div>
               <hr>
         </div>
@@ -452,7 +459,7 @@ $(document).ready( function () {
            $("#Id_order").val(cut[8]);
           //  $("#Status").val(cut[9]);
 
-           if(cut[9]!=3 && cut[9]!=4) //Status order
+           if(cut[9]==1 || cut[9]==2) //Status order
            {
             document.getElementById("receipt_number").readOnly =true;
             document.getElementById("btn_save").disabled = true;
@@ -461,6 +468,8 @@ $(document).ready( function () {
            {
             document.getElementById("receipt_number").readOnly =false;
             document.getElementById("btn_save").disabled = false;
+            $('#isi_exp_date').html(cut[10]);
+
            }
       });
        

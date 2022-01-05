@@ -181,36 +181,6 @@ Purchase payment
           </div>
 
 
-          {{-- <div class="row">
-            <div class="col-md-1">
-              
-              <p class="Status_payment"></p>
-              
-            </div>
-            <div class="col-md-8">
-              <b class="No_payment"></b>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-1">
-
-            </div>
-
-            <div class="col-md-8">
-              <b class="payment_by">  </b>
-            </div>
-          </div> --}}
-
-          {{-- <div class="row">
-            <div class="col-md-1">
-              
-            </div>
-            <div class="col-md-8">
-              <b class="receipt_image">  </b>
-            </div>
-          </div> --}}
-
 
 
           <hr>

@@ -334,14 +334,33 @@
 if(session()->get('userlogin')->Role =="ADMIN")
 {
   ?>
-    <li class="nav-item">
-      {{-- menu-open --}}
+    {{-- <li class="nav-item">
       <a href="{!! url('broadcast-view') !!}" class="nav-link  @yield('menu_broadcast')">
         <i class="nav-icon fas fa-broadcast-tower"></i>
         <p>
           Broadcast 
         </p>
       </a>
+    </li> --}}
+
+    <li class="nav-item @yield('menu_broadcast')">
+      {{-- menu-open --}}
+      <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-broadcast-tower"></i>
+        <p>
+          Broadcast 
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('broadcast-view'); !!}" class="nav-link  @yield('menu_broadcast_prospek')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Broadcast prospect E-book</p>
+          </a>
+        </li>
+        
+      </ul>
     </li>
     <li class="nav-item @yield('menu_report')">
       {{-- menu-open --}}

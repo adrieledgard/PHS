@@ -248,7 +248,7 @@
                 </div>
                 <div class="col-md-6">
                   {{ Form::label('Stock :','') }}
-                  {{ Form::number('txt_stock', $dtvariasi[0]->Stock, ['class'=>'form-control','id'=>'txt_stock','disabled'=>'true']) }}
+                  {{ Form::number('txt_stock', ($dtvariasi[0]->Stock*1 - $dtvariasi[0]->Stock_atc*1 - $dtvariasi[0]->Stock_pay*1), ['class'=>'form-control','id'=>'txt_stock','disabled'=>'true']) }}
                 </div>
               </div>
             </div>

@@ -77,6 +77,7 @@
     <table id="table_id" class='table table-striped display'>
       <thead>
         <tr>
+          <th>Id</th>
           <th>Date</th>
           <th>Type</th>
           <th>Product</th>

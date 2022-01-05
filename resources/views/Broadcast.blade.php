@@ -1,10 +1,14 @@
 @extends('layout.Master')
 
 {{-- UNTUK SIDEBAR --}}
-@section('menu_broadcast')
+@section('menu_broadcast_prospek')
   active
 @endsection
 {{-- ------------- --}}
+
+@section('menu_broadcast')
+   menu-open
+@endsection
 
 
 @section('title2')

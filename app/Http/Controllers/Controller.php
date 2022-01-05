@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
 
+use App\stock_card;
 use App\member;
 use App\category;
 use App\sub_category;
@@ -3171,7 +3172,7 @@ class Controller extends BaseController
 	public function get_cust_detail_order(Request $request)
 	{
 		$Id_order = $request->id;
-
+		
 		$headerorder = cust_order_header::where('Id_order','=',$Id_order)
 		->join('list_city','cust_order_header.Id_city','list_city.Id_city')
 		// ->join('list_city','cust_order_header.Id_province','list_city.Id_province')
@@ -3182,8 +3183,10 @@ class Controller extends BaseController
 		->join('variation_product','cust_order_detail.Id_variation','variation_product.Id_variation')
 		->get();
 		$temp="";
+		$temp2="";
 		$total=0;
 
+		$temp2 = $temp2 . "<b>Shipper pick orderby Exp date :</b><br><Br>";
 		for ($i=0; $i < count($detailorder); $i++) { 
 
 			$temp=$temp."<tr>";
@@ -3214,6 +3217,17 @@ class Controller extends BaseController
 				$total=$total+ ($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']);
 				
 		$temp=$temp."</tr>";
+
+		
+		$stockcard = stock_card::where('No_reference','=',$detailorder[$i]['Id_detail_order'])
+        ->get();
+
+
+
+		$temp2 = $temp2 . "<b>". $detailorder[$i]['Name'] ." - " . $detailorder[$i]['Option_name']. "</b> <br>";
+		foreach ($stockcard as $datasc) {
+			$temp2 = $temp2 . "@" . $datasc->Credit . "->" . $datasc->Expire_date ."<br>";
+		}
 
 
 
@@ -3263,7 +3277,9 @@ class Controller extends BaseController
 		$temp=$temp."</tr>";
 
 
-		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']);
+		
+
+		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']."#".$temp2);
 	}
 
 	public function update_filter_session(Request $request)
@@ -3399,6 +3415,26 @@ class Controller extends BaseController
 
 	}
 
+	public function update_status(Request $request)
+	{
+		$Id_order= $request->Id_order;
+
+
+		$dt = cust_order_header::where('Id_order','=',$Id_order)
+		->get();
+	
+
+		if($dt[0]->Status==1) // hanya yg pending yg di ubah jadi 0 jika waktu habis
+		{
+			$ch = new cust_order_header();
+			$hasil = $ch->ganti_status($Id_order,0);
+			
+			return "sukses";
+		}
+		
+		
+	}
+
 	public function Proccess_cust_order(Request $request)
 	{
 		$kumpulan_id_order = $request->kumpulan_id_order;
@@ -3451,9 +3487,9 @@ class Controller extends BaseController
 		$session_member = session()->get('userlogin');
 		$Receive_point_random_code = "";
 
-		if($session_member->Refferal != "")
+		if($session_member->Referral != "")
 		{
-			$Receive_point_random_code = $session_member->Refferal;
+			$Receive_point_random_code = $session_member->Referral;
 		}
 		else if(Cookie::has('Affiliate')){
 			$Receive_point_random_code = Cookie::get('Affiliate');
@@ -3630,7 +3666,7 @@ class Controller extends BaseController
 
 	public function broadcast(Request $request)
 	{
-		$count_user = 0;
+		$jumlahterkirim = 0;
 		$products = product::join('product_sub_category', 'product.Id_product', 'product_sub_category.Id_product')
 					->join('sub_category', 'sub_category.Id_sub_category', 'product_sub_category.Id_sub_category')
 					->where('product.Id_product', $request->product)
@@ -3642,14 +3678,16 @@ class Controller extends BaseController
 			$submitted_email_ebook = email_ebook::join('ebook', 'ebook.Id_ebook', 'submitted_email_ebook.ebook_id')
 					->where('ebook.Id_sub_category', $product->Id_sub_category)
 					->get();
-			$count_user += count($submitted_email_ebook);
+
 			foreach ($submitted_email_ebook as $user) {
+				
+				$jumlahterkirim += 1;
 				$link_product = "https://localhost/PusatHerbalStore/public/Cust_show_product/$request->product/$user->user_token";
 				Mail::to($user->email)->send(new BroadcastMail($request->subject, $request->content, $link_product));
 			}
 		}
 		
 
-		return redirect()->route('broadcast_view')->with('success', "Success send to $count_user users");
+		return redirect()->route('broadcast_view')->with('success', "Success send to $jumlahterkirim users");
 	}
 }

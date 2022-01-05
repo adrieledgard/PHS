@@ -13,7 +13,7 @@ class cust_order_header extends Model
     public $timestamps = false;
     public $fillable = ['Id_order','Date_time','Id_member','Address','Id_province',
                         'Id_city','Name','Email','Phone','Courier','Courier_packet','Affiliate','Id_voucher'
-                        ,'Weight','Gross_total','Receipt_number','Shipping_cost','Discount','Grand_total','Shipper','Resi_input_shipper','Status'];
+                        ,'Weight','Gross_total','Receipt_number','Shipping_cost','Discount','Grand_total','Shipper','Resi_input_shipper','Printed','Status'];
     public $incrementing = true;
 
 

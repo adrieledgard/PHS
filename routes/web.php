@@ -294,7 +294,7 @@ Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]
 Route::get('update_status', ["uses"=>"Controller@update_status"]);
 
 //TEMPORARY ROUTE
-Route::post('pay_now', ['uses' => 'Controller@pay_now']);
+Route::get('pay_now', ['uses' => 'Controller@pay_now']);
 Route::get('pay_now_guess', ['uses' => 'Controller@pay_now_guess']);
 
 

@@ -174,7 +174,7 @@ class ControllerMaster extends Controller
 		$param['dtvar'] = variation::where('Id_product','=', $id)
 		->where('Status','=',1)
 		->select("Id_variation","Id_product", "Variation_name","Option_name","Purchase_price","Sell_price",
-		"Weight","Dimension","Stock","Status")
+		"Weight","Dimension","Stock","Stock_atc","Stock_pay","Status")
 			->get();
 
 		$variasi = $param['dtvar'];
@@ -4206,7 +4206,13 @@ class ControllerMaster extends Controller
 
 	public function submit_email_ebook(Request $request, $ebook_id, $user_token)
 	{
-		$existed_user_ebook = email_ebook::where('email', $request->email)->where('user_token', $user_token)->where('ebook_id', $ebook_id)->get();
+		$existed_user_ebook = email_ebook::where('email', $request->email)
+		->where('user_token', $user_token)
+		->where('ebook_id', $ebook_id)
+		->get();
+
+
+		
 		if(count($existed_user_ebook) == 0){
 			$email_ebook = new email_ebook();
 			$email_ebook->add_email_ebook($request->ebook_id, $request->name, $request->phone, $request->email, $request->user_token);
@@ -4219,7 +4225,6 @@ class ControllerMaster extends Controller
 		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
 		{
 			Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
-			// Cookie::queue(Cookie::make("Ebook", $user_token));
 		}
 		
 		return redirect()->back()->with('success', 'Email submitted');
