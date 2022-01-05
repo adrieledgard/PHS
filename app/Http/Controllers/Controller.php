@@ -3276,7 +3276,9 @@ class Controller extends BaseController
 		$temp=$temp."<td></td>";
 		$temp=$temp."</tr>";
 
-
+		if($request->has('request_from')){
+			return $temp2;
+		}
 		
 
 		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']."#".$temp2);
@@ -3455,6 +3457,25 @@ class Controller extends BaseController
 			$hasil = $ch->update_receipt_number($data,"");
 		}
 
+
+	}
+
+	public function Print_shipping_label(Request $request)
+	{
+		$arr_order = [];
+		$kumpulan_id_order = $request->input('kumpulan_id_order');
+		$arr_id_order = explode("," ,$kumpulan_id_order);
+
+		foreach ($arr_id_order as $id_order) {
+			$new_request = new Request();
+			$new_request->merge(['id' => $id_order, 'request_from' => 'function print_shipping_label']);
+			$order = cust_order_header::find($id_order); 
+			$order->detail = $this->get_cust_detail_order($new_request);
+			$order->kota = list_city::find($order->Id_city);
+			$arr_order[] = $order;
+		}
+	
+		return view('Print_shipper_label', compact('arr_order'));
 
 	}
 

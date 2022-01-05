@@ -84,7 +84,7 @@
           {{ Form::button('Mark as processing', ['name'=>'btn_filter','class'=>'btn btn-success btn-sm','onclick'=>'multi_select_order()']) }}
         </div>
         <div class="col-md-2">
-          {{ Form::button('Print shipping label', ['name'=>'btn_filter','class'=>'btn btn-primary btn-sm','onclick'=>'multi_select_order()']) }}
+          {{ Form::button('Print shipping label', ['name'=>'btn_filter','class'=>'btn btn-primary btn-sm','onclick'=>'multiple_print_shipping_label()']) }}
         </div>
       </div>
       <br><br>
@@ -400,7 +400,7 @@ $(document).ready( function () {
             .then((print) => {
               if (print) {
                 
-                alert('print shipping label');
+                multiple_print_shipping_label(kumpulan_id_order);
 
               } else {
               // swal("Cancelled");
@@ -409,6 +409,29 @@ $(document).ready( function () {
             });      
 
          });
+    }
+
+    function multiple_print_shipping_label(kumpulan_id_order = []){
+      let kump_id_order = "";
+
+      if(kumpulan_id_order.length == 0){
+        let semua_cb_centang =$(".cb_child:checked")
+
+        $.each(semua_cb_centang,function(index,elm){
+
+          if(index==semua_cb_centang.length-1)
+          {
+            kump_id_order = kump_id_order + elm.value;
+          }
+          else
+          {
+            kump_id_order = kump_id_order + elm.value+"," ;
+          }
+        
+        });
+      }
+      window.open(myurl + '/Print_shipping_label?kumpulan_id_order=' + kump_id_order, '_blank',  'noreferrer');
+
     }
 
     function save_receipt_number()

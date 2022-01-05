@@ -380,6 +380,7 @@ Route::get('show_table_stock_card', ["uses"=>"ControllerReport@show_table_stock_
 Route::get('Pick_order_shipper', ["uses"=>"Controller@Pick_order_shipper"]);
 Route::get('filter_cust_order', ["uses"=>"Controller@filter_cust_order"]);
 Route::get('Proccess_cust_order', ["uses"=>"Controller@Proccess_cust_order"]);
+Route::get('Print_shipping_label', ["uses"=>"Controller@Print_shipping_label"]);
 Route::get('save_receipt_number', ["uses"=>"Controller@save_receipt_number"]);
 
 Route::get('broadcast-view', ['uses' => 'Controller@broadcastView'])->name('broadcast_view');
