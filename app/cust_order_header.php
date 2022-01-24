@@ -109,4 +109,12 @@ class cust_order_header extends Model
         return $c;
     }
 
+    public function getaktifinvoice() //member
+    {
+        $temp = cust_order_header::where('Status', '=', '1')
+                                ->where('Id_member', '=', session()->get('userlogin')->Id_member)
+                                ->get();
+        return $temp;
+    }
+
 }

@@ -36,4 +36,15 @@ class voucher_member extends Model
         ->where('Id_member','=',$Id_member)
         ->delete();
     }
+
+
+    public function delete_voucher_member_2($Id_voucher_member)
+    {
+        // voucher_product::where('Id_voucher','=',$Id_voucher)->update(array(
+        //     'Status' => 0
+        // ));
+
+        voucher_member::where('Id_voucher_member','=',$Id_voucher_member)
+        ->delete();
+    }
 }

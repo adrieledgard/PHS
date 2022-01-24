@@ -35,7 +35,7 @@
         <div class="col-md-3">
 
           <?php
-            $ix=0;
+            $ix=1;
             if(session()->get('Filter_my_order'))
             {
               $ix = session()->get('Filter_my_order');
@@ -91,20 +91,24 @@
                                         </p>
                                         {{-- <button data-toggle="modal" data-target="#View_detail" class="btn-primary" data-Idorder="{{$cr->Id_order}}">View detail</button> --}}
                                         {{ Form::button('View detail', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.viewdetail']) }}
-                                        {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm', 'onclick' => 'pay_now('. $cr->Id_order . ')']) }}
-                                        <hr size="10px"  style="margin-top: 2%">
+                                       
                                         <?php
-                                        if($cr->Status ==1)
-                                        {
-                                          ?>
+                                          if($cr->Status ==1)
+                                          {
+                                            ?>
+                                             {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm', 'onclick' => 'pay_now('. $cr->Id_order . ')']) }}
+                                             <input type='button' value='Bayar' onclick=bayarmidtrans('{{ $no }}') class='btn btn-warning btn-sm'>
+     
+                                              <hr size="10px"  style="margin-top: 2%">
                                               <h6>Please finish transaction before : </h6>
+                                              <input type='text' id='txtsnaptoken{{ $no }}' value='{{ $cr->snap_token }}'>
                                               <input type='hidden' id='txtnomernota{{ $no }}' value='{{ $cr->Id_order }}'>
                                               <input type='hidden' id='txtdatetime{{ $no }}' value='{{ $cr->jatuhtempo }}'>
                                               <input type='text' id='txtselisih{{ $no }}' value='0'>
-                                          <?php
-                                        }
+                                            <?php
+                                          }
                                         ?>
-                                      
+                                       
                                     </div>
                                 </div>           
                                 <br><br>                 
@@ -119,6 +123,35 @@
     </div>
 </div>
 
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+<script>
+    function bayarmidtrans(no) {
+      var snaptoken = $("#txtsnaptoken" + no).val(); 
+      snap.pay(snaptoken, {
+          // Optional
+          onSuccess: function(result) {
+              /* You may add your own js here, this is just example */
+              // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+              console.log("masuk mode onSuccess"); 
+              console.log(result)
+          },
+          // Optional
+          onPending: function(result) {
+              /* You may add your own js here, this is just example */
+              // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+              console.log("masuk mode onPending"); 
+              console.log(result)
+          },
+          // Optional
+          onError: function(result) {
+              /* You may add your own js here, this is just example */
+              // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+              console.log("masuk mode onError"); 
+              console.log(result)
+          }
+      });        
+    };
+</script>
 
 <div class="modal fade viewdetail">
     <div class="modal-dialog modal-xl">
@@ -332,32 +365,17 @@
         for(var i = 0; i < maxno; i++) {
             var tgl2 = $("#txtdatetime" + i).val(); 
             var dtk  = cariSelisih(tgl2);
-            var temp="";
             $("#txtselisih" + i).val(formatSelisih(dtk)); 
             if(dtk <= 0) {
-
-
                 // lakukan ajax utk update status = 0 
                 var Id_order = $("#txtnomernota" + i).val()
                 // alert(Id_order);
+                
                 $.get(myurl + '/update_status',
                 {Id_order:Id_order,Status: 0},
                 function(result){
-                  // alert(result);
-                  if(result=="sukses")
-                  {
-                    temp=result;
-                   
-                  }
-                 
+                  $("#card" + i).fadeOut(); 
                 });
-
-                if(temp=="sukses")
-                {
-                  $("#card" + i).fadeOut();
-                }
-
-
             }
         }
     }

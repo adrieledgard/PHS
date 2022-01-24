@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
+use App\Services\Midtrans\CreateSnapTokenService;
 
 use App\stock_card;
 use App\member;
@@ -2370,8 +2371,7 @@ class Controller extends BaseController
 
 	public function My_voucher(Request $request)
 	{
-		$param['dtvoucher'] = voucher::where('Status','=',1)
-		->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
+		$param['dtvoucher'] = voucher::select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
 		->get();
 
 
@@ -2592,8 +2592,7 @@ class Controller extends BaseController
 		}
 
 
-		$param['dtvoucher'] = voucher::where('Status','=',1)
-		->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
+		$param['dtvoucher'] = voucher::select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
 		->get();
 
 
@@ -2944,6 +2943,25 @@ class Controller extends BaseController
 			$hasil = $cust_header->insertdata($Date_time, $Id_member, $add[0]->Address, $add[0]->Id_province,$add[0]->Id_city,
 			$me[0]->Username,$me[0]->Email, $me[0]->Phone, $Courier, $Courier_packet, $Affiliate, $Id_voucher, $Weight, $Gross_total, $Shipping_cost,$Discount,$Grand_total,$Shipper,$Status);
 
+			//Untuk menghapus isi table voucher_member
+			if($Id_voucher=="" || $Id_voucher==0|| $Id_voucher==null)
+			{
+
+			}
+			else
+			{
+				$vm = voucher_member::where('Id_member','=',$Id_member)
+				->where('Id_voucher','=',$Id_voucher)
+				->get();
+
+				foreach ($vm as $datavm) {
+					$deletevm = new voucher_member();
+					$hasil = $deletevm->delete_voucher_member_2($datavm->Id_voucher_member);
+					break;
+				}
+			}
+			//-----------------------------------------------
+
 
 			$arr = cart::where('Id_member','=',$Id_member)
 			->get();
@@ -3081,15 +3099,131 @@ class Controller extends BaseController
 	// 2 Payment receive (lunas)
 	// 3 processing (di pick shipper)
 	// 4 shipping (resi sdh di inputkan)
-	// 5 Orderan yang sudah di konfirmasi oleh pembeli / orderan tidak di konfirmasi selama 5 hari sejak produk tiba
+	// 5 Orderan yang sudah di konfirmasi oleh pembeli / orderan tidak di konfirmasi selama 10 hari sejak produk dikirim
 	// 6 All
 	
+	// public function My_order() {
+	// 	$Id_member = session()->get('userlogin')->Id_member;
+		
+
+	// 	try {
+	// 		if(session()->get('Filter_my_order')==6)
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+	// 		else if(session()->get('Filter_my_order')==0)
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->where('cust_order_header.Status','=',0)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+	// 		else if(session()->get('Filter_my_order')==1)
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->where('Status','=',1)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+	// 		else if(session()->get('Filter_my_order')==2)
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->where('Status','=',2)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+	// 		else if(session()->get('Filter_my_order')==3)
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->where('Status','=',3)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+	// 		else if(session()->get('Filter_my_order')==4)
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->where('Status','=',4)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+	// 		else if(session()->get('Filter_my_order')==5)
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->where('Status','=',5)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+	// 		else
+	// 		{
+	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 		}
+
+	// 	} catch (\Throwable $th) {
+
+	// 		$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+	// 			->orderby('Id_order','desc')
+	// 			->get();
+	// 	}
+
+		
+	
+	
+
+
+	// 	foreach($datatransaksi as $row) {
+	// 	 $tglskrg = $row->Date_time; 
+	// 	 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+48 hour'));
+	  
+	// 	 $row->jatuhtempo = $tgljatuhtempo;
+	  
+	// 	//  echo $tglskrg."<br>";
+	// 	//  echo $tgljatuhtempo."<br>";
+	// 	}
+	// 	$params['datatransaksi'] = $datatransaksi;
+	// 	return view('Cust_my_order', $params); 
+	//    }
+
+
 	public function My_order() {
+		// untuk membuat semua transaksi yg sudah dibayar di midtrans menjadi 
+		// payment_status = 2. ambil dari cust_orer_header
+			$ord = new cust_order_header(); 
+			$orders = $ord->getaktifinvoice();
+					foreach($orders as $row) {
+						$res = $this->cekStatusTransaksi($row->Id_order);  
+						// print_r("Pertama XXX".$res."yyy");
+						if(!str_contains($res, "404")) 
+						{
+							$res = json_decode($res); 
+							// print_r($res);
+							if($res->status_message == "Success, transaction is found") {
+								if($res->transaction_status == "settlement") {
+								$data = cust_order_header::find($row->Id_order); 
+								$data->Status = 2; 
+								$data->save(); 
+								}    
+							}
+						}
+					
+					}
+
 		$Id_member = session()->get('userlogin')->Id_member;
 		
 
 		try {
-			if(session()->get('Filter_my_order')==6)
+
+			if(session()->get('Filter_my_order')==null || session()->get('Filter_my_order')=="")
+			{
+				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				 ->where('Status','=',1)
+				->orderby('Id_order','desc')
+				->get();
+			}
+			else if(session()->get('Filter_my_order')==6)
 			{
 				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
 				->orderby('Id_order','desc')
@@ -3137,37 +3271,105 @@ class Controller extends BaseController
 				->orderby('Id_order','desc')
 				->get();
 			}
-			else
+			else 
 			{
 				$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+				//  ->where('Status','=',1)
 				->orderby('Id_order','desc')
 				->get();
 			}
 
+			// print_r( "tryy".session()->get('Filter_my_order'));
+
 		} catch (\Throwable $th) {
 
+			// print_r("err".session()->get('Filter_my_order'));
 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
+			->where('Status','=',1)
 				->orderby('Id_order','desc')
 				->get();
 		}
 
-		
-	
-	
+		// foreach($datatransaksi as $row) {
+		// 	$det = new cust_order_detail(); 
+		// 	$detail = $det->getdetail($row->Id_order); 
 
+		// 	$tglskrg = $row->Date_time; 
+		// 	$tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+48 hour'));
+	  
+		// 	$row->jatuhtempo = $tgljatuhtempo;
+
+		// 	if(count($detail) > 0) {
+		// 		$midtrans = new CreateSnapTokenService($row, $det->getdetail($row->Id_order));
+		// 		$snapToken = $midtrans->getSnapToken();	
+		// 		$row->snap_token = $snapToken; 					
+		// 	}
+		// 	else { 
+		// 		$row->snap_token = 0; 
+		// 	}
+		// }
 
 		foreach($datatransaksi as $row) {
-		 $tglskrg = $row->Date_time; 
-		 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+48 hour'));
-	  
-		 $row->jatuhtempo = $tgljatuhtempo;
-	  
-		//  echo $tglskrg."<br>";
-		//  echo $tgljatuhtempo."<br>";
+
+			$det = new cust_order_detail(); 
+			$detail = $det->getdetail($row->Id_order); 
+
+			$tglskrg = $row->Date_time; 
+			$tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+48 hour'));
+			
+			$row->jatuhtempo = $tgljatuhtempo;
+
+			if(count($detail) > 0) {
+				if($row->Status == 1 ) {
+				$midtrans = new CreateSnapTokenService($row, $det->getdetail($row->Id_order));
+				$snapToken = $midtrans->getSnapToken(); 
+				$row->snap_token = $snapToken;       
+				}
+				else {
+				$row->snap_token = 0; 
+				}
+			}
+			else { 
+				$row->snap_token = 0; 
+			}
 		}
+
 		$params['datatransaksi'] = $datatransaksi;
 		return view('Cust_my_order', $params); 
 	   }
+
+
+
+
+	   function cekStatusTransaksi($number) {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => "https://api.sandbox.midtrans.com/v2/$number/status",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "content-type: application/json",
+            "Authorization: Basic ".base64_encode("SB-Mid-server-wBV8-wjmAO-gMST99rtlKaQy")
+          ),
+        ));
+    
+        $response   = curl_exec($curl);
+        $err        = curl_error($curl);
+    
+        curl_close($curl);
+    
+        if ($err) {
+			// print_r("atas");
+          echo "cURL Error #:" . $err;
+        } else {
+			// print_r("bawah");
+          return $response;
+        } 
+    }
 
 	public function get_cust_detail_order(Request $request)
 	{
@@ -3428,6 +3630,19 @@ class Controller extends BaseController
 
 		if($dt[0]->Status==1) // hanya yg pending yg di ubah jadi 0 jika waktu habis
 		{
+
+			//Kembalikan voucher jika ada
+			if($dt[0]['Id_voucher']=="" || $dt[0]['Id_voucher']==0 )
+			{
+
+			}
+			else
+			{
+				$addvm = new voucher_member();
+				$hasil = $addvm->add_voucher_member($dt[0]['Id_member'], $dt[0]['Id_voucher']);
+			}
+
+
 			$ch = new cust_order_header();
 			$hasil = $ch->ganti_status($Id_order,0);
 			
