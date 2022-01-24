@@ -52,7 +52,7 @@
       <div class="row">
         <div class="col-md-3">
           Status :
-          {{ Form::select('Choose Status', ['Payment receive','Processing','Shipping'], 'a',['class'=>'form-control','id'=>'filter', 'placeholder' => "Choose Status",'onchange' => 'ganti_filter()']) }}
+          {{ Form::select('Choose Status', ['Payment receive','Processing','Shipping'], 0 ,['class'=>'form-control','id'=>'filter', 'placeholder' => "Choose Status",'onchange' => 'ganti_filter()']) }}
          
         </div>
         <div class="col-md-3">
@@ -269,11 +269,7 @@
  <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-<script>
-$(document).ready( function () {
- $('#table_id').DataTable();
-} );
-</script>
+
  <!-- ChartJS -->
  <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
  <!-- Sparkline -->
@@ -294,7 +290,6 @@ $(document).ready( function () {
  <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
  <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
-
 
 <script>
     var myurl = "<?php echo URL::to('/'); ?>";
@@ -497,7 +492,6 @@ $(document).ready( function () {
       });
        
    });
-   
   </script>
 @endpush
 

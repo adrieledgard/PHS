@@ -3591,10 +3591,16 @@ class Controller extends BaseController
 			else if($data->Status==3)
 			{
 				$temp=$temp."<button type='button' class='btn btn-primary btn-sm' disabled>Processing</button>";
+				if($data->Printed == 1){
+					$temp = $temp. " <span class='fa fa-print disabled' data-toggle='tooltip' title='Printed Label'></span>";
+				}
 			}
 			else if($data->Status==4)
 			{
 				$temp=$temp."<button type='button' class='btn btn-secondary btn-sm' disabled>Shipping</button>";
+				if($data->Printed == 1){
+					$temp = $temp. " <span class='fa fa-print disabled' data-toggle='tooltip' title='Printed Label'></span>";
+				}
 			}
 
 			$temp=$temp."<br><br>";
@@ -3688,6 +3694,9 @@ class Controller extends BaseController
 			$order->detail = $this->get_cust_detail_order($new_request);
 			$order->kota = list_city::find($order->Id_city);
 			$arr_order[] = $order;
+			$update_order = cust_order_header::find($id_order); 
+			$update_order->Printed = 1;
+			$update_order->save();
 		}
 	
 		return view('Print_shipper_label', compact('arr_order'));
