@@ -3958,14 +3958,22 @@ class Controller extends BaseController
 
 	public function rate_review_order(Request $request)
 	{
-		$order = cust_order_detail::find($request->id_detail_order);
-		$rate_review = new rate_review();
-		$rate_review->Id_detail_order = $request->id_detail_order;
-		$rate_review->Id_order = $order->Id_order;
-		$rate_review->Id_user = session()->get('userlogin')->Id_member;
-		$rate_review->rate = $request->rate;
-		$rate_review->review = $request->review;
-		$rate_review->save();
+		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)->first();
+		if($exist_rate_review !== null){
+			$exist_rate_review->rate = $request->rate;
+			$exist_rate_review->review = $request->review;
+			$exist_rate_review->save();
+		}else {
+			$order = cust_order_detail::find($request->id_detail_order);
+			$rate_review = new rate_review();
+			$rate_review->Id_detail_order = $request->id_detail_order;
+			$rate_review->Id_order = $order->Id_order;
+			$rate_review->Id_user = session()->get('userlogin')->Id_member;
+			$rate_review->rate = $request->rate;
+			$rate_review->review = $request->review;
+			$rate_review->save();
+		}
+		
 		return 'sukses';
 	}
 }

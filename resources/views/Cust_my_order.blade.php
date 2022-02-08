@@ -416,12 +416,13 @@
               <textarea class="form-control review-${item.Id_detail_order}" rows="3" ${is_review}>${is_review ? item.review : ''}</textarea>
             </div>
             <button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
+            <button type="button" class="btn btn-warning btn-sm mb-2 edit-${item.Id_detail_order}" ${!item.is_review ? 'disabled' : ''} onclick="edit_review(${item.Id_detail_order})">Edit review</button>
           </div>
         </div> 
         `
         
        });
-       $(".rating_review .modal-body .container-fluid").append(html);
+       $(".rating_review .modal-body .container-fluid").html(html);
     });
  });
 </script>
@@ -467,9 +468,17 @@
             $(`input[name='rating-${id_detail_order}']`).prop("disabled", 'true');
             $(".review-" + id_detail_order).prop('disabled', 'true');
             $(".submit-" + id_detail_order).prop('disabled', 'true');
+            $(".edit-" + id_detail_order).removeProp('disabled');
           }
           
       });
+   }
+
+   function edit_review(id_detail_order){
+    $(`input[name='rating-${id_detail_order}']`).removeProp("disabled");
+    $(".review-" + id_detail_order).removeProp('disabled');
+    $(".submit-" + id_detail_order).removeProp('disabled');
+    $(".edit-" + id_detail_order).prop('disabled', 'true');
    }
 
     function cariSelisih(tgl2) {
