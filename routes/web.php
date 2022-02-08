@@ -290,6 +290,8 @@ Route::get('Ebook_marketing', ["uses"=>"Controller@Ebook_marketing"]);
 
 Route::get('My_order', ["uses"=>"Controller@My_order"]);
 Route::get('get_cust_detail_order', ["uses"=>"Controller@get_cust_detail_order"]);
+Route::post('order_confirmation', ["uses"=>"Controller@order_confirmation"]);
+Route::post('rate_review_order', ["uses"=>"Controller@rate_review_order"]);
 Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]);
 Route::get('update_status', ["uses"=>"Controller@update_status"]);
 

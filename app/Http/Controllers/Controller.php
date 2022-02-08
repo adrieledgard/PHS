@@ -3479,9 +3479,11 @@ class Controller extends BaseController
 		$temp=$temp."</tr>";
 
 		if($request->has('request_from')){
+			if($request->request_from == 'rating_review'){
+				return $detailorder;
+			}
 			return $temp2;
 		}
-		
 
 		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']."#".$temp2);
 	}
@@ -3934,5 +3936,21 @@ class Controller extends BaseController
 		
 
 		return redirect()->route('broadcast_view')->with('success', "Success send to $jumlahterkirim users");
+	}
+
+	public function order_confirmation(Request $request)
+	{
+		$order = cust_order_header::find($request->id);
+		$order->status = 5;
+		$order->save();
+		return 'sukses';
+	}
+
+	public function rate_review_order(Request $request)
+	{
+		$order = cust_order_header::find($request->id);
+		$order->status = 5;
+		$order->save();
+		return 'sukses';
 	}
 }
