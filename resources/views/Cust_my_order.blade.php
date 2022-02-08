@@ -276,7 +276,7 @@
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Konfirmasi</h4>
+          <h4 class="modal-title">Rating and Review</h4>
           <button style="color:black" type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -288,7 +288,6 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button class="btn btn-success btn-sm" onclick="konfirmasi_selesai()">Confirm</button>
         </div>
       </div>
     </div>
@@ -393,31 +392,30 @@
  $(".rating_review").on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
     var id = button.data('idorder');
-    $(".confirmation_message").html("Apakah anda yakin ingin menyelesaikan order <b class='no_nota'>" + id + "</b>?");
     var modal = $(this);
 
     $.get(myurl + '/get_cust_detail_order',
     {id: id, request_from: 'rating_review'},
     function(result){
-      console.log(result);
       var html = "";
        result.forEach(item => {
+         var is_review = item.is_review ? 'disabled' : '';
          html += `
          <div class="row border-bottom-1">
           <div class="col-12">
           <strong>${item.Name}</strong>
           <div class="starrating risingstar d-flex justify-content-end flex-row-reverse">
-                <input type="radio" id="star5-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="5" /><label for="star5-${item.Id_detail_order}" title="5 star"></label>
-                <input type="radio" id="star4-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="4" /><label for="star4-${item.Id_detail_order}" title="4 star"></label>
-                <input type="radio" id="star3-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="3" /><label for="star3-${item.Id_detail_order}" title="3 star"></label>
-                <input type="radio" id="star2-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="2" /><label for="star2-${item.Id_detail_order}" title="2 star"></label>
-                <input type="radio" id="star1-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="1" /><label for="star1-${item.Id_detail_order}" title="1 star"></label>
+                <input type="radio" id="star5-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="5" ${item.rate == 5 ? 'checked' : ''} ${is_review}/><label for="star5-${item.Id_detail_order}" title="5 star"></label>
+                <input type="radio" id="star4-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="4" ${item.rate == 4 ? 'checked' : ''} ${is_review}/><label for="star4-${item.Id_detail_order}" title="4 star"></label>
+                <input type="radio" id="star3-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="3" ${item.rate == 3 ? 'checked' : ''} ${is_review}/><label for="star3-${item.Id_detail_order}" title="3 star"></label>
+                <input type="radio" id="star2-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="2" ${item.rate == 2 ? 'checked' : ''} ${is_review}/><label for="star2-${item.Id_detail_order}" title="2 star"></label>
+                <input type="radio" id="star1-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="1" ${item.rate == 1 ? 'checked' : ''} ${is_review}/><label for="star1-${item.Id_detail_order}" title="1 star"></label>
             </div>
             <div class="form-group">
               <label>Review</label>
-              <textarea class="form-control review-${item.Id_detail_order}" rows="3"></textarea>
+              <textarea class="form-control review-${item.Id_detail_order}" rows="3" ${is_review}>${is_review ? item.review : ''}</textarea>
             </div>
-            <button type="button" class="btn btn-success btn-sm mb-2" onclick="send_rating_review">Submit</button>
+            <button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
           </div>
         </div> 
         `
@@ -454,6 +452,7 @@
 
    function send_rating_review(id_detail_order){
     var token = $(".csrf_token").val();
+    var rate = $(`input[name='rating-${id_detail_order}']:checked`).val();
     var review = $(".review-" + id_detail_order).val();
       $.ajaxSetup({
         headers: {
@@ -462,10 +461,12 @@
       });
 
       $.post(myurl + '/rate_review_order',
-      {id_detail_order: id_detail_order, CSRF: token, review : review},
+      {id_detail_order: id_detail_order, CSRF: token, review : review, rate: rate},
       function(result){
           if(result == 'sukses'){
-           console.log(result);
+            $(`input[name='rating-${id_detail_order}']`).prop("disabled", 'true');
+            $(".review-" + id_detail_order).prop('disabled', 'true');
+            $(".submit-" + id_detail_order).prop('disabled', 'true');
           }
           
       });

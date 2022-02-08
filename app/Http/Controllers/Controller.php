@@ -40,6 +40,7 @@ use App\cust_order_detail;
 use App\ebook;
 use App\email_ebook;
 use App\Mail\BroadcastMail;
+use App\rate_review;
 use DateTime;
 
 
@@ -3480,6 +3481,15 @@ class Controller extends BaseController
 
 		if($request->has('request_from')){
 			if($request->request_from == 'rating_review'){
+				foreach ($detailorder as $detail) {
+					$detail->is_review = false;
+					$review = rate_review::where('Id_detail_order', $detail->Id_detail_order)->get();
+					if(count($review) > 0){
+						$detail->is_review = true;
+						$detail->rate = $review[0]->rate;
+						$detail->review = $review[0]->review;
+					}
+				}
 				return $detailorder;
 			}
 			return $temp2;
@@ -3948,9 +3958,14 @@ class Controller extends BaseController
 
 	public function rate_review_order(Request $request)
 	{
-		$order = cust_order_header::find($request->id);
-		$order->status = 5;
-		$order->save();
+		$order = cust_order_detail::find($request->id_detail_order);
+		$rate_review = new rate_review();
+		$rate_review->Id_detail_order = $request->id_detail_order;
+		$rate_review->Id_order = $order->Id_order;
+		$rate_review->Id_user = session()->get('userlogin')->Id_member;
+		$rate_review->rate = $request->rate;
+		$rate_review->review = $request->review;
+		$rate_review->save();
 		return 'sukses';
 	}
 }

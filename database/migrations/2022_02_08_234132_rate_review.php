@@ -19,7 +19,7 @@ class RateReview extends Migration
             $table->integer('Id_detail_order');
             $table->integer('Id_user');
             $table->integer('rate');
-            $table->string('review')->nullable();
+            $table->longText('review')->nullable();
             $table->timestamps();
         });
     }
