@@ -89,6 +89,6 @@
 <script src="{{ asset('assets/dist/js/demo.js') }}"></script>
 <!-- Sweet Alert -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
+<script src="{{asset('assets/js/complete_order_automation.js')}}"></script>
 </body>
 </html>

@@ -4002,4 +4002,15 @@ class Controller extends BaseController
 		$product->Rating = $product_rating->rate / $product_rating->jum_data;
 		$product->save();
 	}
+
+	public function complete_order_automation()
+	{
+		$ten_days_ago = date('Y-m-d H:i:s', strtotime( '-10 day' , strtotime (date("Y-m-d H:i:s"))));
+		$old_orders = cust_order_header::where('Status', '4')->where('Date_time', '<=', $ten_days_ago)->get();
+		foreach ($old_orders as $order) {
+			$update_old_order = cust_order_header::find($order->Id_order);
+			$update_old_order->Status = 5;
+			$update_old_order->save();
+		}
+	}
 }

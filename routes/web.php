@@ -294,6 +294,7 @@ Route::post('order_confirmation', ["uses"=>"Controller@order_confirmation"]);
 Route::post('rate_review_order', ["uses"=>"Controller@rate_review_order"]);
 Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]);
 Route::get('update_status', ["uses"=>"Controller@update_status"]);
+Route::get('complete_order_automation', ["uses"=>"Controller@complete_order_automation"]);
 
 //TEMPORARY ROUTE
 Route::get('pay_now', ['uses' => 'Controller@pay_now']);
