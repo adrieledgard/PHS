@@ -136,14 +136,18 @@
                     <h3>{{$dtproduct[0]->Name}}</h3>
                     <div class="rating-number">
                         <div class="quick-view-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
+                            @php
+                                for($i = 1; $i <= 5; $i++){
+                                    if($i <= ceil($dtproduct[0]->Rating)){
+                                        echo '<i class="fas fa-star"></i>';
+                                    }else {
+                                        echo '<i class="far fa-star"></i>';
+                                    }
+                                }
+                            @endphp
                         </div>
                         <div class="quick-view-number">
-                            <span>2 Ratting (S)</span>
+                            <span>{{$dtproduct[0]->Rating}} Rating (S)</span>
                         </div>
                     </div>
                     <div class="details-price">
@@ -368,7 +372,7 @@
                     Info Product
                 </a>
                 <a href="#pro-review" data-bs-toggle="tab" role="tab" aria-selected="false">
-                    Reviews (0)
+                    Reviews ({{count($dtproductreview)}})
                 </a>
             </div>
             <div class="description-review-text tab-content">
@@ -393,7 +397,19 @@
                     </p>
                 </div>
                 <div class="tab-pane fade" id="pro-review" role="tabpanel">
-                    <a href="#">Be the first to write your review!</a>
+                    <p style="text-align: left">
+                        @php
+                            if(count($dtproductreview) > 0){
+                                foreach ($dtproductreview as $review) {
+                                    echo "
+                                    <b>$review->Username</b><br>
+                                    $review->review <br><br>
+                                    ";
+                                }
+                            }
+                        @endphp
+                    </p>
+                    
                 </div>
             </div>
         </div>

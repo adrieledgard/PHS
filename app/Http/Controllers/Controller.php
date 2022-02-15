@@ -55,6 +55,7 @@ use App\Rules\ValidasiProductName;
 use App\Rules\ValidasiSubCategorySession;
 use App\Rules\ValidasiOptionSession;
 use App\Rules\ValidasiSupplierName;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use resources\lang\en\validation;
 use SubmittedEmailEbook;
@@ -133,7 +134,7 @@ class Controller extends BaseController
 		// ->join('product_image','product.Id_product','product_image.Id_product')
 		// ->where('product_image.Image_order','=',1)
 		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
-		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status", "product.Rating")
 			->get();
 
 
@@ -345,10 +346,13 @@ class Controller extends BaseController
 								$temp=$temp."<a href='".url('Cust_show_product/'.$product->Id_product)."'><b>".$product->Name."</b></a>";
 	
 								$temp=$temp."<div class='quick-view-rating'>";
-									$temp=$temp."<i class='fas fa-star'></i>";
-									$temp=$temp."<i class='fas fa-star'></i>";
-									$temp=$temp."<i class='fas fa-star'></i>";
-									$temp=$temp."<i class='fas fa-star'></i>";
+									for($i = 1; $i <= 5; $i++){
+										if($i <= ceil($product->Rating)){
+											$temp=$temp."<i class='fas fa-star'></i>";
+										}else {
+											$temp=$temp."<i class='far fa-star'></i>";
+										}
+									}
 								$temp=$temp."</div>";
 	
 								$temp=$temp."<span style='font-size:90%'>".$fixharga."</span>";
@@ -1180,6 +1184,11 @@ class Controller extends BaseController
 		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
 		->get();
 
+		$param['dtproductreview'] = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
+		->join('member', 'member.Id_member', 'rating_review.Id_member')
+		->where('cust_order_detail.Id_product', $id)
+		->select("member.*", 'rating_review.*')
+		->get();
 
 		return view('Cust_show_product',$param);
 	}
@@ -3958,22 +3967,39 @@ class Controller extends BaseController
 
 	public function rate_review_order(Request $request)
 	{
+		$order_detail = cust_order_detail::find($request->id_detail_order);
 		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)->first();
 		if($exist_rate_review !== null){
 			$exist_rate_review->rate = $request->rate;
 			$exist_rate_review->review = $request->review;
 			$exist_rate_review->save();
+
+			$this->update_rating_product($order_detail->Id_product);	
 		}else {
-			$order = cust_order_detail::find($request->id_detail_order);
 			$rate_review = new rate_review();
 			$rate_review->Id_detail_order = $request->id_detail_order;
-			$rate_review->Id_order = $order->Id_order;
-			$rate_review->Id_user = session()->get('userlogin')->Id_member;
+			$rate_review->Id_order = $order_detail->Id_order;
+			$rate_review->Id_member = session()->get('userlogin')->Id_member;
 			$rate_review->rate = $request->rate;
 			$rate_review->review = $request->review;
 			$rate_review->save();
+
+			$this->update_rating_product($order_detail->Id_product);
 		}
+
 		
 		return 'sukses';
+	}
+
+	public function update_rating_product($id_product)
+	{
+		$product_rating = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
+						->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
+						->where('cust_order_detail.Id_product', $id_product)
+						->select(DB::raw("count(*) as jum_data"), DB::raw("sum(rate) as rate"))->first();
+		
+		$product = product::find($id_product);
+		$product->Rating = $product_rating->rate / $product_rating->jum_data;
+		$product->save();
 	}
 }

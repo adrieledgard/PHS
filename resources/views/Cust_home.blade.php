@@ -130,14 +130,18 @@
                             <h4><a href="{!! url('Cust_show_product/'.$product->Id_product); !!}">{{$product->Name}}</a></h4>
                             {{-- <div class="rating-number" style="align-content: center;align-text:center"> --}}
                                 <div class="quick-view-rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="far fa-star"></i>
+                                    @php
+                                        for($i = 1; $i <= 5; $i++){
+                                            if($i <= ceil($product->Rating)){
+                                                echo '<i class="fas fa-star"></i>';
+                                            }else {
+                                                echo '<i class="far fa-star"></i>';
+                                            }
+                                        }
+                                    @endphp
                                 </div>
                                 <div class="quick-view-number">
-                                    <span>2 Ratting (S)</span>
+                                    <span>{{$product->Rating}} Rating (S)</span>
                                 </div>
                             {{-- </div> --}}
                             <!-- Product price-->
@@ -388,14 +392,18 @@
                                             <div class='funiture-product-content text-center'>
                                                 <h4><a href="{!! url('Cust_show_product/'.$product->Id_product); !!}">{{$product->Name}}</a></h4>
                                                 <div class="quick-view-rating">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="far fa-star"></i>
+                                                    @php
+                                                        for($i = 1; $i <= 5; $i++){
+                                                            if($i <= ceil($product->Rating)){
+                                                                echo '<i class="fas fa-star"></i>';
+                                                            }else {
+                                                                echo '<i class="far fa-star"></i>';
+                                                            }
+                                                        }
+                                                    @endphp
                                                 </div>
                                                 <div class="quick-view-number">
-                                                    <span>2 Ratting (S)</span>
+                                                    <span>{{$product->Rating}} Rating (S)</span>
                                                 </div>
             
                                                 <!-- Product price-->
