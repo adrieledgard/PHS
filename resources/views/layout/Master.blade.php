@@ -83,6 +83,9 @@
 
 @stack('custom-script')
 
+<script>
+  var myurl = "<?php echo URL::to('/'); ?>";
+</script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
 <!-- AdminLTE for demo purposes -->

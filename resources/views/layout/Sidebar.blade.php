@@ -319,8 +319,46 @@
                   <p>Request Assists</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{!! url('followup_customers'); !!}" class="nav-link  @yield('followup_customers_atv')">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Follow Up Customer</p>
+                </a>
+              </li>
              
               
+            </ul>
+          </li>
+          <li class="nav-item @yield('menu_master')">
+            {{-- menu-open --}}
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-shopping-basket"></i>
+              <p>
+                Follow Up
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{!! url('list_available_customer'); !!}" class="nav-link  @yield('list_available_customer_atv')">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>List Available Customer</p>
+                </a>
+              </li>
+              <?php 
+                  if(session()->get('userlogin')->Role =="ADMIN")
+                  {
+                    ?>
+                    <li class="nav-item">
+                      <a href="{!! url('pengaturan_followup'); !!}" class="nav-link  @yield('pengaturan_followup_atv')">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Pengaturan Follow up</p>
+                      </a>
+                    </li>
+                  
+                <?php 
+                }
+              ?>
             </ul>
           </li>
          
