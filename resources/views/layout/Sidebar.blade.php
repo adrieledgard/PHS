@@ -432,6 +432,16 @@ if(session()->get('userlogin')->Role =="ADMIN")
         </li>
         
       </ul>
+      
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('followup_report'); !!}" class="nav-link  @yield('followup_report_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Follow Up</p>
+          </a>
+        </li>
+        
+      </ul>
     </li>
       <?php 
     }
