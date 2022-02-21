@@ -70,7 +70,7 @@
                                 echo "
                                     <td><span class='badge badge-danger'>Failed</span></td>
                                     <td>
-                                        <button class='btn btn-primary btn-sm' data-idmember='$customer->Id_member' data-toggle='modal' data-target='#followup_email'>Re-follow up</button>
+                                        <button class='btn btn-primary btn-sm' data-idmember='$customer->Id_member' data-toggle='modal' data-target='#followup_email' $customer->is_refollowup_available>Re-follow up</button>
                                     </td>
                                     ";
                             }else {

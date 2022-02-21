@@ -109,8 +109,13 @@ class ControllerCustomerService extends Controller
             if(empty($followed_up_member)){
                 $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
             }else {
-                $count_followup = $followed_up_member->Count_followup + 1;
-                (new followup())->edit_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date, $count_followup);
+                if($followed_up_member->Id_customer_service != session()->get('userlogin')->Id_member){
+                    $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
+                }else {
+                    $count_followup = $followed_up_member->Count_followup + 1;
+                    (new followup())->edit_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date, $count_followup);
+                }
+                
             }
             
 
@@ -141,6 +146,15 @@ class ControllerCustomerService extends Controller
         $customers = followup::join('member', 'member.Id_member', 'followup_customers.Id_member')
                     ->where("followup_customers.Id_customer_service", session()->get('userlogin')->Id_member)
                     ->get();
+
+        foreach ($customers as $customer) {
+            $is_refollowup_available = "disabled";
+            $followup = followup::where("Id_member", $customer->Id_member)->orderBy("Id_followup", 'desc')->first();
+            if(date('Y-m-d', strtotime($followup->End_followup_date)) < date("Y-m-d")){
+                $is_refollowup_available = "";
+            }
+            $customer->is_refollowup_available = $is_refollowup_available;
+        }
 
         return view('Customer_service_my_followup', compact('customers'));
     }
