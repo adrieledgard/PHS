@@ -53,7 +53,6 @@
             <tr>
               <td>Name</td>
               <td>Periode Follow Up</td>
-              <td>Total Follow Up</td>
               <td>Status</td>
               <td>Action</td>
             </tr>
@@ -63,7 +62,6 @@
                 <tr>
                     <td>{{$customer->Username}}</td>
                     <td>{{date('Y-m-d', strtotime($customer->Followup_date))}} - {{date('Y-m-d', strtotime($customer->End_followup_date))}}</td>
-                    <td>{{$customer->Count_followup}}</td>
                     @php
                         if($customer->Is_successful_followup == 0){
                             if(date("Y-m-d", strtotime($customer->End_followup_date)) < date("Y-m-d")){

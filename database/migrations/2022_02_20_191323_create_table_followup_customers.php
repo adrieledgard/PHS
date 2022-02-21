@@ -19,7 +19,6 @@ class CreateTableFollowupCustomers extends Migration
             $table->integer('Id_member');
             $table->dateTime('Followup_date');
             $table->dateTime('End_followup_date');
-            $table->integer('Count_followup');
             $table->tinyInteger('Is_successful_followup');
             $table->timestamps();
         });

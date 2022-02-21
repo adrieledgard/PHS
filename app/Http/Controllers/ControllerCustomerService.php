@@ -80,12 +80,15 @@ class ControllerCustomerService extends Controller
                         continue;
                     }
 
-                    $transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->first();
-                    $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
-                    $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
-                    if($interval->format("%d") != $request->get("lama_tidak_transaksi")){
-                        continue;
+                    if($jum_transaksi != 0){
+                        $transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->first();
+                        $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
+                        $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
+                        if($interval->format("%d") != $request->get("lama_tidak_transaksi")){
+                            continue;
+                        }
                     }
+                    
 
                     $member->Phone = "62" . substr($member->Phone, -(strlen($member->Phone)-1));
                     array_push($available_customers, $member);
@@ -98,7 +101,7 @@ class ControllerCustomerService extends Controller
     public function followup(Request $request)
     {
         $tanggal_followup = "";
-        $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('End_followup_date', 'desc')->first();
+        $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('Id_followup', 'desc')->first();
         if(!empty($followed_up_member)){
             if($followed_up_member->Is_successful_followup == 1) {
                 return redirect()->back();
@@ -109,17 +112,7 @@ class ControllerCustomerService extends Controller
             $tanggal_followup = $tanggal_followup == "" ? date("Y-m-d") : $tanggal_followup;
             $member = member::find($request->Id_member);
             $end_followup_date = date('Y-m-d', strtotime($tanggal_followup . "+ " . config('followup.jeda_periode_followup') . " days" ));
-            if(empty($followed_up_member)){
-                $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
-            }else {
-                if($followed_up_member->Id_customer_service != session()->get('userlogin')->Id_member){
-                    $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
-                }else {
-                    $count_followup = $followed_up_member->Count_followup + 1;
-                    (new followup())->edit_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date, $count_followup);
-                }
-                
-            }
+            $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
             
 
             Mail::to(strtolower($member->Email))->send(new MailFollowUp($request->follow_up_description));
@@ -152,7 +145,7 @@ class ControllerCustomerService extends Controller
 
         foreach ($customers as $customer) {
             $is_refollowup_available = "disabled";
-            $followup = followup::where("Id_member", $customer->Id_member)->orderBy('End_followup_date', 'desc')->first();
+            $followup = followup::where("Id_member", $customer->Id_member)->orderBy('Id_followup', 'desc')->first();
             if(date('Y-m-d', strtotime($followup->End_followup_date)) < date("Y-m-d") && $followup->Is_successful_followup == 0){
                 $is_refollowup_available = "";
             }

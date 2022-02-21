@@ -4018,9 +4018,9 @@ class Controller extends BaseController
 
 	public function checkerFollowup($Id_member, $transaction_date)
 	{
-		$followup = followup::where("Id_member", $Id_member)->orderBy('End_followup_date', 'desc')->first();
+		$followup = followup::where("Id_member", $Id_member)->orderBy('Id_followup', 'desc')->first();
 		if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
-			(new followup())->followup_successful($followup->Id_customer_service, $Id_member);
+			(new followup())->followup_successful($followup->Id_followup, $Id_member);
 		}
 	}
 }
