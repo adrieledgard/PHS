@@ -109,7 +109,8 @@ class ControllerCustomerService extends Controller
             if(empty($followed_up_member)){
                 $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
             }else {
-                (new followup())->edit_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
+                $count_followup = $followed_up_member->Count_followup + 1;
+                (new followup())->edit_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date, $count_followup);
             }
             
 
