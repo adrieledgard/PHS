@@ -50,9 +50,9 @@
                 <div class="card-body">
                     {{Form::open(array('url'=>'simpan_pengaturan_followup/','method'=>'post','class'=>'row g-3'))}}
                     {{ Form::label('Jeda periode follow up :','') }}
-                    {{ Form::number('jeda_periode_followup', session('jeda_periode_followup'), ['class'=>'form-control','id'=>'jeda_periode_followup', 'placeholder' => "0", 'required' => 'required']) }}
+                    {{ Form::number('jeda_periode_followup', config('followup.jeda_periode_followup'), ['class'=>'form-control','id'=>'jeda_periode_followup', 'placeholder' => "0", 'required' => 'required']) }}
                     {{ Form::label('Limit follow up per CS:','') }}
-                    {{ Form::number('limit_followup_cs', session('limit_followup_cs'), ['class'=>'form-control','id'=>'limit_followup_cs', 'placeholder' => "0", 'required' => 'required']) }}
+                    {{ Form::number('limit_followup_cs', config('followup.limit_followup_cs'), ['class'=>'form-control','id'=>'limit_followup_cs', 'placeholder' => "0", 'required' => 'required']) }}
                     <br>
                     {{ Form::submit('Simpan', ['class'=>'btn btn-primary']) }}
                     {{Form::close()}}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\cust_order_header;
 use App\followup;
+use App\Mail\FollowUp as MailFollowUp;
 use App\member;
 use App\Ticket;
 use App\voucher;
@@ -11,6 +12,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ControllerCustomerService extends Controller
 {
@@ -95,11 +97,19 @@ class ControllerCustomerService extends Controller
 
     public function followup(Request $request)
     {
+        $tanggal_followup = "";
         $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('Id_followup', 'desc')->first();
-        $tanggal_followup = new DateTime(date("Y-m-d", strtotime($followed_up_member->Followup_date)));
-        $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_followup);
-        if($interval->format("%d") >= session('jeda_periode_followup')){
-            $end_followup_date = date('Y-m-d', strtotime( "+" . session('jeda_periode_followup') . " day" , strtotime (date("Y-m-d H:i:s"))));
+        if(!empty($followed_up_member)){
+            $tanggal_followup = new DateTime(date("Y-m-d", strtotime($followed_up_member->Followup_date)));
+            $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_followup);
+        }
+        if($tanggal_followup == "" || $interval->format("%d") >= config('followup.jeda_periode_followup')){
+            $tanggal_followup = $tanggal_followup == "" ? date("Y-m-d") : $tanggal_followup;
+            $member = member::find($request->Id_member);
+            $end_followup_date = date('Y-m-d', strtotime($tanggal_followup . "+ " . config('followup.jeda_periode_followup') . " days" ));
+            $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
+
+            Mail::to(strtolower($member->Email))->send(new MailFollowUp($request->follow_up_description));
         }
         return redirect()->back();
     }
@@ -111,8 +121,13 @@ class ControllerCustomerService extends Controller
 
     public function simpan_pengaturan_followup(Request $request)
     {
-        session(['jeda_periode_followup' => $request->jeda_periode_followup]);
-        session(['limit_followup_cs' => $request->limit_followup_cs]);
+        $array = [
+            'jeda_periode_followup' => $request->jeda_periode_followup,
+            'limit_followup_cs' => $request->limit_followup_cs
+        ];
+        $fp = fopen(base_path('config/followup.php'), 'w');
+        fwrite($fp, '<?php return ' . var_export($array, true) . ';');
+        fclose($fp);
         return redirect()->back();
     }
 }

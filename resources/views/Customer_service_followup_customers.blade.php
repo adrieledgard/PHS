@@ -39,6 +39,8 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
+
+  <link rel="stylesheet" href="{{asset('css/summernote-bs4.css')}}">
 @endpush
 
 
@@ -75,7 +77,6 @@
                     <td>{{$customer->Username}}</td>
                     <td>
                         {{ Form::button('Follow up email', ['name'=>'btn_edit','class'=>'btn btn-primary btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#followup_email']) }}
-                        <a href="https://wa.me/{{$customer->Phone}}" target="_blank" class="btn btn-primary btn-sm">Follow up WA</a>
                     </td>
                     
                 </tr>
@@ -98,7 +99,7 @@
           {{Form::open(array('url'=>'followup/','method'=>'post','class'=>'row g-3'))}}
           <div class="col-md-12">
             {{ Form::textarea('follow_up_description', '', ['class'=>'form-control','id'=>'follow_up_description', 'placeholder' => "Masukkan kata-kata", 'required' => 'required']) }}
-            <input type="hidden" class="Id_member">
+            <input type="hidden" class="Id_member" name="Id_member">
           </div>
         </div>
         <div class="modal-footer">
@@ -122,11 +123,13 @@ $.widget.bridge('uibutton', $.ui.button)
 <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
    <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
 <script>
 $(document).ready( function () {
-$('#table_id').DataTable();
-} );
+  $('#table_id').DataTable();
+});
 </script>
+
 <!-- ChartJS -->
 <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->
@@ -148,11 +151,15 @@ $('#table_id').DataTable();
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
+<script src="{{ asset('js/summernote-bs4.js') }}"></script>
+
 <script>
+// $('.summernote').summernote();
+
 $("#followup_email").on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
     var id = button.data('idmember');
-    document.getElementsByClassName(".Id_member").value = id;
+    $(".Id_member").val(id);
  });
 </script>
     
