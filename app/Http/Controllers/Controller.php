@@ -39,6 +39,7 @@ use App\cust_order_header;
 use App\cust_order_detail;
 use App\ebook;
 use App\email_ebook;
+use App\followup;
 use App\Mail\BroadcastMail;
 use App\rate_review;
 use DateTime;
@@ -3962,6 +3963,7 @@ class Controller extends BaseController
 		$order = cust_order_header::find($request->id);
 		$order->status = 5;
 		$order->save();
+		$this->checkerFollowup($order->Id_member, $order->Date_time);
 		return 'sukses';
 	}
 
@@ -4011,6 +4013,14 @@ class Controller extends BaseController
 			$update_old_order = cust_order_header::find($order->Id_order);
 			$update_old_order->Status = 5;
 			$update_old_order->save();
+		}
+	}
+
+	public function checkerFollowup($Id_member, $transaction_date)
+	{
+		$followup = followup::where("Id_member", $Id_member)->orderBy('End_followup_date', 'desc')->first();
+		if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
+			(new followup())->followup_successful($followup->Id_customer_service, $Id_member);
 		}
 	}
 }

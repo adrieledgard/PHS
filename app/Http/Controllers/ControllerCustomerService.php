@@ -98,8 +98,11 @@ class ControllerCustomerService extends Controller
     public function followup(Request $request)
     {
         $tanggal_followup = "";
-        $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('Id_followup', 'desc')->first();
+        $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('End_followup_date', 'desc')->first();
         if(!empty($followed_up_member)){
+            if($followed_up_member->Is_successful_followup == 1) {
+                return redirect()->back();
+            }
             $tanggal_followup = date("Y-m-d", strtotime($followed_up_member->End_followup_date));
         }
         if($tanggal_followup == "" || $tanggal_followup < date("Y-m-d")){
@@ -149,8 +152,8 @@ class ControllerCustomerService extends Controller
 
         foreach ($customers as $customer) {
             $is_refollowup_available = "disabled";
-            $followup = followup::where("Id_member", $customer->Id_member)->orderBy("Id_followup", 'desc')->first();
-            if(date('Y-m-d', strtotime($followup->End_followup_date)) < date("Y-m-d")){
+            $followup = followup::where("Id_member", $customer->Id_member)->orderBy('End_followup_date', 'desc')->first();
+            if(date('Y-m-d', strtotime($followup->End_followup_date)) < date("Y-m-d") && $followup->Is_successful_followup == 0){
                 $is_refollowup_available = "";
             }
             $customer->is_refollowup_available = $is_refollowup_available;

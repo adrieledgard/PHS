@@ -38,7 +38,16 @@ class followup extends Model
             );
 
         return "sukses";
-      
+    }
 
+    public function followup_successful($Id_customer_service, $Id_member)
+    {
+        followup::where('Id_customer_service','=',$Id_customer_service)->where('Id_member', $Id_member)->update(
+            [
+                'Is_successful_followup' => 1,
+            ]
+            );
+
+        return "sukses";
     }
 }
