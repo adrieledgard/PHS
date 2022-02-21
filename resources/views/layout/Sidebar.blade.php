@@ -359,6 +359,20 @@
                 <?php 
                 }
               ?>
+              <?php 
+                  if(session()->get('userlogin')->Role =="CUSTOMER SERVICE")
+                  {
+                    ?>
+                    <li class="nav-item">
+                      <a href="{!! url('my_followup'); !!}" class="nav-link  @yield('my_followup_atv')">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>My Follow up</p>
+                      </a>
+                    </li>
+                  
+                <?php 
+                }
+              ?>
             </ul>
           </li>
          

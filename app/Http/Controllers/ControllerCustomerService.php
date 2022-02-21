@@ -100,14 +100,18 @@ class ControllerCustomerService extends Controller
         $tanggal_followup = "";
         $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('Id_followup', 'desc')->first();
         if(!empty($followed_up_member)){
-            $tanggal_followup = new DateTime(date("Y-m-d", strtotime($followed_up_member->Followup_date)));
-            $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_followup);
+            $tanggal_followup = date("Y-m-d", strtotime($followed_up_member->End_followup_date));
         }
-        if($tanggal_followup == "" || $interval->format("%d") >= config('followup.jeda_periode_followup')){
+        if($tanggal_followup == "" || $tanggal_followup < date("Y-m-d")){
             $tanggal_followup = $tanggal_followup == "" ? date("Y-m-d") : $tanggal_followup;
             $member = member::find($request->Id_member);
             $end_followup_date = date('Y-m-d', strtotime($tanggal_followup . "+ " . config('followup.jeda_periode_followup') . " days" ));
-            $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
+            if(empty($followed_up_member)){
+                $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
+            }else {
+                (new followup())->edit_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
+            }
+            
 
             Mail::to(strtolower($member->Email))->send(new MailFollowUp($request->follow_up_description));
         }
@@ -129,5 +133,14 @@ class ControllerCustomerService extends Controller
         fwrite($fp, '<?php return ' . var_export($array, true) . ';');
         fclose($fp);
         return redirect()->back();
+    }
+
+    public function my_followup()
+    {
+        $customers = followup::join('member', 'member.Id_member', 'followup_customers.Id_member')
+                    ->where("followup_customers.Id_customer_service", session()->get('userlogin')->Id_member)
+                    ->get();
+
+        return view('Customer_service_my_followup', compact('customers'));
     }
 }

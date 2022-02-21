@@ -24,4 +24,19 @@ class followup extends Model
         return "sukses";
 
     }
+
+    public function edit_followup($Id_customer_service, $Id_member,$Followup_date,$End_followup_date)
+    {
+        followup::where('Id_customer_service','=',$Id_customer_service)->where('Id_member', $Id_member)->update(
+            [
+                'Followup_date' => $Followup_date,
+                'End_followup_date' => $End_followup_date,
+                'Is_successful_followup' => 0,
+            ]
+            );
+
+        return "sukses";
+      
+
+    }
 }

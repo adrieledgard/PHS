@@ -355,6 +355,7 @@ Route::get('request_assist_update/{id}', ['uses' => "ControllerCustomerService@u
 Route::post('update_request_assist/{id}', ['uses' => "ControllerCustomerService@update"]);
 Route::post('closed_request_assist', ['uses' => "ControllerCustomerService@closed"]);
 Route::get('list_available_customer', ['uses' => "ControllerCustomerService@list_available_customer"]);
+Route::get('my_followup', ['uses' => "ControllerCustomerService@my_followup"]);
 Route::post('followup', ['uses' => "ControllerCustomerService@followup"]);
 Route::get('pengaturan_followup', ['uses' => "ControllerCustomerService@pengaturan_followup"]);
 Route::post('simpan_pengaturan_followup', ['uses' => "ControllerCustomerService@simpan_pengaturan_followup"]);
