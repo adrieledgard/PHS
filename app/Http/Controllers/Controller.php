@@ -42,10 +42,6 @@ use App\email_ebook;
 use App\Mail\BroadcastMail;
 use DateTime;
 
-
-
-
-
 use App\Rules\ValidasiEmailMember;
 use App\Rules\ValidasiPasswordEditTeamMember;
 use App\Rules\ValidasiUsernameMember;
@@ -62,59 +58,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 	
-	// public function rajaongkir(Request $request)
-	// {
-	// 	function getCost($apikey) {
-	// 		$curl = curl_init();
-	// 		curl_setopt_array($curl, array(
-	// 		  CURLOPT_URL => "https://api.rajaongkir.com/starter/cost",
-	// 		  CURLOPT_RETURNTRANSFER => true,
-	// 		  CURLOPT_ENCODING => "",
-	// 		  CURLOPT_MAXREDIRS => 10,
-	// 		  CURLOPT_TIMEOUT => 30,
-	// 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	// 		  CURLOPT_CUSTOMREQUEST => "POST",
-	// 		  CURLOPT_POSTFIELDS => "origin=444&destination=114&weight=1700&courier=jne",
-	// 		  CURLOPT_HTTPHEADER => array(
-	// 		 "content-type: application/x-www-form-urlencoded",
-	// 		 "key: $apikey"
-	// 		  ),
-	// 		));
-		   
-	// 		$response = curl_exec($curl);
-	// 		$err = curl_error($curl);
-	// 		curl_close($curl); 
-			
-	// 		return $response; 
-	// 	   }
-		   
-	// 	   function getListKota($apikey) {
-	// 		$curl = curl_init();
-	// 		curl_setopt_array($curl, array(
-	// 		  CURLOPT_URL => "https://api.rajaongkir.com/starter/city",
-	// 		  CURLOPT_RETURNTRANSFER => true,
-	// 		  CURLOPT_ENCODING => "",
-	// 		  CURLOPT_MAXREDIRS => 10,
-	// 		  CURLOPT_TIMEOUT => 30,
-	// 		  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-	// 		  CURLOPT_CUSTOMREQUEST => "GET",
-	// 		  CURLOPT_HTTPHEADER => array(
-	// 		 "key: $apikey"
-	// 		  ),
-	// 		));
-		   
-	// 		$response = curl_exec($curl);
-	// 		$err = curl_error($curl);
-	// 		curl_close($curl);
-			
-	// 		return $response; 
-	// 	   }
-		   
-	// 	   $apikey = "43071cec4b1eddf220044c10ee25dfb1"; 
-	// 	   //echo  getListKota($apikey); 
-	// 	   echo  getCost($apikey);
-	// }
-
 	public function dthome()
 	{
 		session()->forget('id_cat');
@@ -156,14 +99,7 @@ class Controller extends BaseController
 		try {
 			//code...
 			$param['member_name'] = session()->get('userlogin')->Username;
-			// if(get('userlogin')->Role=='CUST')
-			// {
-			// 	$param['member_name'] ="abc";
-			// }
-			// else
-			// {
-				
-			// }
+		
 		
 		} catch (\Throwable $th) {
 			//throw $th;
@@ -218,11 +154,6 @@ class Controller extends BaseController
 			$pageakhir = ceil(count($hasil)/12) * 12;
 			$pageawal = $pageakhir-11;
 		}
-		
-		
-
-		
-
 		foreach ($hasil as $product) {
 			# code...
 			$hitungjumlah++;
@@ -321,8 +252,6 @@ class Controller extends BaseController
 					}
 				}
 	
-	
-	
 				$temp=$temp."<div class='col-lg-6 col-md-6 col-xl-3'>";
 					$temp=$temp."<div class='product-wrapper mb-30'>";
 						$temp=$temp."<div class='product-img'>";
@@ -369,11 +298,6 @@ class Controller extends BaseController
 
 			
 		}
-
-		// $temp=$temp."<div class='view-all-product text-center' style='Z-index:10'>";
-		// $temp=$temp."<a href='shop.html' style='Z-index:20'>View More</a>";
-		// $temp=$temp."</div>";
-            
 		if($angkapage>ceil($hitungjumlah/12))
 		{
 			session()->forget('page');
@@ -399,10 +323,6 @@ class Controller extends BaseController
 	public function Dashboard_admin(){
 		return view('Dashboard_admin');
 	}
-
-	
-	
-
 
 	public function register(){
 		$param['msg']="";
@@ -430,11 +350,7 @@ class Controller extends BaseController
 		$param['msg']="";
 		return view('login',$param);
 		
-	
 	}
-
-
-
 	public function post_register(Request $request){
 		
 		if($request->register){
@@ -523,52 +439,6 @@ class Controller extends BaseController
 				}
 			}
 
-
-
-			// if($request->validate(
-			// 	[
-			// 		'txt_username' => ['required','max:20','alpha_dash', new ValidasiUsernameMember("add","")],
-			// 		'txt_email' => ['required','email','max:500', new ValidasiEmailMember("add","")],
-			// 		'txt_phone' => ['required','numeric', new ValidasiPhoneMember("add","")],
-			// 		'txt_password_regist' => ['required','min:8', 'max:20'],
-			// 		'txt_konpassword' => ['required','same:txt_password_regist']
-
-			// 	],
-			// 	[
-			// 		'txt_username.required' => 'Username harus di isi !!',
-			// 		'txt_username.max' => 'Username maksimal 20 karakter !!',
-			// 		'txt_username.alpha_dash' => 'Username may only contain letters, numbers, dashes and underscores !!',
-			// 		'txt_email.required' => 'Email harus di isi !!',
-			// 		'txt_email.email' => 'Format email salah !!',
-			// 		'txt_phone.required' => 'No HP harus di isi !!',
-			// 		'txt_phone.numeric' => 'No HP harus numeric !!',
-			// 		'txt_phone.max' => 'No HP maksimal 16 karakter !!',
-			// 		'txt_password_regist.required' => 'Password harus di isi !!',
-			// 		'txt_password_regist.min' => 'Password harus minimal 8 karakter !!',
-			// 		'txt_password_regist.min' => 'Password harus maksimal 20 karakter !!',
-			// 		'txt_konpassword.same' => 'Password dan konfirmasi password tidak sama !!'
-
-			// 	]))
-			// 	{
-			// 		$username = $request->txt_username;
-			// 		$email = $request->txt_email;
-			// 		$phone = $request->txt_phone;
-			// 		$password = $request->txt_password_regist;
-
-			// 		$member = new member();
-			// 		$hasil = $member->insertdata($username,$email,$phone,$password);
-
-			// 		if($hasil == "sukses")
-			// 		{
-			// 			$param['msg'] = "Sukses Register !";
-			// 			return view('register',$param);
-			// 		}
-			// 		else
-			// 		{
-			// 			$param['msg'] = "Data ada kembar !";
-			// 			return view('register',$param);
-			// 		}
-			// 	}
 		}
 		else if($request->login)
 		{
@@ -631,8 +501,6 @@ class Controller extends BaseController
 					
 				}
 			}
-
-
 		}
 		
 	}
@@ -741,6 +609,8 @@ class Controller extends BaseController
 		return view('login',$param);
 	}
 
+
+	
 	public function validasipromo()
 	{
 		$promo = promo_header::where('Status','<>',0)
@@ -765,6 +635,9 @@ class Controller extends BaseController
 		}
 	}
 
+	//STATUS VOUCHER
+	// 1 active
+	// 2 expire lewat tanggal
 	public function validasivoucher()
 	{
 		$vc = voucher::where('Status','<>',0)
@@ -942,10 +815,6 @@ class Controller extends BaseController
 								$temp=$temp."</div>";
 								//------------------------------------------------------
 
-								
-
-
-
 								$Id_product=$product[0]['Id_product'];
                                 $fixharga="";
                                 $murah=999999999999;
@@ -1004,8 +873,6 @@ class Controller extends BaseController
 		{
 			$prosub = product_sub_category::where('Id_sub_category','=', $id)
 			->get();
-
-		
 			foreach ($prosub as $data) {
 				$ctrpro++;
 
@@ -1070,13 +937,7 @@ class Controller extends BaseController
 
 
 		}
-
-		
-
-
 		echo $temp;
-		
-
 	}
 
 	public function view_more_halaman_home(Request $request)
@@ -1125,11 +986,6 @@ class Controller extends BaseController
 		session()->forget('page');
 		session()->put('page',1);
 	}
-
-
-
-
-
 	public function Cust_show_product($id)
 	{
 // adriel
@@ -1143,8 +999,6 @@ class Controller extends BaseController
 
 	$param['dtpromodetail2'] = promo_detail::where('Status','=',1)
 	->get();
-
-
 
 		$param['dtproduct'] = product::where('product.Id_product','=',$id)
 		->join('type','product.Id_type','type.Id_type')
@@ -1182,8 +1036,6 @@ class Controller extends BaseController
 
 		return view('Cust_show_product',$param);
 	}
-
-
 
 	public function Cust_show_product_affiliate($id,$Random_code)
 	{
@@ -1293,8 +1145,6 @@ class Controller extends BaseController
 
 			}
 		}
-
-
 		if($sale==1)
 		{
 			$hargabaru=0;
@@ -1400,8 +1250,6 @@ class Controller extends BaseController
 		$discount=0;
 		$temp="";
 
-		
-
 		foreach ($dtpromoheader as $promoheader) {
 			if($promoheader->Id_variation == $vari[0]->Id_variation)
 			{
@@ -1420,7 +1268,6 @@ class Controller extends BaseController
 
 			}
 		}
-
 
 		if($sale==1)
 		{
@@ -1734,10 +1581,6 @@ class Controller extends BaseController
 		{
 			echo "double";
 		}
-
-
-
-		
 	}
 
 	public function updateqtywishlist(Request $request)
@@ -1925,7 +1768,6 @@ class Controller extends BaseController
 	
 		}
 
-		
 	}
 
 
@@ -1952,10 +1794,6 @@ class Controller extends BaseController
 		}
 		
 	}
-
-	
-
-
 	public function update_cart(Request $request)
 	{
 		$Id_member="";
@@ -2088,7 +1926,6 @@ class Controller extends BaseController
 
 		$vcpoint = $vc[0]->Point;
 
-
 	
 		// $pointmember = session()->get('userlogin')->Point;
 		$Id_member = session()->get('userlogin')->Id_member;
@@ -2096,8 +1933,6 @@ class Controller extends BaseController
 		->get();
 
 		$pointmember = $fp[0]->Point;
-
-
 
 		$lolosvalidasivoucher = 1;
 		$vc = voucher::where('Status','<>',0)
@@ -2229,9 +2064,6 @@ class Controller extends BaseController
                       
                 echo $Last_point."#".$temp;
 
-                      
-             
-			
 		}
 
 	}
@@ -2711,14 +2543,6 @@ class Controller extends BaseController
 						$temp=$temp."</label>";
 				$temp=$temp."</div>";
 					
-					
-
-
-
-
-
-				// echo $kurir[$i]->service."-".$kurir[$i]->cost[0]->value;
-				// echo $kurir[$i]->cost[0]->value."#";
 			}
 		}
 
@@ -2853,8 +2677,6 @@ class Controller extends BaseController
 			$Discount =0;
 			$Id_voucher=0;
 
-
-
 			$cust_header = new cust_order_header();
 			$hasil = $cust_header->insertdata($Date_time, $Id_member, $Address, $Id_province,$Id_city,
 			$Name,$Email, $Phone, $Courier, $Courier_packet, $Affiliate, $Id_voucher, $Weight, $Gross_total, $Shipping_cost,$Discount,$Grand_total,$Shipper,$Status);
@@ -2922,7 +2744,6 @@ class Controller extends BaseController
 	
 				}
 				
-
 			}
 			
 		}
@@ -2962,7 +2783,6 @@ class Controller extends BaseController
 			}
 			//-----------------------------------------------
 
-
 			$arr = cart::where('Id_member','=',$Id_member)
 			->get();
 
@@ -2984,7 +2804,6 @@ class Controller extends BaseController
 					$variation = variation::where('Id_variation','=',$datacart->Id_variation)
 					->where('Status','=',1)
 					->get();
-	
 	
 					$Normal_price = $variation[0]->Sell_price;
 					$Id_promo =0;
@@ -3028,9 +2847,6 @@ class Controller extends BaseController
 				
 
 			}
-
-
-
 		}
 
 
@@ -3089,105 +2905,7 @@ class Controller extends BaseController
 			}
 			
 		}
-
-		
-
 	}
-
-	// 0 cancel
-	// 1 pending (masih kurang 2 hari)
-	// 2 Payment receive (lunas)
-	// 3 processing (di pick shipper)
-	// 4 shipping (resi sdh di inputkan)
-	// 5 Orderan yang sudah di konfirmasi oleh pembeli / orderan tidak di konfirmasi selama 10 hari sejak produk dikirim
-	// 6 All
-	
-	// public function My_order() {
-	// 	$Id_member = session()->get('userlogin')->Id_member;
-		
-
-	// 	try {
-	// 		if(session()->get('Filter_my_order')==6)
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-	// 		else if(session()->get('Filter_my_order')==0)
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->where('cust_order_header.Status','=',0)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-	// 		else if(session()->get('Filter_my_order')==1)
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->where('Status','=',1)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-	// 		else if(session()->get('Filter_my_order')==2)
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->where('Status','=',2)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-	// 		else if(session()->get('Filter_my_order')==3)
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->where('Status','=',3)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-	// 		else if(session()->get('Filter_my_order')==4)
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->where('Status','=',4)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-	// 		else if(session()->get('Filter_my_order')==5)
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->where('Status','=',5)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-	// 		else
-	// 		{
-	// 			$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 		}
-
-	// 	} catch (\Throwable $th) {
-
-	// 		$datatransaksi = cust_order_header::where('Id_member','=',$Id_member)
-	// 			->orderby('Id_order','desc')
-	// 			->get();
-	// 	}
-
-		
-	
-	
-
-
-	// 	foreach($datatransaksi as $row) {
-	// 	 $tglskrg = $row->Date_time; 
-	// 	 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+48 hour'));
-	  
-	// 	 $row->jatuhtempo = $tgljatuhtempo;
-	  
-	// 	//  echo $tglskrg."<br>";
-	// 	//  echo $tgljatuhtempo."<br>";
-	// 	}
-	// 	$params['datatransaksi'] = $datatransaksi;
-	// 	return view('Cust_my_order', $params); 
-	//    }
-
-
 	public function My_order() {
 		// untuk membuat semua transaksi yg sudah dibayar di midtrans menjadi 
 		// payment_status = 2. ambil dari cust_orer_header
@@ -3212,8 +2930,6 @@ class Controller extends BaseController
 					}
 
 		$Id_member = session()->get('userlogin')->Id_member;
-		
-
 		try {
 
 			if(session()->get('Filter_my_order')==null || session()->get('Filter_my_order')=="")
@@ -3289,26 +3005,6 @@ class Controller extends BaseController
 				->orderby('Id_order','desc')
 				->get();
 		}
-
-		// foreach($datatransaksi as $row) {
-		// 	$det = new cust_order_detail(); 
-		// 	$detail = $det->getdetail($row->Id_order); 
-
-		// 	$tglskrg = $row->Date_time; 
-		// 	$tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+48 hour'));
-	  
-		// 	$row->jatuhtempo = $tgljatuhtempo;
-
-		// 	if(count($detail) > 0) {
-		// 		$midtrans = new CreateSnapTokenService($row, $det->getdetail($row->Id_order));
-		// 		$snapToken = $midtrans->getSnapToken();	
-		// 		$row->snap_token = $snapToken; 					
-		// 	}
-		// 	else { 
-		// 		$row->snap_token = 0; 
-		// 	}
-		// }
-
 		foreach($datatransaksi as $row) {
 
 			$det = new cust_order_detail(); 
@@ -3337,9 +3033,6 @@ class Controller extends BaseController
 		$params['datatransaksi'] = $datatransaksi;
 		return view('Cust_my_order', $params); 
 	   }
-
-
-
 
 	   function cekStatusTransaksi($number) {
         $curl = curl_init();
@@ -3430,9 +3123,6 @@ class Controller extends BaseController
 		foreach ($stockcard as $datasc) {
 			$temp2 = $temp2 . "@" . $datasc->Credit . "->" . $datasc->Expire_date ."<br>";
 		}
-
-
-
 		}
 		$temp=$temp."<tr>";
 		$temp=$temp."<td></td>";
@@ -3501,9 +3191,6 @@ class Controller extends BaseController
 		->orderby('Id_order','desc')
 		->get();
 	
-	
-
-
 		foreach($datatransaksi as $row) {
 		 $tglskrg = $row->Date_time; 
 		 $tgljatuhtempo = date('Y-m-d H:i:s', strtotime($tglskrg . '+2 hour'));
@@ -3610,13 +3297,11 @@ class Controller extends BaseController
 			$temp=$temp."</div>";
 			$temp=$temp."<br> <br>";
 		
-		
 			$no=$no+1;
 		
 		}
 
 		echo $temp;
-
 	}
 
 	public function update_status(Request $request)
@@ -3648,8 +3333,6 @@ class Controller extends BaseController
 			
 			return "sukses";
 		}
-		
-		
 	}
 
 	public function Proccess_cust_order(Request $request)
@@ -3923,7 +3606,162 @@ class Controller extends BaseController
 			}
 		}
 		
-
 		return redirect()->route('broadcast_view')->with('success', "Success send to $jumlahterkirim users");
+	}
+
+	public function embed_code($id)
+	{
+		$param['dtproduct'] = product::where('product.Id_product','=', $id)
+		->join('brand','product.Id_brand','brand.Id_brand')
+		->join('type','product.Id_type','type.Id_type')
+		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
+		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+			->get();
+
+		
+
+		$cal=1;
+		$db = variation::where('Id_product','=', $id)
+		->where('Status','=',1)
+		->get(); 
+
+		$arr= [];  // array 
+		foreach($db as $row) {
+			if($row->Status==1)
+			{
+				$arr[$row->Id_variation] = $row->Option_name; 
+
+				
+			}
+		
+		}
+		
+		$param['arr_variation']  = $arr; 
+
+		return view('embed_code',$param);
+	}
+
+
+	public function embed_checkout(Request $request){
+
+
+		//tanam cookie affiliate
+
+
+		
+		$Id_member="";
+		try {
+			//code...
+			$Id_member =session()->get('userlogin')->Id_member;
+		} catch (\Throwable $th) {
+			//throw $th;
+			$Id_member="";
+		}
+		
+
+		if($Id_member!="")
+		{
+
+			$param['cart'] = cart::where('Id_member','=',$Id_member)
+			->get();
+
+			$Id_member = session()->get('userlogin')->Id_member;
+
+			$param['Id_member'] = $Id_member;
+	
+		}
+		else
+		{
+			$param['Id_member'] ="";
+			if(session()->get('cart'))
+			{
+				$param['cart'] = json_decode(session()->get('cart'));
+			}
+			else
+			{
+				$param['cart'] =[];
+			}
+			
+		}
+
+
+
+		$param['product'] = product::where('Status','=',1)
+		->get();
+
+		$param['productimage'] = product_image::where('Image_order','=',1)
+		->get();
+
+		$param['variation'] = variation::where('Status','=',1)
+		->get();
+
+		$param['dtpromoheader'] = promo_header::where('Status','=',1)
+		->get();
+
+		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
+		->get();
+
+		$param['dtaddress'] = address_member::where('address_member.Status','=',1)
+		->where('address_member.Id_member','=',$Id_member)
+		->Join('list_city','address_member.Id_city','list_city.Id_city')
+		->get();
+
+		try {
+			session()->put('Id_address',$param['dtaddress'][0]->Id_address);
+		} catch (\Throwable $th) {
+			//throw $th;
+		}
+
+
+		$param['dtvoucher'] = voucher::select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
+		->get();
+
+
+	
+		$param['dtvouchermember'] = voucher_member::where('Id_member','=',$Id_member)
+		->get();
+		
+
+		$db = list_city::all(); 
+		$arr= [];  // array 
+		$arr2= [];  // array 
+		foreach($db as $row) {
+            $arr[0] = "";
+			$arr2[0] = "";
+			$arr[$row->Id_province] = $row->Province_name; 
+			$arr2[$row->Id_city] = $row->City_name; 
+		
+		}
+		
+		$param['arr_province']  = $arr; 
+		$param['arr_city']  = $arr2; 
+		return view('Cust_checkout',$param);
+
+
+
+
+			// if($request->validate(
+			// 	[
+			// 		// 'txt_product_name' => ['required','max:100',new ValidasiProductName("add","")],
+			// 		// 'cb_type' => ['required'],
+			// 		// 'txt_packaging' => ['max:20'],
+			// 		// 'cb_brand' => ['required'],
+			// 		// 'txt_composition' => ['max:500'],
+			// 		// 'txt_efficacy' => ['max:500'],
+			// 		// 'txt_description' => ['max:1000'],
+			// 		// 'txt_bpom' => ['max:20'],
+			// 		// 'txt_storage_way' => ['max:50'],
+			// 		// 'txt_dose' => ['max:100'],
+			// 		// 'txt_disclaimer' => ['max:50'],
+			// 		// 'cb_status' =>['required',new ValidasiSubCategorySession(), new ValidasiOptionSession()],
+			// 	],
+			// 	[
+
+			// 		// 'cb_status.required' => 'Status cannot be empty'
+			// 	]))
+			// 	{
+					
+			// 	}
+		
 	}
 }

@@ -387,7 +387,8 @@ Route::get('broadcast-view', ['uses' => 'Controller@broadcastView'])->name('broa
 Route::post('broadcast', ['uses' => 'Controller@broadcast']);
 
 
-
+Route::get('embed_code/{id}', ['uses' => 'Controller@embed_code']);
+Route::post('embed_checkout', ["uses"=>"Controller@embed_checkout"]);
 
 
 
