@@ -2931,9 +2931,9 @@ class Controller extends BaseController
 							// print_r($res);
 							if($res->status_message == "Success, transaction is found") {
 								if($res->transaction_status == "settlement") {
-								$data = cust_order_header::find($row->Id_order); 
-								$data->Status = 2; 
-								$data->save(); 
+									$data = cust_order_header::find($row->Id_order); 
+									$data->Status = 2; 
+									$data->save(); 
 								}    
 							}
 						}
@@ -3044,6 +3044,9 @@ class Controller extends BaseController
 		$params['datatransaksi'] = $datatransaksi;
 		return view('Cust_my_order', $params); 
 	   }
+
+
+
 
 	   function cekStatusTransaksi($number) {
         $curl = curl_init();
