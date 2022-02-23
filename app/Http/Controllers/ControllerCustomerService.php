@@ -100,6 +100,12 @@ class ControllerCustomerService extends Controller
 
     public function followup(Request $request)
     {
+        $date_today = date("Y-m-d") . " 00:00:00";
+        $count_followup_cs = followup::where("Id_customer_service", session()->get('userlogin')->Id_member)->where('Followup_date', $date_today)->count();
+        if($count_followup_cs == config('followup.limit_followup_cs')){
+            return redirect()->back()->withErrors(['message'=>'Anda sudah melebihi limit hari ini!']);
+        }
+
         $tanggal_followup = "";
         $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('Id_followup', 'desc')->first();
         if(!empty($followed_up_member)){
