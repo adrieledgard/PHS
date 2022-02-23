@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\followup;
+use App\member;
 use App\product;
 use App\variation;
 use App\stock_card;
@@ -9,9 +12,6 @@ use Illuminate\Http\Request;
 
 class ControllerReport extends Controller
 {
-    //
-
-    
     public function stock_card(){
 
         //  $param['purchase_header'] = purchase_header::where('purchase_header.Id_supplier','>',0)
@@ -113,4 +113,68 @@ class ControllerReport extends Controller
 		return($temp);
 	}
     
+    public function followup_report()
+    {
+        $customer_service = member::where("Role", "CUSTOMER SERVICE")->get();
+        $arr= [];  // array 
+		foreach($customer_service as $row) {
+			$arr[$row->Id_member] = $row->Username; 
+		}
+        return view('Report_follow_up', compact('arr'));
+    }
+
+    public function print_followup_report(Request $request)
+    {
+        $request->merge(['date_period' => str_replace("%20", " ", $request->get('date_period'))]);
+        $request->merge(['Id_customer_service' => $request->get('Id_customer_service')]);
+        $data = $this->show_table_followup_cs($request);
+        $data['customer_service'] = member::find($request->Id_customer_service);
+        $data['period'] = $request->date_period;
+        return view('Report_follow_up_print', compact('data'));
+    }
+
+    public function show_table_followup_cs(Request $request)
+	{
+        //TOTAL, FAILED, SUCCESS
+        $summary = [0, 0, 0];
+        $temp="";
+        $Id_customer_service = $request->Id_customer_service;
+        $period = explode(" - ", $request->date_period);
+        
+        $followup = followup::where("Id_customer_service", $Id_customer_service)
+                    ->whereBetween("Followup_date", $period)
+                    ->get();
+        $summary[0] = count($followup);
+
+		for ($i=0; $i < count($followup) ; $i++) { 
+            $cs = member::where("Id_member", $followup[$i]->Id_customer_service)->first();
+            $customer = member::where("Id_member", $followup[$i]->Id_member)->first();
+            $status = "Wait transaction";
+            if($followup[$i]['Is_successful_followup'] == 0){
+                if(date("Y-m-d", strtotime($followup[$i]->End_followup_date)) < date("Y-m-d")){
+                    $status = "Failed";
+                    $summary[1] ++;
+                }
+            }else {
+                $status = "Sucessful";
+                $summary[2] ++;
+            }
+			$temp =$temp. "<tr>";
+                $temp =$temp. "<td>";
+                    $temp =$temp. $cs->Username;
+                $temp =$temp. "</td>";
+                $temp =$temp. "<td>";
+                    $temp =$temp. $customer->Username;
+                $temp =$temp. "</td>";
+                $temp =$temp. "<td>";
+                    $temp =$temp. date("Y-m-d", strtotime($followup[$i]['Followup_date'])) . " - " . date("Y-m-d", strtotime($followup[$i]['End_followup_date']));
+                $temp =$temp. "</td>";
+                $temp =$temp. "<td>";
+                    $temp =$temp. $status;
+                $temp =$temp. "</td>";
+            $temp =$temp. "</tr>";
+		}
+
+		return([$temp, $summary]);
+	}
 }

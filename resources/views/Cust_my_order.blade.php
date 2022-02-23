@@ -23,7 +23,7 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 <!-- JQVMap -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
-
+<link rel="stylesheet" href="{{ asset('assets/css/star-rating.css') }}">
 @endpush
 
 @section('Content')
@@ -91,6 +91,12 @@
                                         </p>
                                         {{-- <button data-toggle="modal" data-target="#View_detail" class="btn-primary" data-Idorder="{{$cr->Id_order}}">View detail</button> --}}
                                         {{ Form::button('View detail', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.viewdetail']) }}
+
+                                        <?php
+                                          if($cr->Status == 4){ ?>
+                                            {{ Form::button('Complete Order', ['name'=>'btn_edit','class'=>'btn btn-success btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.konfirmasi_selesai']) }}
+                                         <?php } ?>
+                                        
                                        
                                         <?php
                                           if($cr->Status ==1)
@@ -109,6 +115,10 @@
                                           }
                                         ?>
                                        
+                                        <?php
+                                          if($cr->Status == 5){ ?>
+                                            {{ Form::button('Give Review', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.rating_review']) }}
+                                        <?php } ?>
                                     </div>
                                 </div>           
                                 <br><br>                 
@@ -243,6 +253,45 @@
       </div>
     </div>
 </div>
+<div class="modal fade konfirmasi_selesai">
+    <div class="modal-dialog modal-l">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Konfirmasi</h4>
+          <button style="color:black" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label for="" class="confirmation_message"></label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button class="btn btn-success btn-sm" onclick="konfirmasi_selesai()">Confirm</button>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal fade rating_review">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rating and Review</h4>
+          <button style="color:black" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
 @endsection
 
 
@@ -283,7 +332,6 @@
 
 
 
-
 <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/js/vendor/jquery-1.12.4.min.js')}}"></script>
 <script src="{{ asset('assets/js/popper.js')}}"></script>
@@ -297,6 +345,9 @@
 <script src="{{ asset('assets/js/owl.carousel.min.js')}}"></script>
 <script src="{{ asset('assets/js/plugins.js')}}"></script>
 <script src="{{ asset('assets/js/main.js')}}"></script> 
+<script type="text/javascript" src="{{ asset('assets/js/star-rating.js')}}">
+
+</script> 
 
 
 
@@ -331,12 +382,104 @@
      
  })
  
+ $(".konfirmasi_selesai").on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id = button.data('idorder');
+    $(".confirmation_message").html("Apakah anda yakin ingin menyelesaikan order <b class='no_nota'>" + id + "</b>?");
+    var modal = $(this);
+ });
+
+ $(".rating_review").on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id = button.data('idorder');
+    var modal = $(this);
+
+    $.get(myurl + '/get_cust_detail_order',
+    {id: id, request_from: 'rating_review'},
+    function(result){
+      var html = "";
+       result.forEach(item => {
+         var is_review = item.is_review ? 'disabled' : '';
+         html += `
+         <div class="row border-bottom-1">
+          <div class="col-12">
+          <strong>${item.Name}</strong>
+          <div class="starrating risingstar d-flex justify-content-end flex-row-reverse">
+                <input type="radio" id="star5-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="5" ${item.rate == 5 ? 'checked' : ''} ${is_review}/><label for="star5-${item.Id_detail_order}" title="5 star"></label>
+                <input type="radio" id="star4-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="4" ${item.rate == 4 ? 'checked' : ''} ${is_review}/><label for="star4-${item.Id_detail_order}" title="4 star"></label>
+                <input type="radio" id="star3-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="3" ${item.rate == 3 ? 'checked' : ''} ${is_review}/><label for="star3-${item.Id_detail_order}" title="3 star"></label>
+                <input type="radio" id="star2-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="2" ${item.rate == 2 ? 'checked' : ''} ${is_review}/><label for="star2-${item.Id_detail_order}" title="2 star"></label>
+                <input type="radio" id="star1-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="1" ${item.rate == 1 ? 'checked' : ''} ${is_review}/><label for="star1-${item.Id_detail_order}" title="1 star"></label>
+            </div>
+            <div class="form-group">
+              <label>Review</label>
+              <textarea class="form-control review-${item.Id_detail_order}" rows="3" ${is_review}>${is_review ? item.review : ''}</textarea>
+            </div>
+            <button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
+            <button type="button" class="btn btn-warning btn-sm mb-2 edit-${item.Id_detail_order}" ${!item.is_review ? 'disabled' : ''} onclick="edit_review(${item.Id_detail_order})">Edit review</button>
+          </div>
+        </div> 
+        `
+        
+       });
+       $(".rating_review .modal-body .container-fluid").html(html);
+    });
+ });
 </script>
 
 
 <script>
     var myurl = "<?php echo URL::to('/'); ?>";
    
+   function konfirmasi_selesai(){
+      var token = $(".csrf_token").val();
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': token
+        }
+      });
+      
+      var id = $(".no_nota").html();
+      $.post(myurl + '/order_confirmation',
+      {id: id, CSRF: token},
+      function(result){
+          if(result == 'sukses'){
+            $("#filter").val("4");
+            filter();
+          }
+          
+      });
+   }
+
+   function send_rating_review(id_detail_order){
+    var token = $(".csrf_token").val();
+    var rate = $(`input[name='rating-${id_detail_order}']:checked`).val();
+    var review = $(".review-" + id_detail_order).val();
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': token
+        }
+      });
+
+      $.post(myurl + '/rate_review_order',
+      {id_detail_order: id_detail_order, CSRF: token, review : review, rate: rate},
+      function(result){
+          if(result == 'sukses'){
+            $(`input[name='rating-${id_detail_order}']`).prop("disabled", 'true');
+            $(".review-" + id_detail_order).prop('disabled', 'true');
+            $(".submit-" + id_detail_order).prop('disabled', 'true');
+            $(".edit-" + id_detail_order).removeProp('disabled');
+          }
+          
+      });
+   }
+
+   function edit_review(id_detail_order){
+    $(`input[name='rating-${id_detail_order}']`).removeProp("disabled");
+    $(".review-" + id_detail_order).removeProp('disabled');
+    $(".submit-" + id_detail_order).removeProp('disabled');
+    $(".edit-" + id_detail_order).prop('disabled', 'true');
+   }
 
     function cariSelisih(tgl2) {
         var dt = new Date();
@@ -427,6 +570,12 @@
           window.location = myurl + "/My_order/";
       });
     }
+    (function() {
+	
+  //RATING ANIMATION
+    
+  });
+
 </script>
 
 @endpush

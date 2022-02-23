@@ -290,8 +290,11 @@ Route::get('Ebook_marketing', ["uses"=>"Controller@Ebook_marketing"]);
 
 Route::get('My_order', ["uses"=>"Controller@My_order"]);
 Route::get('get_cust_detail_order', ["uses"=>"Controller@get_cust_detail_order"]);
+Route::post('order_confirmation', ["uses"=>"Controller@order_confirmation"]);
+Route::post('rate_review_order', ["uses"=>"Controller@rate_review_order"]);
 Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]);
 Route::get('update_status', ["uses"=>"Controller@update_status"]);
+Route::get('complete_order_automation', ["uses"=>"Controller@complete_order_automation"]);
 
 //TEMPORARY ROUTE
 Route::get('pay_now', ['uses' => 'Controller@pay_now']);
@@ -351,7 +354,11 @@ Route::post('add_request_assist', ['uses' => "ControllerCustomerService@insert"]
 Route::get('request_assist_update/{id}', ['uses' => "ControllerCustomerService@update_request_assist"]);
 Route::post('update_request_assist/{id}', ['uses' => "ControllerCustomerService@update"]);
 Route::post('closed_request_assist', ['uses' => "ControllerCustomerService@closed"]);
-
+Route::get('list_available_customer', ['uses' => "ControllerCustomerService@list_available_customer"]);
+Route::get('my_followup', ['uses' => "ControllerCustomerService@my_followup"]);
+Route::post('followup', ['uses' => "ControllerCustomerService@followup"]);
+Route::get('pengaturan_followup', ['uses' => "ControllerCustomerService@pengaturan_followup"]);
+Route::post('simpan_pengaturan_followup', ['uses' => "ControllerCustomerService@simpan_pengaturan_followup"]);
 
 
 
@@ -370,6 +377,9 @@ Route::post('Insert_purchase_payment', ["uses"=>"ControllerTransaction@Insert_pu
 
 
 Route::get('stock_card', ["uses"=>"ControllerReport@stock_card"]);
+Route::get('followup_report', ["uses"=>"ControllerReport@followup_report"]);
+Route::get('print_followup_report', ["uses"=>"ControllerReport@print_followup_report"]);
+Route::get('show_table_followup_cs', ["uses"=>"ControllerReport@show_table_followup_cs"]);
 Route::get('get_variation_product', ["uses"=>"ControllerReport@get_variation_product"]);
 Route::get('show_table_stock_card', ["uses"=>"ControllerReport@show_table_stock_card"]);
 

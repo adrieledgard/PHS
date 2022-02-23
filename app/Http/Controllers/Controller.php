@@ -39,7 +39,9 @@ use App\cust_order_header;
 use App\cust_order_detail;
 use App\ebook;
 use App\email_ebook;
+use App\followup;
 use App\Mail\BroadcastMail;
+use App\rate_review;
 use DateTime;
 
 use App\Rules\ValidasiEmailMember;
@@ -50,6 +52,7 @@ use App\Rules\ValidasiProductName;
 use App\Rules\ValidasiSubCategorySession;
 use App\Rules\ValidasiOptionSession;
 use App\Rules\ValidasiSupplierName;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use resources\lang\en\validation;
 use SubmittedEmailEbook;
@@ -75,7 +78,7 @@ class Controller extends BaseController
 		// ->join('product_image','product.Id_product','product_image.Id_product')
 		// ->where('product_image.Image_order','=',1)
 		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
-		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status", "product.Rating")
 			->get();
 
 
@@ -273,10 +276,13 @@ class Controller extends BaseController
 								$temp=$temp."<a href='".url('Cust_show_product/'.$product->Id_product)."'><b>".$product->Name."</b></a>";
 	
 								$temp=$temp."<div class='quick-view-rating'>";
-									$temp=$temp."<i class='fas fa-star'></i>";
-									$temp=$temp."<i class='fas fa-star'></i>";
-									$temp=$temp."<i class='fas fa-star'></i>";
-									$temp=$temp."<i class='fas fa-star'></i>";
+									for($i = 1; $i <= 5; $i++){
+										if($i <= ceil($product->Rating)){
+											$temp=$temp."<i class='fas fa-star'></i>";
+										}else {
+											$temp=$temp."<i class='far fa-star'></i>";
+										}
+									}
 								$temp=$temp."</div>";
 	
 								$temp=$temp."<span style='font-size:90%'>".$fixharga."</span>";
@@ -1033,6 +1039,11 @@ class Controller extends BaseController
 		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
 		->get();
 
+		$param['dtproductreview'] = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
+		->join('member', 'member.Id_member', 'rating_review.Id_member')
+		->where('cust_order_detail.Id_product', $id)
+		->select("member.*", 'rating_review.*')
+		->get();
 
 		return view('Cust_show_product',$param);
 	}
@@ -3169,9 +3180,20 @@ class Controller extends BaseController
 		$temp=$temp."</tr>";
 
 		if($request->has('request_from')){
+			if($request->request_from == 'rating_review'){
+				foreach ($detailorder as $detail) {
+					$detail->is_review = false;
+					$review = rate_review::where('Id_detail_order', $detail->Id_detail_order)->get();
+					if(count($review) > 0){
+						$detail->is_review = true;
+						$detail->rate = $review[0]->rate;
+						$detail->review = $review[0]->review;
+					}
+				}
+				return $detailorder;
+			}
 			return $temp2;
 		}
-		
 
 		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']."#".$temp2);
 	}
@@ -3278,10 +3300,16 @@ class Controller extends BaseController
 			else if($data->Status==3)
 			{
 				$temp=$temp."<button type='button' class='btn btn-primary btn-sm' disabled>Processing</button>";
+				if($data->Printed == 1){
+					$temp = $temp. " <span class='fa fa-print disabled' data-toggle='tooltip' title='Printed Label'></span>";
+				}
 			}
 			else if($data->Status==4)
 			{
 				$temp=$temp."<button type='button' class='btn btn-secondary btn-sm' disabled>Shipping</button>";
+				if($data->Printed == 1){
+					$temp = $temp. " <span class='fa fa-print disabled' data-toggle='tooltip' title='Printed Label'></span>";
+				}
 			}
 
 			$temp=$temp."<br><br>";
@@ -3371,6 +3399,9 @@ class Controller extends BaseController
 			$order->detail = $this->get_cust_detail_order($new_request);
 			$order->kota = list_city::find($order->Id_city);
 			$arr_order[] = $order;
+			$update_order = cust_order_header::find($id_order); 
+			$update_order->Printed = 1;
+			$update_order->save();
 		}
 	
 		return view('Print_shipper_label', compact('arr_order'));
@@ -3609,6 +3640,7 @@ class Controller extends BaseController
 		return redirect()->route('broadcast_view')->with('success', "Success send to $jumlahterkirim users");
 	}
 
+
 	public function embed_code($id)
 	{
 		$param['dtproduct'] = product::where('product.Id_product','=', $id)
@@ -3762,6 +3794,72 @@ class Controller extends BaseController
 			// 	{
 					
 			// 	}
+		}
+
+	public function order_confirmation(Request $request)
+	{
+		$order = cust_order_header::find($request->id);
+		$order->status = 5;
+		$order->save();
+		$this->checkerFollowup($order->Id_member, $order->Date_time);
+		return 'sukses';
+	}
+
+	public function rate_review_order(Request $request)
+	{
+		$order_detail = cust_order_detail::find($request->id_detail_order);
+		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)->first();
+		if($exist_rate_review !== null){
+			$exist_rate_review->rate = $request->rate;
+			$exist_rate_review->review = $request->review;
+			$exist_rate_review->save();
+
+			$this->update_rating_product($order_detail->Id_product);	
+		}else {
+			$rate_review = new rate_review();
+			$rate_review->Id_detail_order = $request->id_detail_order;
+			$rate_review->Id_order = $order_detail->Id_order;
+			$rate_review->Id_member = session()->get('userlogin')->Id_member;
+			$rate_review->rate = $request->rate;
+			$rate_review->review = $request->review;
+			$rate_review->save();
+
+			$this->update_rating_product($order_detail->Id_product);
+		}
+
 		
+		return 'sukses';
+	}
+
+	public function update_rating_product($id_product)
+	{
+		$product_rating = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
+						->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
+						->where('cust_order_detail.Id_product', $id_product)
+						->select(DB::raw("count(*) as jum_data"), DB::raw("sum(rate) as rate"))->first();
+		
+		$product = product::find($id_product);
+		$product->Rating = $product_rating->rate / $product_rating->jum_data;
+		$product->save();
+	}
+
+	public function complete_order_automation()
+	{
+		$ten_days_ago = date('Y-m-d H:i:s', strtotime( '-10 day' , strtotime (date("Y-m-d H:i:s"))));
+		$old_orders = cust_order_header::where('Status', '4')->where('Date_time', '<=', $ten_days_ago)->get();
+		foreach ($old_orders as $order) {
+			$update_old_order = cust_order_header::find($order->Id_order);
+			$update_old_order->Status = 5;
+			$update_old_order->save();
+		}
+	}
+
+	public function checkerFollowup($Id_member, $transaction_date)
+	{
+		$followup = followup::where("Id_member", $Id_member)->orderBy('Id_followup', 'desc')->first();
+		if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
+			(new followup())->followup_successful($followup->Id_followup, $Id_member);
+		}
+
 	}
 }

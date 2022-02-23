@@ -112,7 +112,7 @@ class Product extends Model
 		// session()->put('sortby','Default');
 
         $query = Product::query();
-        $query  = $query->select('product.Id_product', 'product.Name', 'type.Type_name', 'brand.Brand_name', 'variation_product.Sell_price');
+        $query  = $query->select('product.Id_product', 'product.Name', 'type.Type_name', 'brand.Brand_name', 'variation_product.Sell_price', 'product.Rating');
         $query  = $query->join("type", "product.Id_type", "=", "type.Id_type");
         $query  = $query->join("brand", "product.Id_brand", "=", "brand.Id_brand");
         $query  = $query->join("product_sub_category", "product.Id_product", "=", "product_sub_category.Id_product");
