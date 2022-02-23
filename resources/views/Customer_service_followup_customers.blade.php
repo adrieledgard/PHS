@@ -45,6 +45,11 @@
 
 
 @section('Content')
+@if($errors->any())
+<div class="alert alert-danger" role="alert">
+  {{$errors->first()}}
+</div>
+@endif
   <div class="container-fluid" style="height:100%;">
     <div class="row">
         <div class="col-md-12">

@@ -51,7 +51,6 @@
 @endpush
 
 @section('Content')
- 
 <div class="row">
     <div class="col-md-6"> 
         {{ Form::label('Select customer service :','') }}
