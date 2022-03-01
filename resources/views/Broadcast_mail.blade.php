@@ -1,3 +1,8 @@
 {{$content}}
 <br>
-<a href="{{$link_product}}">Click here for detail product</a>
+<?php
+if($link_product != ""){
+?><a href="{{$link_product}}">Click here for detail product</a>
+<?php
+}
+?>

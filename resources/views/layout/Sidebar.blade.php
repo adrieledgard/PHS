@@ -413,6 +413,15 @@ if(session()->get('userlogin')->Role =="ADMIN")
         </li>
         
       </ul>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('broadcast-pembeli-view'); !!}" class="nav-link  @yield('menu_broadcast_pembeli')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Broadcast Pembeli</p>
+          </a>
+        </li>
+        
+      </ul>
     </li>
     <li class="nav-item @yield('menu_report')">
       {{-- menu-open --}}
@@ -438,6 +447,34 @@ if(session()->get('userlogin')->Role =="ADMIN")
           <a href="{!! url('followup_report'); !!}" class="nav-link  @yield('followup_report_atv')">
             <i class="far fa-circle nav-icon"></i>
             <p>Follow Up</p>
+          </a>
+        </li>
+        
+      </ul>
+    </li>
+    
+      <?php 
+    }
+    ?>
+<?php 
+if(session()->get('userlogin')->Role =="ADMIN" || session()->get('userlogin')->Role =="CUSTOMER SERVICE")
+{
+  ?>
+    
+    <li class="nav-item @yield('menu_kelola_database')">
+      {{-- menu-open --}}
+      <a href="#" class="nav-link">
+        <i class="nav-icon fas fa-broadcast-tower"></i>
+        <p>
+          Kelola
+          <i class="right fas fa-angle-left"></i>
+        </p>
+      </a>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('database_pembeli'); !!}" class="nav-link  @yield('menu_database_pembeli_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Database Pembeli</p>
           </a>
         </li>
         
