@@ -398,14 +398,13 @@ Route::get('broadcast-pembeli-view', ['uses' => 'Controller@broadcastPembeliView
 Route::post('broadcast', ['uses' => 'Controller@broadcast']);
 Route::post('broadcast_pembeli', ['uses' => 'Controller@Broadcast_pembeli']);
 
-<<<<<<< HEAD
+
 
 Route::get('embed_code/{id}', ['uses' => 'Controller@embed_code']);
 Route::post('embed_checkout', ["uses"=>"Controller@embed_checkout"]);
-=======
+
 Route::get('database_pembeli', ['uses' => 'Controller@Database_pembeli']);
 
->>>>>>> c87174980c5b9710add58724c739bc58fab18194
 
 
 
