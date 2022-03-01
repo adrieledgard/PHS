@@ -62,7 +62,8 @@ class ControllerTransaction extends Controller
 	}
 
     public function Purchase_add(){
-		$param['dtsupplier'] = supplier::all();
+		$param['dtsupplier'] = supplier::where('Status','=',1)
+		->get();
 
 
 		$param['dtproduct'] = product::where('product.Status','=', '1')
@@ -1081,7 +1082,8 @@ class ControllerTransaction extends Controller
 	public function Receive_order_add()
 	{
 
-		$param['dtsupplier'] = supplier::all();
+		$param['dtsupplier'] = supplier::where('status','=',1)
+		->get();
 
 
 		$param['dtproduct'] = product::where('product.Status','=', '1')
@@ -1212,10 +1214,10 @@ class ControllerTransaction extends Controller
 
 			$temp=$temp."</td>";
 
-			$temp=$temp."<td>";
-				$temp=$temp."Rp. ".number_format($purheader[$i]['Grand_total']);
+			// $temp=$temp."<td>";
+			// 	$temp=$temp."Rp. ".number_format($purheader[$i]['Grand_total']);
 
-			$temp=$temp."</td>";
+			// $temp=$temp."</td>";
 
 			$temp=$temp."</td>";
 

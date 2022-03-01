@@ -41,6 +41,30 @@
           <!-- /.col -->
         </div>
 
+        <div class="row">
+          <div class="col-md-12">
+            <input type="password" class="form-control" placeholder="New password">
+            
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <input type="password" class="form-control" placeholder="Confirmation password">
+            
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <input type="number" class="form-control" placeholder="OTP">
+            
+
+          </div>
+        </div>
+
         {{-- {{ Form::text('txt_option_name_add_detail', 'ada', ['class'=>'form-control','id'=>'txt_option_name_add_detail']) }} --}}
       </form>
       <p class="mt-3 mb-1">

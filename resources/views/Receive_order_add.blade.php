@@ -203,7 +203,7 @@ Receive Order
                         <th>Status</th>
                         <th>No Invoice</th>
                         <th>Purchase Date</th>
-                        <th>Grand Total</th>
+                        {{-- <th>Grand Total</th> --}}
                         <th>Action</th>
 
                       </tr>

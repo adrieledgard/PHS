@@ -69,7 +69,7 @@
         <table id="table_id" class='table table-striped display'>
           <thead>
             <tr>
-              {{-- <th>Status</th> --}}
+              <th>Status</th> 
               <th>Supplier Name</th>
               <th>Supplier Email</th>
               <th>Supplier Phone</th>
@@ -83,7 +83,7 @@
         <tbody>
           @foreach ($dtsupplier as $data)
           <tr>
-            {{-- @php
+            @php
             if($data->Status == 1)
             {
               echo "<td><button type='button' class='btn btn-success btn-sm' disabled>Active</button></td>";
@@ -92,7 +92,7 @@
             {
               echo "<td><button type='button' class='btn btn-danger btn-sm' disabled>Not Active</button></td>";
             }
-            @endphp --}}
+            @endphp
             <td>{{$data->Supplier_name}}</td>
             <td>{{$data->Supplier_email}}</td>
             <td>{{$data->Supplier_phone1}} / {{$data->Supplier_phone2}}</td>

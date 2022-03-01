@@ -65,7 +65,7 @@
 
     <form class="" method='post' action='add_supplier'>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-12">
        
           @csrf
           <div class="modal-body">
@@ -73,31 +73,33 @@
               {{ Form::label('Status :','') }}
               {{ Form::select('cb_status', ['Not Active','Active'], 'Kosong', ['placeholder'=>'Supplier status','class'=>'form-control', 'id'=>'cb_status' ]) }}
             </div> --}}
-          
+          <div class="row">
             <div class="col-md-12">
               {{ Form::label('Supplier Name','') }}
               {{ Form::text('txt_supplier_name', '', ['class'=>'form-control']) }}
             </div>
-            <div class="col-md-12">
+            <div class="col-md-4">
               {{ Form::label('Supplier Email','') }}
               {{ Form::email('txt_supplier_email', '', ['class'=>'form-control']) }}
             </div>
-            <div class="col-md-12">
+            <div class="col-md-4">
               {{ Form::label('Supplier Phone 1','') }}
               {{ Form::number('txt_supplier_phone1', 0, ['class'=>'form-control']) }}
             </div>
-            <div class="col-md-12">
+            <div class="col-md-4">
               {{ Form::label('Supplier Phone 2','') }}
               {{ Form::number('txt_supplier_phone2', 0, ['class'=>'form-control']) }}
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               {{ Form::label('Supplier Address','') }}
               {{ Form::textarea('txt_supplier_address', '', ['class'=>'form-control']) }}
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               {{ Form::label('Credit due date','') }}
               {{ Form::number('txt_credit_due_date', '', ['class'=>'form-control']) }}
             </div>
+            
+          </div>
             
             
           </div>

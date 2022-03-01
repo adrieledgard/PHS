@@ -65,35 +65,45 @@
    {{Form::open(array('url'=>'edit_supplier','method'=>'post'))}}
   @csrf
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-12">
        
           @csrf
           <div class="modal-body">
-            <div class="col-md-12">
-              {{ Form::hidden('txt_id_supplier', $supplier[0]->Id_supplier, ['class'=>'form-control']) }}
-              {{ Form::label('Supplier Name','') }}
-              {{ Form::text('txt_supplier_name', $supplier[0]->Supplier_name, ['class'=>'form-control']) }}
+            <div class="row">
+              <div class="col-md-6">
+
+                {{--  --}}
+  
+                {{ Form::label('Status :','') }}
+                {{ Form::select('cb_status', ['Not Active','Active'], $supplier[0]->Status, ['placeholder'=>'Supplier status','class'=>'form-control', 'id'=>'cb_status' ]) }}
+              </div>
+              <div class="col-md-6">
+                {{ Form::hidden('txt_id_supplier', $supplier[0]->Id_supplier, ['class'=>'form-control']) }}
+                {{ Form::label('Supplier Name','') }}
+                {{ Form::text('txt_supplier_name', $supplier[0]->Supplier_name, ['class'=>'form-control']) }}
+              </div>
+              <div class="col-md-4">
+                {{ Form::label('Supplier Email','') }}
+                {{ Form::email('txt_supplier_email', $supplier[0]->Supplier_email, ['class'=>'form-control']) }}
+              </div>
+              <div class="col-md-4">
+                {{ Form::label('Supplier Phone 1','') }}
+                {{ Form::number('txt_supplier_phone1', $supplier[0]->Supplier_phone1, ['class'=>'form-control']) }}
+              </div>
+              <div class="col-md-4">
+                {{ Form::label('Supplier Phone 2','') }}
+                {{ Form::number('txt_supplier_phone2', $supplier[0]->Supplier_phone2, ['class'=>'form-control']) }}
+              </div>
+              <div class="col-md-6">
+                {{ Form::label('Supplier Address','') }}
+                {{ Form::textarea('txt_supplier_address', $supplier[0]->Supplier_address, ['class'=>'form-control']) }}
+              </div>
+              <div class="col-md-6">
+                {{ Form::label('Credit due date','') }}
+                {{ Form::number('txt_credit_due_date', $supplier[0]->Credit_due_date, ['class'=>'form-control']) }}
+              </div>
             </div>
-            <div class="col-md-12">
-              {{ Form::label('Supplier Email','') }}
-              {{ Form::email('txt_supplier_email', $supplier[0]->Supplier_email, ['class'=>'form-control']) }}
-            </div>
-            <div class="col-md-12">
-              {{ Form::label('Supplier Phone 1','') }}
-              {{ Form::number('txt_supplier_phone1', $supplier[0]->Supplier_phone1, ['class'=>'form-control']) }}
-            </div>
-            <div class="col-md-12">
-              {{ Form::label('Supplier Phone 2','') }}
-              {{ Form::number('txt_supplier_phone2', $supplier[0]->Supplier_phone2, ['class'=>'form-control']) }}
-            </div>
-            <div class="col-md-12">
-              {{ Form::label('Supplier Address','') }}
-              {{ Form::textarea('txt_supplier_address', $supplier[0]->Supplier_address, ['class'=>'form-control']) }}
-            </div>
-            <div class="col-md-12">
-              {{ Form::label('Credit due date','') }}
-              {{ Form::number('txt_credit_due_date', $supplier[0]->Credit_due_date, ['class'=>'form-control']) }}
-            </div>
+            
             
             
           </div>

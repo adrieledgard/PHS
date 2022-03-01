@@ -398,7 +398,7 @@ Receive Order
                         <th>No Receive</th>
                         <th>No Invoice</th>
                         <th>Receive Date</th>
-                        <th>Member</th>
+                        <th>Shipper</th>
                         <th>Action</th>
 
                       </tr>
