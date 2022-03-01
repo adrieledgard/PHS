@@ -3930,6 +3930,12 @@ class Controller extends BaseController
 
 		return view('Broadcast', compact('product'));
 	}
+	public function broadcastPembeliView()
+	{
+		$product = product::pluck('Name', 'Id_product');
+
+		return view('Broadcast_pembeli', compact('product'));
+	}
 
 	public function broadcast(Request $request)
 	{
@@ -4022,5 +4028,56 @@ class Controller extends BaseController
 		if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
 			(new followup())->followup_successful($followup->Id_followup, $Id_member);
 		}
+	}
+
+	public function Database_pembeli()
+	{
+		$member = member::where('Role', 'CUST')->get();
+		foreach ($member as $customer) {
+			$customer->total_order = cust_order_header::where("Id_member", $customer->Id_member)->count();
+			$customer->last_order_date = cust_order_header::where("Id_member", $customer->Id_member)->orderBy('Date_time', 'desc')->select('Date_time as tanggal')->first();
+			$customer->last_order_date = $customer->last_order_date == null ? "" : $customer->last_order_date->tanggal;
+			//GET CUSTOMER TOTAL ITEM HAS BEEN ORDERED
+			$items = [];
+			$orders = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')->join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where('cust_order_header.Id_member', $customer->Id_member)->select('product.*', 'cust_order_detail.Qty')->get();
+			foreach ($orders as $order) {
+				if(array_key_exists($order->Name, $items)){
+					$items[$order->Name] += $order->Qty;
+				}else {
+					$items[$order->Name] = $order->Qty; 
+				}
+			}
+
+			$customer->items = $items;
+		}
+		return view('Kelola_database_pembeli', compact('member'));
+	}
+	
+	public function Broadcast_pembeli(Request $request)
+	{
+		$customer = "";
+		if(!$request->has('produk') && $request->filter == 'produk'){
+			return redirect()->back()->with('error', "Pilih satu atau lebih produk!")->withInput();
+		}
+		if($request->filter == 'produk'){
+			$customer = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')->whereIn('cust_order_detail.Id_product', $request->produk)->groupBy('cust_order_header.Id_member')->groupBy('cust_order_header.Email')->select('Id_member', 'Email')->get();
+		}else if($request->filter == 'total_transaksi'){
+			$result = [];
+			$member = member::where('Role', 'CUST')->get();
+			foreach ($member as $cust) {
+				$total_transaksi = cust_order_header::where('Id_member', $cust->Id_member)->count();
+				if($total_transaksi == $request->total_transaksi){
+					array_push($result,$cust);
+				}
+			}
+			$customer = $result;
+		}else if($request->filter == 'status_transaksi'){
+			$customer = cust_order_header::where('Status', $request->status_transaksi)->get();
+		}
+
+		foreach ($customer as $cust) {
+			Mail::to($cust->Email)->send(new BroadcastMail($request->subject, $request->content));
+		}
+		return redirect()->back()->with('success', "Success send to ". count($customer) ." customers");
 	}
 }

@@ -19,7 +19,7 @@ class BroadcastMail extends Mailable
      *
      * @return void
      */
-    public function __construct($subject, $content, $link_product)
+    public function __construct($subject, $content, $link_product = "")
     {
         $this->subject = $subject;
         $this->content = $content;
