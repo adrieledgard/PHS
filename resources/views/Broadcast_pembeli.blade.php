@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
-
+  <link rel="stylesheet" href="{{ asset ('assets/css/bootstrap-multiselect.css') }}">
 @endpush
 
 
@@ -63,13 +63,11 @@
                     </label>
                 </div>
                 <div class="col-12 ">
-                    
-                    @foreach ($product as $id_produk => $name)
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input filter_produk" name="produk[]" type="checkbox" id="checkbox_{{$id_produk}}" value="{{$id_produk}}">
-                        <label class="form-check-label" for="checkbox_{{$id_produk}}">{{$name}}</label>
-                      </div>
-                    @endforeach
+                    <select class="filter_produk" id="" multiple="multiple" name="produk[]">
+                        @foreach ($product as $id_produk => $name)
+                        <option class="" value="{{$id_produk}}">{{$name}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="row mt-3 ">
@@ -126,61 +124,59 @@
 @endsection
 
 @push('custom-script')
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ" crossorigin="anonymous"></script> 
   
-
-  {{-- {{-- <!-- jQuery UI 1.11.4 --> --}}
-  <script src="{{ asset('assets/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
   <script>
       $(function() {
             $(".filter_produk").attr('disabled', false);
             $(".filter_total_transaksi").attr('disabled', 'disabled');
             $(".filter_status_transaksi").attr("disabled", 'disabled');
+
         });
   $.widget.bridge('uibutton', $.ui.button)
   </script>
-  <!-- Bootstrap 4 -->
-  <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <!-- ChartJS -->
-  <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
-  <!-- Sparkline -->
-  <script src="{{ asset('assets/plugins/sparklines/sparkline.js') }}"></script>
-  <!-- JQVMap -->
-  <script src="{{ asset('assets/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-  <script src="{{ asset('assets/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
-  <!-- jQuery Knob Chart -->
-  <script src="{{ asset('assets/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
-  <!-- daterangepicker -->
-  <script src="{{ asset('assets/plugins/moment/moment.min.js') }}"></script>
-  <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js') }}"></script>
-  <!-- Tempusdominus Bootstrap 4 -->
-  <script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-  <!-- Summernote -->
-  <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
-  <!-- overlayScrollbars -->
-  <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script> 
-  <!--End of Tawk.to Script-->
+  <script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+  <script src="assets/js/popper.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/jquery.magnific-popup.min.js"></script>
+  <script src="assets/js/isotope.pkgd.min.js"></script>
+  <script src="assets/js/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/js/jquery.counterup.min.js"></script>
+  <script src="assets/js/waypoints.min.js"></script>
+  <script src="assets/js/ajax-mail.js"></script>
+  <script src="assets/js/owl.carousel.min.js"></script>
+  <script src="assets/js/plugins.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    <!-- Include the plugin's CSS and JS: -->
+
+    <script src ="{{ asset ('assets/js/jquery-2.2.4.min.js') }}"></script>
+
+    <script src ="{{ asset ('assets/js/bootstrap.bundle-4.5.2.min.js') }}"></script>
+    <script src ="{{ asset ('assets/js/bootstrap-multiselect.js') }}"></script>
 
     <script>
+        $('.filter_produk').multiselect();
+        
         $("#filter_produk").click(function(){
-            $(".filter_produk").attr('disabled', false);
+            $('.filter_produk').multiselect('enable');
             $(".filter_total_transaksi").attr('disabled', 'disabled');
             $(".filter_status_transaksi").attr("disabled", 'disabled');
         });
         $("#filter_total_transaksi").click(function(){
-            $(".filter_produk").attr('disabled', 'disabled');
+            $('.filter_produk').multiselect('disable');
+            // $(".filter_produk").prop('disabled', true);
             $(".filter_total_transaksi").attr('disabled', false);
             $(".filter_status_transaksi").attr("disabled", 'disabled');
         });
         $("#filter_status_transaksi").click(function(){
-            $(".filter_produk").attr('disabled', 'disabled');
+            $('.filter_produk').multiselect('disable');
             $(".filter_total_transaksi").attr('disabled', 'disabled');
             $(".filter_status_transaksi").attr("disabled", false);
         });
