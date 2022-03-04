@@ -41,6 +41,7 @@ use App\ebook;
 use App\email_ebook;
 use App\followup;
 use App\Mail\BroadcastMail;
+use App\Mail\SendEmail;
 use App\rate_review;
 use DateTime;
 
@@ -4079,5 +4080,23 @@ class Controller extends BaseController
 			Mail::to($cust->Email)->send(new BroadcastMail($request->subject, $request->content));
 		}
 		return redirect()->back()->with('success', "Success send to ". count($customer) ." customers");
+	}
+
+	public function Send_email_to_customer(Request $request)
+	{
+		logger($request->all());
+		$customer = member::find($request->Id_member);
+		Mail::to($customer->Email)->send(new SendEmail($request->Subject, $request->Content));
+
+		return 'sukses';
+	}
+
+	public function simpan_catatan_customer(Request $request)
+	{
+		$member = member::find($request->Id_member);
+		$member->Catatan = $request->Catatan;
+		$member->save();
+
+		return redirect()->back()->with('success', 'Sukses');
 	}
 }

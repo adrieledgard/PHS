@@ -399,6 +399,8 @@ Route::post('broadcast', ['uses' => 'Controller@broadcast']);
 Route::post('broadcast_pembeli', ['uses' => 'Controller@Broadcast_pembeli']);
 
 Route::get('database_pembeli', ['uses' => 'Controller@Database_pembeli']);
+Route::post('send_email', ['uses' => 'Controller@Send_email_to_customer']);
+Route::post('simpan_catatan', ['uses' => 'Controller@simpan_catatan_customer']);
 
 
 
