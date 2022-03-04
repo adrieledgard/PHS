@@ -79,7 +79,7 @@
                     <td>
                         <a href="https://wa.me/{{$customer->Phone}}" class='btn btn-success btn-sm ' target="_blank">Follow up WA</a>
                         {{ Form::button('Follow up email', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#send_email']) }}
-                        {{ Form::button('Detail item order', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-item-order'=>json_encode($customer->items),'data-toggle'=>'modal','data-target'=>'#rincian_item_order']) }}
+                        {{ Form::button('Detail order', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-order'=>json_encode($customer->orders),'data-toggle'=>'modal','data-target'=>'#rincian_order']) }}
                         {{ Form::button('Catatan', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#catatan']) }}
                     </td>
                     
@@ -92,6 +92,35 @@
   </div>
   
   <div id="rincian_order" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rincian Order </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="table-rincian-order">
+                <thead>
+                    <tr>
+                        <th>Nomor Transaksi</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-rincian-order">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="rincian_order_detail" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
   
       <!-- Modal content-->
@@ -219,18 +248,40 @@ $(document).ready( function () {
 <script>
 // $('.summernote').summernote();
 
-$("#rincian_item_order").on('show.bs.modal', function(event){
+$("#rincian_order").on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
-    var items = button.data('item-order');
+    var orders = button.data('order');
+    $(".table-body-rincian-order").html("");
+    orders.forEach(order => {
+        console.log(order.detail_order);
+        $(".table-body-rincian-order").append(`
+            <tr>
+                <td>
+                    `+order.Id_order+`
+                </td>
+                <td>
+                    `+order.Date_time+`
+                </td>
+                <td>
+                  <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='`+JSON.stringify(order.detail_order)+`'>Rincian</button>  
+                </td>
+            </tr>
+        `)
+    });
+    $(".table-rincian-order").DataTable();
+ });
+$("#rincian_order_detail").on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var detail_order = button.data('order-detail');
     $(".table-body-rincian-item-order").html("");
-    Object.keys(items).forEach(item_name => {
+    detail_order.forEach(detail => {
         $(".table-body-rincian-item-order").append(`
             <tr>
                 <td>
-                    `+item_name+`
+                    `+detail.Name+`
                 </td>
                 <td>
-                    `+items[item_name]+`
+                    `+detail.Qty+`
                 </td>
             </tr>
         `)
