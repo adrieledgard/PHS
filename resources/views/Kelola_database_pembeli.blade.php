@@ -74,7 +74,7 @@
                 <tr>
                     <td>{{$customer->Username}}</td>
                     <td>{{$customer->total_order}}</td>
-                    <td>{{$customer->total_order}}</td>
+                    <td>{{$customer->last_order_date}}</td>
                     <td>{{$customer->Catatan}}</td>
                     <td>
                         <a href="https://wa.me/{{$customer->Phone}}" class='btn btn-success btn-sm ' target="_blank">Follow up WA</a>
@@ -249,11 +249,13 @@ $(document).ready( function () {
 // $('.summernote').summernote();
 
 $("#rincian_order").on('show.bs.modal', function(event){
+    if ($.fn.DataTable.isDataTable('.table-rincian-order') ) {
+      $('.table-rincian-order').DataTable().destroy();
+    }
     var button = $(event.relatedTarget);
     var orders = button.data('order');
     $(".table-body-rincian-order").html("");
     orders.forEach(order => {
-        console.log(order.detail_order);
         $(".table-body-rincian-order").append(`
             <tr>
                 <td>
@@ -271,6 +273,9 @@ $("#rincian_order").on('show.bs.modal', function(event){
     $(".table-rincian-order").DataTable();
  });
 $("#rincian_order_detail").on('show.bs.modal', function(event){
+    if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
+      $('.table-rincian-item-order').DataTable().destroy();
+    }
     var button = $(event.relatedTarget);
     var detail_order = button.data('order-detail');
     $(".table-body-rincian-item-order").html("");
