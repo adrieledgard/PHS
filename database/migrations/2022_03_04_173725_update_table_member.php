@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTableProduct extends Migration
+class UpdateTableMember extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class UpdateTableProduct extends Migration
      */
     public function up()
     {
-        Schema::table('product', function($table) {
-            $table->float('Rating')->after('Status');
+        Schema::table('member', function($table) {
+            $table->longText('Catatan')->after('Point');
         });
     }
 
@@ -25,8 +25,8 @@ class UpdateTableProduct extends Migration
      */
     public function down()
     {
-        Schema::table('product', function($table) {
-            $table->dropColumn('Rating');
+        Schema::table('member', function($table) {
+            $table->dropColumn('Catatan');
         });
     }
 }

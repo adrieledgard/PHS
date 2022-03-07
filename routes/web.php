@@ -405,6 +405,8 @@ Route::get('embed_code/{id}', ['uses' => 'Controller@embed_code']);
 Route::post('embed_checkout', ["uses"=>"Controller@embed_checkout"]);
 
 Route::get('database_pembeli', ['uses' => 'Controller@Database_pembeli']);
+Route::post('send_email', ['uses' => 'Controller@Send_email_to_customer']);
+Route::post('simpan_catatan', ['uses' => 'Controller@simpan_catatan_customer']);
 
 
 

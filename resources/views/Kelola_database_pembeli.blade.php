@@ -45,11 +45,16 @@
 
 
 @section('Content')
-@if($errors->any())
-<div class="alert alert-danger" role="alert">
-  {{$errors->first()}}
-</div>
-@endif
+<input type="hidden" class="csrf_token" value="{{csrf_token()}}">
+    @if(session()->has('success'))
+        <div class="alert alert-success">
+            {{ session()->get('success') }}
+        </div>
+    @elseif(session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session()->get('error') }}
+        </div>
+    @endif
   <div class="container-fluid" style="height:100%;">
     
     <div class="row">
@@ -60,6 +65,7 @@
               <td>Name</td>
               <td>Total Transaksi</td>
               <td>Tanggal Transaksi Terakhir</td>
+              <td>Catatan</td>
               <td>Action</td>
             </tr>
           </thead>
@@ -68,10 +74,13 @@
                 <tr>
                     <td>{{$customer->Username}}</td>
                     <td>{{$customer->total_order}}</td>
-                    <td>{{$customer->last_order_date}}</td>
+                    <td>{{$customer->total_order}}</td>
+                    <td>{{$customer->Catatan}}</td>
                     <td>
                         <a href="https://wa.me/{{$customer->Phone}}" class='btn btn-success btn-sm ' target="_blank">Follow up WA</a>
-                        {{ Form::button('Detail item order', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-item-order'=>json_encode($customer->items),'data-toggle'=>'modal','data-target'=>'#rincian_item_order']) }}
+                        {{ Form::button('Follow up email', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#send_email']) }}
+                        {{ Form::button('Detail order', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-order'=>json_encode($customer->orders),'data-toggle'=>'modal','data-target'=>'#rincian_order']) }}
+                        {{ Form::button('Catatan', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#catatan']) }}
                     </td>
                     
                 </tr>
@@ -81,13 +90,43 @@
       </div>
     </div>
   </div>
-  <div id="rincian_item_order" class="modal fade" role="dialog">
+  
+  <div id="rincian_order" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
   
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Rincian item </h4>
+          <h4 class="modal-title">Rincian Order </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="table-rincian-order">
+                <thead>
+                    <tr>
+                        <th>Nomor Transaksi</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-rincian-order">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="rincian_order_detail" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rincian Order </h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">
@@ -107,7 +146,60 @@
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
-      {{Form::close()}}
+    </div>
+  </div>
+  <div id="send_email" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Kirim Email</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-6">
+            {{ Form::label('Subject :','') }}
+            {{ Form::text('subject', '', ['class'=>'form-control','id'=>'subject', 'placeholder' => "Subject", 'required' => 'required']) }}
+          </div>
+  
+          <div class="col-md-12">
+            {{ Form::label('Content :','') }}
+            {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'content', 'placeholder' => "content", 'required' => 'required']) }}
+          </div>
+          {!! Form::hidden('id_member', 0, ['class' => 'id_member']) !!}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          {{ Form::button('Send', ['name'=>'btn_edit','class'=>'btn btn-success btn-sm button_send', 'onclick' => 'send_email()']) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="catatan" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <!-- Modal content-->
+      <div class="modal-content">
+        {{Form::open(array('url'=>'simpan_catatan','method'=>'post'))}}
+        <div class="modal-header">
+          <h4 class="modal-title">Catatan</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          
+          <div class="col-md-12">
+            {{ Form::label('Catatan :','') }}
+            {{ Form::textarea('Catatan', '', ['class'=>'form-control','id'=>'catatan', 'placeholder' => "Catatan", 'required' => 'required']) }}
+          </div>
+          {!! Form::hidden('Id_member', 0, ['class' => 'id_member']) !!}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          {{ Form::submit('Simpan', ['name'=>'btn_edit','class'=>'btn btn-success btn-sm button_send']) }}
+        </div>
+        {!! Form::close() !!}
+      </div>
     </div>
   </div>
 @endsection
@@ -150,30 +242,87 @@ $(document).ready( function () {
 <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
-
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="{{ asset('js/summernote-bs4.js') }}"></script>
 
 <script>
 // $('.summernote').summernote();
 
-$("#rincian_item_order").on('show.bs.modal', function(event){
+$("#rincian_order").on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
-    var items = button.data('item-order');
+    var orders = button.data('order');
+    $(".table-body-rincian-order").html("");
+    orders.forEach(order => {
+        console.log(order.detail_order);
+        $(".table-body-rincian-order").append(`
+            <tr>
+                <td>
+                    `+order.Id_order+`
+                </td>
+                <td>
+                    `+order.Date_time+`
+                </td>
+                <td>
+                  <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='`+JSON.stringify(order.detail_order)+`'>Rincian</button>  
+                </td>
+            </tr>
+        `)
+    });
+    $(".table-rincian-order").DataTable();
+ });
+$("#rincian_order_detail").on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var detail_order = button.data('order-detail');
     $(".table-body-rincian-item-order").html("");
-    Object.keys(items).forEach(item_name => {
+    detail_order.forEach(detail => {
         $(".table-body-rincian-item-order").append(`
             <tr>
                 <td>
-                    `+item_name+`
+                    `+detail.Name+`
                 </td>
                 <td>
-                    `+items[item_name]+`
+                    `+detail.Qty+`
                 </td>
             </tr>
         `)
     });
     $(".table-rincian-item-order").DataTable();
  });
+
+$("#send_email").on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id_member = button.data('idmember');
+    $(".id_member").val(id_member);
+ });
+
+$("#catatan").on('show.bs.modal', function(event){
+    var button = $(event.relatedTarget);
+    var id_member = button.data('idmember');
+    $(".id_member").val(id_member);
+ });
+
+ function send_email() {
+  $(".button_send").attr('disabled', 'disabled')
+  var token = $(".csrf_token").val();
+  var Id_member = $(".id_member").val();
+  var Subject = $("#subject").val();
+  var Content = $("#content").val();
+    $.ajaxSetup({
+      headers: {
+          'X-CSRF-TOKEN': token
+      }
+    });
+
+    $.post(myurl + '/send_email',
+    {Id_member: Id_member, CSRF: token, Subject : Subject, Content: Content},
+    function(result){
+      $(".button_send").attr('disabled', false)
+        if(result == 'sukses'){
+          toastr["success"]("Sukses", "Success");
+        }
+        
+    });
+ }
 </script>
     
 @endpush

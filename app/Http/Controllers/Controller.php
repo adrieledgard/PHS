@@ -41,6 +41,7 @@ use App\ebook;
 use App\email_ebook;
 use App\followup;
 use App\Mail\BroadcastMail;
+use App\Mail\SendEmail;
 use App\rate_review;
 use DateTime;
 
@@ -3881,16 +3882,12 @@ class Controller extends BaseController
 			$customer->last_order_date = $customer->last_order_date == null ? "" : $customer->last_order_date->tanggal;
 			//GET CUSTOMER TOTAL ITEM HAS BEEN ORDERED
 			$items = [];
-			$orders = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')->join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where('cust_order_header.Id_member', $customer->Id_member)->select('product.*', 'cust_order_detail.Qty')->get();
+			$orders = cust_order_header::where('cust_order_header.Id_member', $customer->Id_member)->get();
 			foreach ($orders as $order) {
-				if(array_key_exists($order->Name, $items)){
-					$items[$order->Name] += $order->Qty;
-				}else {
-					$items[$order->Name] = $order->Qty; 
-				}
+				$detail_order = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where('cust_order_detail.Id_order', $order->Id_order)->select('product.Name', 'cust_order_detail.Qty')->get()->toArray();
+				$order->detail_order = $detail_order;
 			}
-
-			$customer->items = $items;
+			$customer->orders = $orders;
 		}
 		return view('Kelola_database_pembeli', compact('member'));
 	}
@@ -3921,5 +3918,23 @@ class Controller extends BaseController
 			Mail::to($cust->Email)->send(new BroadcastMail($request->subject, $request->content));
 		}
 		return redirect()->back()->with('success', "Success send to ". count($customer) ." customers");
+	}
+
+	public function Send_email_to_customer(Request $request)
+	{
+		logger($request->all());
+		$customer = member::find($request->Id_member);
+		Mail::to($customer->Email)->send(new SendEmail($request->Subject, $request->Content));
+
+		return 'sukses';
+	}
+
+	public function simpan_catatan_customer(Request $request)
+	{
+		$member = member::find($request->Id_member);
+		$member->Catatan = $request->Catatan;
+		$member->save();
+
+		return redirect()->back()->with('success', 'Sukses');
 	}
 }
