@@ -88,11 +88,11 @@ class sub_category extends Model
 
     public function getsubcategory($kodesub)
     {
-        return sub_category::where('Id_sub_category', '=', $kodesub)
-        ->where('Status','=',1)
-						->join('category','sub_category.Id_category','category.Id_category')
-						->select('category.Id_category', 'sub_category.Sub_category_code', 'sub_category.Sub_category_name')
-						->get();	
+        return sub_category::where('sub_category.Id_sub_category', '=', $kodesub)
+        ->where('sub_category.Status','=',1)
+        ->join('category','sub_category.Id_category','category.Id_category')
+        ->select('category.Id_category', 'sub_category.Sub_category_code', 'sub_category.Sub_category_name')
+        ->get();	
 
     }
 }

@@ -175,6 +175,7 @@ Route::get('master_category', ["uses"=>"ControllerMaster@master_category"])->mid
 Route::get('getsubcategoryname', ["uses"=>"ControllerMaster@ajaxsubcategory"]);
 Route::get('getcategory', ["uses"=>"ControllerMaster@getcategory"]);
 Route::get('getsubcategory', ["uses"=>"ControllerMaster@getsubcategory"]);
+// Route::get('getsubcategory_detail', ["uses"=>"ControllerMaster@getsubcategory_detail"]);
 Route::post('add_category', ["uses"=>"ControllerMaster@add_category"]);
 Route::post('edit_category', ["uses"=>"ControllerMaster@edit_category"]);
 Route::post('edit_sub_category', ["uses"=>"ControllerMaster@edit_sub_category"]);

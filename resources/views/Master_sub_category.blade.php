@@ -181,74 +181,6 @@
 
 
 
-
-{{-- 
-  <!--ADD Modal -->
-  <div class="modal fade" id="add_modala" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Insert Data</h5>
-          {{ Form::button('', ['class'=>'btn-close','data-dismiss'=>'modal','aria-label'=>'Close']) }}
-        </div>
-        <form class="row g-3" method='post' action='add_category'>
-          @csrf
-          <div class="modal-body">
-            <div class="col-md-6">
-              {{ Form::label('Category Code','') }}
-              {{ Form::text('txt_category_code', '', ['class'=>'form-control']) }}
-            </div>
-            <div class="col-md-6">
-              {{ Form::label('Category Name','') }}
-              {{ Form::text('txt_category_name', '', ['class'=>'form-control']) }}
-            </div>
-            
-            
-          </div>
-          <div class="modal-footer">
-            {{ Form::button('Close', ['class'=>'btn btn-secondary','data-dismiss'=>'modal','aria-label'=>'Close']) }}
-            {{ Form::submit('Insert', ['name'=>'add_category', 'class'=>'btn btn-primary']) }}
-          </div>
-      </form>
-      </div>
-    </div>
-  </div> --}}
-
-
-  <!--EDIT Modal -->
-  {{-- <div class="modal fade" id="edit_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Update Data</h5>
-          <{{ Form::button('', ['class'=>'btn-close','data-dismiss'=>'modal','aria-label'=>'Close']) }}
-        </div>
-        <form class="row g-3" method='post' action='edit_category'>
-          @csrf
-          <div class="modal-body">
-            <div class="col-md-6">
-              {{ Form::hidden('id_category', '', ['class'=>'form-control','id'=>'id_category']) }}
-              {{ Form::label('Category Code','') }}
-              {{ Form::text('txt_category_code', '', ['class'=>'form-control','id'=>'txt_category_code']) }}
-            </div>
-            <div class="col-md-6">
-              {{ Form::label('Category Name','') }}
-              {{ Form::text('txt_category_name', '', ['class'=>'form-control','id'=>'txt_category_name']) }}
-            </div>
-            
-          </div>
-          <div class="modal-footer">
-            {{ Form::button('Close', ['class'=>'btn btn-secondary','data-dismiss'=>'modal','aria-label'=>'Close']) }}
-            {{ Form::submit('Edit', ['name'=>'edit_category', 'class'=>'btn btn-primary']) }}
-          </div>
-      </form>
-      </div>
-    </div>
-  </div> --}}
-
-
-
-
 @endsection
 
 
@@ -295,33 +227,37 @@
     <script>
      $('#edit_modal').on('show.bs.modal', function(event){
     
-    var button = $(event.relatedTarget);
-    var id = button.data('cat');
-    var modal = $(this);
-    
-    //modal.find('.modal-body #id_category').val(id);
+      var button = $(event.relatedTarget);
+      var id = button.data('cat');
+      var modal = $(this);
+      
+      //modal.find('.modal-body #id_category').val(id);
 
-    var myurl = "<?php echo URL::to('/'); ?>";
+      var myurl = "<?php echo URL::to('/'); ?>";
 
-      $.get(myurl + '/getsubcategory',
-      {id: id},
-      function(result){
-      var arr = JSON.parse(result);
-      var kodesub ="";
-      var namasub ="";
-      var idkat ="";
+        // alert(id);
+        $.get(myurl + '/getsubcategory',
+        {id: id},
+        function(result){
+          // alert('kodesub');
+        var arr = JSON.parse(result);
+        var kodesub ="";
+        var namasub ="";
+        var idkat ="";
 
-      for(var i =0;i< arr.length;i++)
-      {
-        kodesub= arr[i]['Sub_category_code'];
-        namasub= arr[i]['Sub_category_name'];
-        idkat = arr[i]['Id_category'];
-      }
-      $("#id_sub_category").val(id);
-      $("#txt_sub_category_code").val(kodesub);
-      $("#txt_sub_category_name").val(namasub);
-      $("#cb_category").val([idkat]);
-      });
+        for(var i =0;i< arr.length;i++)
+        {
+          kodesub= arr[i]['Sub_category_code'];
+          namasub= arr[i]['Sub_category_name'];
+          idkat = arr[i]['Id_category'];
+        }
+
+        
+        $("#id_sub_category").val(id);
+        $("#txt_sub_category_code").val(kodesub);
+        $("#txt_sub_category_name").val(namasub);
+        $("#cb_category").val([idkat]);
+        });
 
   })
 

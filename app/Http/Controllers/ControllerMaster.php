@@ -2807,7 +2807,7 @@ class ControllerMaster extends Controller
 
 						$param['msg_err'] = "Update Failed,Sub Category code/ Sub category name maybe already exist !";
 						
-						return view('Master_category',$param);
+						return view('Master_sub_category',$param);
 					}
 					else
 					{
