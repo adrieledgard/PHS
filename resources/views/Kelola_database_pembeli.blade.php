@@ -311,7 +311,7 @@ $("#rincian_order_detail").on('show.bs.modal', function(event){
                     `+detail.Name+`
                 </td>
                 <td>
-                    `+detail.Fix_price+`
+                    `+formatter.format(detail.Fix_price)+`
                 </td>
                 <td>
                     `+detail.Qty+`
