@@ -4040,9 +4040,9 @@ class Controller extends BaseController
 			$customer->last_order_date = $customer->last_order_date == null ? "" : $customer->last_order_date->tanggal;
 			//GET CUSTOMER TOTAL ITEM HAS BEEN ORDERED
 			$items = [];
-			$orders = cust_order_header::where('cust_order_header.Id_member', $customer->Id_member)->get();
+			$orders = cust_order_header::where('cust_order_header.Id_member', $customer->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->get();
 			foreach ($orders as $order) {
-				$detail_order = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where('cust_order_detail.Id_order', $order->Id_order)->select('product.Name', 'cust_order_detail.Qty')->get()->toArray();
+				$detail_order = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where('cust_order_detail.Id_order', $order->Id_order)->select('product.Name', 'cust_order_detail.Qty', 'cust_order_detail.Fix_price')->get()->toArray();
 				$order->detail_order = $detail_order;
 			}
 			$customer->orders = $orders;
