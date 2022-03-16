@@ -41,6 +41,15 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
 
   <link rel="stylesheet" href="{{asset('css/summernote-bs4.css')}}">
+
+  <style>
+    .dataTables_scrollHeadInner {
+width: 100% !important;
+}
+.dataTables_scrollHeadInner table {
+width: 100% !important;
+}
+  </style>
 @endpush
 
 
@@ -74,7 +83,7 @@
                 <tr>
                     <td>{{$customer->Username}}</td>
                     <td>{{$customer->total_order}}</td>
-                    <td>{{$customer->total_order}}</td>
+                    <td>{{$customer->last_order_date}}</td>
                     <td>{{$customer->Catatan}}</td>
                     <td>
                         <a href="https://wa.me/{{$customer->Phone}}" class='btn btn-success btn-sm ' target="_blank">Follow up WA</a>
@@ -91,8 +100,8 @@
     </div>
   </div>
   
-  <div id="rincian_order" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+  <div id="rincian_order" class="modal fade" role="dialog" style="max-height:calc(100% - 80px)">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl"> 
   
       <!-- Modal content-->
       <div class="modal-content">
@@ -100,12 +109,15 @@
           <h4 class="modal-title">Rincian Order </h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="overflow-y: scroll">
             <table class="table-rincian-order">
-                <thead>
+                <thead style="width:100%">
                     <tr>
                         <th>Nomor Transaksi</th>
                         <th>Tanggal Transaksi</th>
+                        <th>Alamat</th>
+                        <th>Kurir</th>
+                        <th>Grand Total</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -121,7 +133,7 @@
     </div>
   </div>
   <div id="rincian_order_detail" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
   
       <!-- Modal content-->
       <div class="modal-content">
@@ -134,7 +146,9 @@
                 <thead>
                     <tr>
                         <th>Nama Produk</th>
+                        <th>Harga</th>
                         <th>Total dipesan</th>
+                        <th>Subtotal</th>
                     </tr>
                 </thead>
                 <tbody class="table-body-rincian-item-order">
@@ -246,14 +260,16 @@ $(document).ready( function () {
 <script src="{{ asset('js/summernote-bs4.js') }}"></script>
 
 <script>
-// $('.summernote').summernote();
 
 $("#rincian_order").on('show.bs.modal', function(event){
+    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+    if ($.fn.DataTable.isDataTable('.table-rincian-order') ) {
+      $('.table-rincian-order').DataTable().destroy();
+    }
     var button = $(event.relatedTarget);
-    var orders = button.data('order');
+    var orders = button.data('order')
     $(".table-body-rincian-order").html("");
     orders.forEach(order => {
-        console.log(order.detail_order);
         $(".table-body-rincian-order").append(`
             <tr>
                 <td>
@@ -263,14 +279,28 @@ $("#rincian_order").on('show.bs.modal', function(event){
                     `+order.Date_time+`
                 </td>
                 <td>
+                    `+order.Address+`, `+order.City_name+`, `+order.Province_name+`
+                </td>
+                <td>
+                    `+order.Courier+`
+                </td>
+                <td>
+                    `+formatter.format(order.Grand_total)+`
+                </td>
+                <td>
                   <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='`+JSON.stringify(order.detail_order)+`'>Rincian</button>  
                 </td>
             </tr>
         `)
     });
-    $(".table-rincian-order").DataTable();
+    $(".table-rincian-order").DataTable()
  });
+
 $("#rincian_order_detail").on('show.bs.modal', function(event){
+    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+    if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
+      $('.table-rincian-item-order').DataTable().destroy();
+    }
     var button = $(event.relatedTarget);
     var detail_order = button.data('order-detail');
     $(".table-body-rincian-item-order").html("");
@@ -281,7 +311,13 @@ $("#rincian_order_detail").on('show.bs.modal', function(event){
                     `+detail.Name+`
                 </td>
                 <td>
+                    `+formatter.format(detail.Fix_price)+`
+                </td>
+                <td>
                     `+detail.Qty+`
+                </td>
+                <td>
+                    `+formatter.format(detail.Qty * detail.Fix_price)+`
                 </td>
             </tr>
         `)
