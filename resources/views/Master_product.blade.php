@@ -57,6 +57,7 @@
 
 
 @section('Content')
+<input type="hidden" class="csrf_token" value="{{csrf_token()}}">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
@@ -154,6 +155,8 @@
               <a href="{!! url('Master_product_images/' .$data->Id_product); !!}">
                 {{ Form::button('<i class="fa fa-camera" aria-hidden="true"></i> Images',['class'=>'btn btn-info btn-sm']) }}
               </a>
+              <br><br>
+              {{ Form::button('Rating/Review', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-rating'=>$data->rating,'data-toggle'=>'modal','data-target'=>'#rating']) }}
             </td>
           </tr>
           @endforeach
@@ -166,7 +169,37 @@
       
     </div>
   </div><!-- /.container-fluid -->
-
+  <div id="rating" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rating dan Review</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="table-rating-review">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Rating</th>
+                        <th>Review</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-rating-review">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 
@@ -208,5 +241,78 @@
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
  
+    <script>
+      $("#rating").on('show.bs.modal', function(event){
+        if ($.fn.DataTable.isDataTable('.table-rating-review') ) {
+          $('.table-rating-review').DataTable().destroy();
+        }
+        var button = $(event.relatedTarget);
+        var daftar_rating = button.data('rating')
+        $(".table-body-rating-review").html("");
+        daftar_rating.forEach(rating => {
+            var disable = rating.Status == 'Deleted' ? "disabled" : "";
+            var bintang = "";
+            for(var i =1; i <= 5; i++){
+              if(i <= Math.floor(rating.rate)){
+                bintang += '<i class="fas fa-star"></i>';
+              }else {
+                bintang += '<i class="far fa-star"></i>'
+              }
+            }
+            $(".table-body-rating-review").append(`
+                <tr>
+                    <td>
+                        `+rating.Username+`
+                    </td>
+                    <td>
+                        `+bintang+`
+                    </td>
+                    <td>
+                        `+rating.review+`
+                    </td>
+                    <td>
+                        `+rating.Status+`
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-danger" onclick="delete_rating(`+rating.Id_product+`, `+rating.id+` )" ${disable}>Hapus</button>
+                    </td>
+                </tr>
+            `)
+        });
+        $(".table-rating-review").DataTable()
+    });
+
+    function delete_rating(Id_product, Id_rating)
+    {
+      swal({
+            title: "Are you sure to delete this?",
+            text: "",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+              var token = $(".csrf_token").val();
+              $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': token
+                }
+              });
+              var myurl = "<?php echo URL::to('/'); ?>";
+              $.post(myurl + '/hapus_rating_product',
+              {Id_product:Id_product, Id_rating: Id_rating},
+                function(result){
+                  location.reload();
+                });
+
+            } else {
+            }
+          });  
+
+
+    
+    }
+    </script>
 @endpush
 

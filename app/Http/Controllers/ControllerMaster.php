@@ -26,6 +26,7 @@ use App\affiliate;
 use App\ebook;
 use App\email_ebook;
 use App\Mail\SendEbook;
+use App\rate_review;
 use App\Rules\ValidasiEmailMember;
 use App\Rules\ValidasiPasswordEditTeamMember;
 use App\Rules\ValidasiUsernameMember;
@@ -56,6 +57,14 @@ class ControllerMaster extends Controller
 		$param['dtvariationname'] = variation::where('Status','=',1)
 		->select("Option_name","Id_product")
 		->get();
+
+		foreach ($param['dtproduct'] as $product) {
+			$product->rating = rate_review::join('member', 'rating_review.Id_member', 'member.Id_member')
+								->join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
+								->where('Id_product', $product->Id_product)
+								->select('Id_product', 'member.Username', 'rating_review.rate', 'rating_review.review', 'rating_review.id', 'rating_review.Status')
+								->get();
+		}
 		return($param);
 
 	}

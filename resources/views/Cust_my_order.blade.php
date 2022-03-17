@@ -399,11 +399,13 @@
     function(result){
       var html = "";
        result.forEach(item => {
+         console.log(item.Status);
          var is_review = item.is_review ? 'disabled' : '';
+         var is_deleted = item.Status == 'Deleted' ? 'disabled' : '';
          html += `
          <div class="row border-bottom-1">
           <div class="col-12">
-          <strong>${item.Name}</strong>
+          <strong>${item.Name}</strong> - <i>${item.Status == 'Deleted' ? "YOUR REVIEW HAS BEEN DELETED BY ADMIN": ''}</i>
           <div class="starrating risingstar d-flex justify-content-end flex-row-reverse">
                 <input type="radio" id="star5-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="5" ${item.rate == 5 ? 'checked' : ''} ${is_review}/><label for="star5-${item.Id_detail_order}" title="5 star"></label>
                 <input type="radio" id="star4-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="4" ${item.rate == 4 ? 'checked' : ''} ${is_review}/><label for="star4-${item.Id_detail_order}" title="4 star"></label>
@@ -415,8 +417,8 @@
               <label>Review</label>
               <textarea class="form-control review-${item.Id_detail_order}" rows="3" ${is_review}>${is_review ? item.review : ''}</textarea>
             </div>
-            <button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
-            <button type="button" class="btn btn-warning btn-sm mb-2 edit-${item.Id_detail_order}" ${!item.is_review ? 'disabled' : ''} onclick="edit_review(${item.Id_detail_order})">Edit review</button>
+            ${item.Status == 'Active' || !item.is_review ? `<button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
+            <button type="button" class="btn btn-warning btn-sm mb-2 edit-${item.Id_detail_order}" ${(!item.is_review) ? 'disabled' : ''} onclick="edit_review(${item.Id_detail_order})">Edit review</button>` : ''} 
           </div>
         </div> 
         `
