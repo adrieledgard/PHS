@@ -339,12 +339,22 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{!! url('list_available_customer'); !!}" class="nav-link  @yield('list_available_customer_atv')">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>List Available Customer</p>
-                </a>
-              </li>
+
+              <?php 
+              if(session()->get('userlogin')->Role =="CUSTOMER SERVICE")
+              {
+                ?>
+                <li class="nav-item">
+                  <a href="{!! url('list_available_customer'); !!}" class="nav-link  @yield('list_available_customer_atv')">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>List Available Customer</p>
+                  </a>
+                </li>
+                <?php 
+              }
+
+              ?>
+
               <?php 
                   if(session()->get('userlogin')->Role =="ADMIN")
                   {
