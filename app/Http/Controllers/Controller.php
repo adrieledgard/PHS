@@ -3494,11 +3494,19 @@ class Controller extends BaseController
 			if($request->request_from == 'rating_review'){
 				foreach ($detailorder as $detail) {
 					$detail->is_review = false;
-					$review = rate_review::where('Id_detail_order', $detail->Id_detail_order)->get();
+					$detail->is_deleted = false;
+					$review = rate_review::withTrashed()->where('Id_detail_order', $detail->Id_detail_order)->get();
 					if(count($review) > 0){
-						$detail->is_review = true;
-						$detail->rate = $review[0]->rate;
-						$detail->review = $review[0]->review;
+						if($review[0]->deleted_at == null){
+							$detail->is_review = true;
+							$detail->rate = $review[0]->rate;
+							$detail->review = $review[0]->review;
+						}else {
+							$detail->is_deleted = true;
+							$detail->is_review = true;
+							$detail->rate = $review[0]->rate;
+							$detail->review = $review[0]->review;
+						}
 					}
 				}
 				return $detailorder;
@@ -4010,6 +4018,15 @@ class Controller extends BaseController
 		$product = product::find($id_product);
 		$product->Rating = $product_rating->rate / $product_rating->jum_data;
 		$product->save();
+	}
+
+	public function hapus_rating_product(Request $request)
+	{
+		rate_review::where('id', $request->Id_rating)->delete();
+
+		$this->update_rating_product($request->Id_product);
+
+		return "sukses";
 	}
 
 	public function complete_order_automation()
