@@ -4018,9 +4018,14 @@ class Controller extends BaseController
 						->where('cust_order_detail.Id_product', $id_product)
 						->where('rating_review.Status', 'Active')
 						->select(DB::raw("count(*) as jum_data"), DB::raw("sum(rate) as rate"))->first();
-		
 		$product = product::find($id_product);
-		$product->Rating = $product_rating->rate / $product_rating->jum_data;
+		if($product_rating->jum_data > 0){
+			$product->Rating = $product_rating->rate / $product_rating->jum_data;
+			
+		}else {
+			$product->Rating = 0;
+		}
+
 		$product->save();
 	}
 

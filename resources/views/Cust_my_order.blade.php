@@ -417,7 +417,7 @@
               <label>Review</label>
               <textarea class="form-control review-${item.Id_detail_order}" rows="3" ${is_review}>${is_review ? item.review : ''}</textarea>
             </div>
-            ${item.Status == 'Active' ? `<button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
+            ${item.Status == 'Active' || !item.is_review ? `<button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
             <button type="button" class="btn btn-warning btn-sm mb-2 edit-${item.Id_detail_order}" ${(!item.is_review) ? 'disabled' : ''} onclick="edit_review(${item.Id_detail_order})">Edit review</button>` : ''} 
           </div>
         </div> 
