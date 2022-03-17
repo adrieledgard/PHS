@@ -1189,6 +1189,7 @@ class Controller extends BaseController
 		$param['dtproductreview'] = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
 		->join('member', 'member.Id_member', 'rating_review.Id_member')
 		->where('cust_order_detail.Id_product', $id)
+		->where('rating_review.Status', 'Active')
 		->select("member.*", 'rating_review.*')
 		->get();
 
@@ -3495,14 +3496,15 @@ class Controller extends BaseController
 				foreach ($detailorder as $detail) {
 					$detail->is_review = false;
 					$detail->is_deleted = false;
-					$review = rate_review::withTrashed()->where('Id_detail_order', $detail->Id_detail_order)->get();
+					$review = rate_review::where('Id_detail_order', $detail->Id_detail_order)->get();
 					if(count($review) > 0){
-						if($review[0]->deleted_at == null){
+						if($review[0]->Status == 'Active'){
+							$detail->Status = $review[0]->Status;
 							$detail->is_review = true;
 							$detail->rate = $review[0]->rate;
 							$detail->review = $review[0]->review;
 						}else {
-							$detail->is_deleted = true;
+							$detail->Status = $review[0]->Status;
 							$detail->is_review = true;
 							$detail->rate = $review[0]->rate;
 							$detail->review = $review[0]->review;
@@ -3999,6 +4001,7 @@ class Controller extends BaseController
 			$rate_review->Id_member = session()->get('userlogin')->Id_member;
 			$rate_review->rate = $request->rate;
 			$rate_review->review = $request->review;
+			$rate_review->Status = "Active";
 			$rate_review->save();
 
 			$this->update_rating_product($order_detail->Id_product);
@@ -4013,6 +4016,7 @@ class Controller extends BaseController
 		$product_rating = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
 						->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
 						->where('cust_order_detail.Id_product', $id_product)
+						->where('rating_review.Status', 'Active')
 						->select(DB::raw("count(*) as jum_data"), DB::raw("sum(rate) as rate"))->first();
 		
 		$product = product::find($id_product);
@@ -4022,7 +4026,7 @@ class Controller extends BaseController
 
 	public function hapus_rating_product(Request $request)
 	{
-		rate_review::where('id', $request->Id_rating)->delete();
+		rate_review::where('id', $request->Id_rating)->update(['Status' => 'Deleted']);
 
 		$this->update_rating_product($request->Id_product);
 

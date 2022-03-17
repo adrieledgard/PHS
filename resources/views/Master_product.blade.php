@@ -250,7 +250,7 @@
         var daftar_rating = button.data('rating')
         $(".table-body-rating-review").html("");
         daftar_rating.forEach(rating => {
-            var status_review = rating.deleted_at == null ? 'Active' : 'Deleted';
+            var disable = rating.Status == 'Deleted' ? "disabled" : "";
             var bintang = "";
             for(var i =1; i <= 5; i++){
               if(i <= Math.floor(rating.rate)){
@@ -271,10 +271,10 @@
                         `+rating.review+`
                     </td>
                     <td>
-                        `+status_review+`
+                        `+rating.Status+`
                     </td>
                     <td>
-                      <button class="btn btn-sm btn-danger" onclick="delete_rating(`+rating.Id_product+`, `+rating.id+`)">Hapus</button>
+                      <button class="btn btn-sm btn-danger" onclick="delete_rating(`+rating.Id_product+`, `+rating.id+` )" ${disable}>Hapus</button>
                     </td>
                 </tr>
             `)

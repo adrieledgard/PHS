@@ -59,10 +59,10 @@ class ControllerMaster extends Controller
 		->get();
 
 		foreach ($param['dtproduct'] as $product) {
-			$product->rating = rate_review::withTrashed()->join('member', 'rating_review.Id_member', 'member.Id_member')
+			$product->rating = rate_review::join('member', 'rating_review.Id_member', 'member.Id_member')
 								->join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
 								->where('Id_product', $product->Id_product)
-								->select('Id_product', 'member.Username', 'rating_review.rate', 'rating_review.review', 'rating_review.id', 'rating_review.deleted_at')
+								->select('Id_product', 'member.Username', 'rating_review.rate', 'rating_review.review', 'rating_review.id', 'rating_review.Status')
 								->get();
 		}
 		return($param);
