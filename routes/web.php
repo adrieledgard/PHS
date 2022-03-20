@@ -402,7 +402,7 @@ Route::post('broadcast_pembeli', ['uses' => 'Controller@Broadcast_pembeli']);
 
 
 
-Route::get('embed_code/{id}', ['uses' => 'Controller@embed_code']);
+Route::get('embed_code/{id}/{Random_code}', ['uses' => 'Controller@embed_code']);
 Route::post('embed_checkout', ["uses"=>"Controller@embed_checkout"]);
 
 Route::get('database_pembeli', ['uses' => 'Controller@Database_pembeli']);

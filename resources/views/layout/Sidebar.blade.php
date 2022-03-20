@@ -319,13 +319,13 @@
                   <p>Request Assists</p>
                 </a>
               </li>
-              <li class="nav-item">
+              {{-- <li class="nav-item">
                 <a href="{!! url('followup_customers'); !!}" class="nav-link  @yield('followup_customers_atv')">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Follow Up Customer</p>
                 </a>
               </li>
-             
+              --}}
               
             </ul>
           </li>

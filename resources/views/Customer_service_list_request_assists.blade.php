@@ -46,10 +46,18 @@
   <div class="container-fluid" style="height:100%;">
     <div class="row">
       <div class="col-md-12">
-          <a href="{!! url('request_assist_add'); !!}">
-            {{ Form::button('<i class="fa fa-plus" aria-hidden="true"></i> Insert',['class'=>'btn btn-primary','name'=>'btn_add']) }}
-            {{-- <button class="btn btn-primary"><i class="fa fa-plus"></i> Insert</button> --}}
-          </a>
+        <?php
+        if((session()->get('userlogin'))->Role == "CUSTOMER SERVICE"){
+          ?>
+
+              <a href="{!! url('request_assist_add'); !!}">
+                {{ Form::button('<i class="fa fa-plus" aria-hidden="true"></i> Insert',['class'=>'btn btn-primary','name'=>'btn_add']) }}
+                {{-- <button class="btn btn-primary"><i class="fa fa-plus"></i> Insert</button> --}}
+              </a>
+          <?php
+        }
+          ?>
+         
         </div>
         
         <br>
@@ -60,34 +68,47 @@
         <table id="table_id"  class='table table-striped display'>
           <thead>
             <tr>
+              <td>Status</td>
               <td>Title</td>
               <td>Description</td>
-              <td>Solved</td>
-              <td>Status</td>
+              <td>Conclusion</td>
               <td>Actions</td>
             </tr>
           </thead>
           <tbody>
             @foreach ($tickets as $ticket)
               <tr>
+                @php
+                    if($ticket->status == "OPEN"){
+                      echo "<td><button type='button' class='btn btn-warning btn-sm' disabled>$ticket->status</button></td>";
+                    }
+                    else if($ticket->status == "CLOSED"){
+                      echo "<td><button type='button' class='btn btn-danger btn-sm' disabled>$ticket->status</button></td>";
+                    }
+                @endphp
                 <td>{{$ticket->title}}</td>
                 <td>{{$ticket->description}}</td>
                 <td>{{$ticket->conclusion}}</td>
-                @php
-                    if($ticket->status == "OPEN"){
-                      echo "<td><button type='button' class='btn btn-warning btn-sm'>$ticket->status</button></td>";
-                    }
-                    else if($ticket->status == "CLOSED"){
-                      echo "<td><button type='button' class='btn btn-danger btn-sm'>$ticket->status</button></td>";
-                    }
-                @endphp
+                
                 <td>
-                  <button class="btn btn-sm btn-warning" {{$ticket->status == "CLOSED" ? "disabled" : ""}} onclick="onEdit({{$ticket->id}})">Edit</button>
+                 
                   @php
                     if((session()->get('userlogin'))->Role == "ADMIN"){
                       if($ticket->status != "CLOSED"){
+                        
                           echo '<button type="button" class="btn btn-danger btn-sm" onclick="openModal(' . $ticket->id. ')">Closed</button>';
                         }
+                    }
+                    else {
+
+                      if($ticket->status != "CLOSED"){
+                        echo '<button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button>';
+                      }
+                      else {
+                        echo '<button type="button" class="btn btn-warning btn-sm" disabled onclick="onEdit(' . $ticket->id. ')">Edit</button>';
+                      }
+                     
+                      // echo '<button class="btn btn-sm btn-warning" {{$ticket->status == "CLOSED" ? "disabled" : ""}} onclick="onEdit({{$ticket->id}})">Edit</button>';
                     }
                       
                   @endphp

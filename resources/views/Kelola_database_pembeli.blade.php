@@ -86,10 +86,14 @@ width: 100% !important;
                     <td>{{$customer->last_order_date}}</td>
                     <td>{{$customer->Catatan}}</td>
                     <td>
-                        <a href="https://wa.me/{{$customer->Phone}}" class='btn btn-success btn-sm ' target="_blank">Follow up WA</a>
+                      @php
+                          $potongnol = substr($customer->Phone,1);
+                          $fixphone = '62'.$potongnol;
+                      @endphp
+                        <a href="https://wa.me/{{$fixphone}}" class='btn btn-success btn-sm ' target="_blank">Follow up WA</a>
                         {{ Form::button('Follow up email', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#send_email']) }}
                         {{ Form::button('Detail order', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-order'=>json_encode($customer->orders),'data-toggle'=>'modal','data-target'=>'#rincian_order']) }}
-                        {{ Form::button('Catatan', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#catatan']) }}
+                        {{ Form::button('Catatan', ['name'=>'btn_edit','class'=>'btn btn-secondary btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#catatan']) }}
                     </td>
                     
                 </tr>

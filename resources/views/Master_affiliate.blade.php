@@ -12,7 +12,7 @@
 {{-- ------------- --}}
 
 @section('title2')
-    Master Affiliate <br> edit? delete?
+    Master Affiliate
 @endsection
 
 @section('breadcrumb')

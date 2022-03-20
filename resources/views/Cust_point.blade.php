@@ -22,9 +22,9 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h4>Jangan lupa buat transaksi poin, keluar masuk poin di catat di database</h4><br>
+                {{-- <h4>Jangan lupa buat transaksi poin, keluar masuk poin di catat di database</h4><br>
                 <h4>history poin keluar jangan lupa di buat dibawah (IF nya jgn lupa supaya bs muncul description)</h4>
-                <h4>history poin cart jangan lupa</h4>
+                <h4>history poin cart jangan lupa</h4> --}}
                 <div class="row">
                     <div class="col-md-2">
                         <h1 class="cart-heading">Point</h1>

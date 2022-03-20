@@ -225,7 +225,7 @@
                        
                     </div>
                     <div class="sidebar-widget mb-40">
-                        <h3 class="sidebar-title">Rating</h3>
+                        {{-- <h3 class="sidebar-title">Rating</h3> --}}
                         {{-- <div class="product-size">
                             <ul>
                                 <li><a href="#">xl</a></li>
@@ -264,7 +264,7 @@
                                                     <option value="3"> Z to A</option>
                                                     <option value="4" >Most expensive</option>
                                                     <option value="5" >Cheapest</option>
-                                                    <option value="6" >Best seller</option>
+                                                    {{-- <option value="6" >Best seller</option> --}}
                                                 <?php
                                             }
                                             else if($sort=='DESC')
@@ -275,7 +275,7 @@
                                                     <option value="3" selected> Z to A</option>
                                                     <option value="4" >Most expensive</option>
                                                     <option value="5" >Cheapest</option>
-                                                    <option value="6" >Best seller</option>
+                                                    {{-- <option value="6" >Best seller</option> --}}
                                                 <?php
                                             }
                                             else if($sort=='CHEAP')
@@ -286,7 +286,7 @@
                                                     <option value="3"> Z to A</option>
                                                     <option value="4" >Most expensive</option>
                                                     <option value="5" selected>Cheapest</option>
-                                                    <option value="6" >Best seller</option>
+                                                    {{-- <option value="6" >Best seller</option> --}}
                                                 <?php
                                             }
                                             else if($sort=='EXP')
@@ -297,7 +297,7 @@
                                                     <option value="3"> Z to A</option>
                                                     <option value="4" selected>Most expensive</option>
                                                     <option value="5" >Cheapest</option>
-                                                    <option value="6" >Best seller</option>
+                                                    {{-- <option value="6" >Best seller</option> --}}
                                                 <?php
                                             }
                                             else {
@@ -307,7 +307,7 @@
                                                     <option value="3"> Z to A</option>
                                                     <option value="4" >Most expensive</option>
                                                     <option value="5" >Cheapest</option>
-                                                    <option value="6" >Best seller</option>
+                                                    {{-- <option value="6" >Best seller</option> --}}
                                                    
                                                 <?php
                                             }

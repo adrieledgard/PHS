@@ -44,7 +44,6 @@ use App\Mail\BroadcastMail;
 use App\Mail\SendEmail;
 use App\rate_review;
 use DateTime;
-
 use App\Rules\ValidasiEmailMember;
 use App\Rules\ValidasiPasswordEditTeamMember;
 use App\Rules\ValidasiUsernameMember;
@@ -336,7 +335,6 @@ class Controller extends BaseController
 		return view('register',$param);
 	}
 	
-
 	public function login(){
 
 		$param['msg']="";
@@ -347,8 +345,6 @@ class Controller extends BaseController
 
 		return view('forgot_password');
 	}
-
-	
 
 	public function logout(){
 		session()->forget('cart');
@@ -511,25 +507,9 @@ class Controller extends BaseController
 		}
 		
 	}
-
 	public function test()
 	{
 		 echo (session()->get('userlogin'));
-
-		//  session()->forget('cart');
-		// $data="";
-		// if(Cookie::has("username_login"))   
-		// {
-		// 	$data  = Cookie::get('username_login');
-		// }
-
-		// $aff  = Cookie::get('Affiliate');
-
-		
-
-		// echo $data;
-		// echo $aff;
-	
 	}
 
 	public function embedtes()
@@ -615,9 +595,6 @@ class Controller extends BaseController
 		$param['msg']="";
 		return view('login',$param);
 	}
-
-
-	
 	public function validasipromo()
 	{
 		$promo = promo_header::where('Status','<>',0)
@@ -800,8 +777,6 @@ class Controller extends BaseController
 								
                                 
 							$temp=$temp."</div>";
-
-						
 
 							$temp=$temp."<div class='funiture-product-content text-center'>";
 							
@@ -1064,8 +1039,6 @@ class Controller extends BaseController
 	$param['dtpromodetail2'] = promo_detail::where('Status','=',1)
 	->get();
 
-
-
 		$param['dtproduct'] = product::where('product.Id_product','=',$id)
 		->join('type','product.Id_type','type.Id_type')
 		->join('brand','product.Id_brand','brand.Id_brand')
@@ -1098,12 +1071,7 @@ class Controller extends BaseController
 
 		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
 		->get();
-
-
-
-		
-
-		if(!Cookie::has("username_login"))   //cookie username_login untuk mengecek bahwa browser bersih, blmpernah ada yg login/regist
+		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   //cookie username_login untuk mengecek bahwa browser bersih, blmpernah ada yg login/regist
 		{
 			Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
 		}
@@ -1238,7 +1206,6 @@ class Controller extends BaseController
 		
 		echo $temp;
 
-
 	}
 
 	public function getpricechangeqty(Request $request)
@@ -1301,11 +1268,6 @@ class Controller extends BaseController
 				$temp=$temp."<br>";
 				$temp=$temp."<span style='font-size:120%'>Rp. ".number_format($hargabaru)." </span>";
 			}
-
-		
-			
-			
-		
 		}
 		else {
 			$temp=$temp."<span style='font-size:120%'>Rp.".number_format($vari[0]->Sell_price)."</span>";
@@ -1496,7 +1458,6 @@ class Controller extends BaseController
 			echo "no";
 		}
 		
-		
 	}
 
 	public function open_wishlist2(Request $request)
@@ -1522,8 +1483,6 @@ class Controller extends BaseController
 
 		return view('Cust_wishlist',$param);
 	}
-
-
 	public function update_wishlist(Request $request)
 	{
 		$Id_member="";
@@ -1545,8 +1504,6 @@ class Controller extends BaseController
 		} catch (\Throwable $th) {
 			echo('0');
 		}
-
-		
 	}
 
 	public function add_wishlist(Request $request)
@@ -1567,8 +1524,6 @@ class Controller extends BaseController
 			$Id_member="";
 		}
 	
-
-
 		$temp=0;
 		$wi = wishlist::where('Id_member','=',$Id_member)
 		->get();
@@ -1640,7 +1595,6 @@ class Controller extends BaseController
 		session()->put('cart',json_encode($arr));
 
 	}
-
 
 	public function cart(Request $request)
 	{
@@ -1777,13 +1731,9 @@ class Controller extends BaseController
 			{
 				echo "double";
 			}
-			
-	
 		}
 
 	}
-
-
 	public function deletecart(Request $request)
 	{
 		$Id_cart = $request->Id_cart;
@@ -1869,8 +1819,6 @@ class Controller extends BaseController
 			}
 			
 		}
-
-		
 	}
 
 	public function Ebook_marketing()
@@ -2009,10 +1957,6 @@ class Controller extends BaseController
 			
 			$pointcard = new point_card;
 			$hasil = $pointcard->add_point_card($Id_member,$tglfix,$First_point,0,$vcpoint,$Last_point,"Claim voucher",$Id_voucher);
-
-
-
-
 
 			//--------------------------------------------
 
@@ -2407,9 +2351,6 @@ class Controller extends BaseController
 			}
 			
 		}
-
-
-
 		$param['product'] = product::where('Status','=',1)
 		->get();
 
@@ -2440,8 +2381,6 @@ class Controller extends BaseController
 		$param['dtvoucher'] = voucher::select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo')
 		->get();
 
-
-	
 		$param['dtvouchermember'] = voucher_member::where('Id_member','=',$Id_member)
 		->get();
 		
@@ -2483,8 +2422,6 @@ class Controller extends BaseController
 		echo $Address."#".$City_name."#".$Province_name;
 	}
 	
-
-
 	function getCost($apikey, $destination, $weight, $courier) {
 		$curl = curl_init();
 		curl_setopt_array($curl, array(
@@ -3008,8 +2945,6 @@ class Controller extends BaseController
 				->get();
 			}
 
-			// print_r( "tryy".session()->get('Filter_my_order'));
-
 		} catch (\Throwable $th) {
 
 			// print_r("err".session()->get('Filter_my_order'));
@@ -3046,9 +2981,6 @@ class Controller extends BaseController
 		$params['datatransaksi'] = $datatransaksi;
 		return view('Cust_my_order', $params); 
 	   }
-
-
-
 
 	   function cekStatusTransaksi($number) {
         $curl = curl_init();
@@ -3536,8 +3468,6 @@ class Controller extends BaseController
 		}
 		return response()->json('success', 200);
 	}
-
-
 	public function pay_now_guess(Request $request)
 	{
 		//TEMPORARY STATUS CHANGER
@@ -3605,8 +3535,6 @@ class Controller extends BaseController
 	
 				$Last_point = $point;
 	
-	
-	
 				$tgl= date('d/m/Y');
 				$tglfix = $tgl[6].$tgl[7].$tgl[8].$tgl[9]."/".$tgl[3].$tgl[4]."/".$tgl[0].$tgl[1];
 				
@@ -3641,9 +3569,6 @@ class Controller extends BaseController
 					->join('sub_category', 'sub_category.Id_sub_category', 'product_sub_category.Id_sub_category')
 					->where('product.Id_product', $request->product)
 					->get();
-
-		
-		
 		foreach ($products as $product) {
 			$submitted_email_ebook = email_ebook::join('ebook', 'ebook.Id_ebook', 'submitted_email_ebook.ebook_id')
 					->where('ebook.Id_sub_category', $product->Id_sub_category)
@@ -3659,9 +3584,7 @@ class Controller extends BaseController
 		
 		return redirect()->route('broadcast_view')->with('success', "Success send to $jumlahterkirim users");
 	}
-
-
-	public function embed_code($id)
+	public function embed_code($id,$Random_code)
 	{
 		$param['dtproduct'] = product::where('product.Id_product','=', $id)
 		->join('brand','product.Id_brand','brand.Id_brand')
@@ -3669,9 +3592,6 @@ class Controller extends BaseController
 		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
 		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
 			->get();
-
-		
-
 		$cal=1;
 		$db = variation::where('Id_product','=', $id)
 		->where('Status','=',1)
@@ -3682,25 +3602,29 @@ class Controller extends BaseController
 			if($row->Status==1)
 			{
 				$arr[$row->Id_variation] = $row->Option_name; 
-
-				
 			}
 		
 		}
 		
 		$param['arr_variation']  = $arr; 
+		$param['Random_code'] = $Random_code;
 
 		return view('embed_code',$param);
 	}
 
-
 	public function embed_checkout(Request $request){
+		$param['Name'] = $request->Name;
+		$param['Phone'] = $request->Phone;
+		$param['Email'] = $request->Email;
 
+		$Id_variation = $request->cb_variation;
+		$Qty = $request->Qty;
+		$Random_code = $request->Random_code;
 
-		//tanam cookie affiliate
-
+		$Variasi = variation::find($Id_variation);
 
 		
+
 		$Id_member="";
 		try {
 			//code...
@@ -3711,33 +3635,109 @@ class Controller extends BaseController
 		}
 		
 
-		if($Id_member!="")
+		if($Id_member!="") //Member
 		{
+			//tanam affiliate
+			$member = member::find($Id_member);
+
+			if($member->Referral == 0 || $member->Referral == '0')
+			{
+				$tempmember = new member();
+				$tambahreferral = $tempmember->edit_referral($Id_member,$Random_code);
+				
+			}
+			
+
+			//tambah data cart
+
+			$tempcart = cart::where('Id_member','=',$Id_member)
+			->get();
+
+			$ada=0;
+			foreach ($tempcart as $datacart) {
+				if($datacart->Id_variation == $Id_variation)
+				{
+					$cart = new cart();
+					$hasil = $cart->edit_cart($datacart->Id_cart,$Qty);
+					$ada=1;
+				}
+			}
+
+			if($ada==0)
+			{
+				$cart = new cart();
+				$carthasil = $cart->add_cart($Variasi->Id_product,$Id_variation,$Qty,$Id_member);
+			}
+
+
 
 			$param['cart'] = cart::where('Id_member','=',$Id_member)
 			->get();
 
 			$Id_member = session()->get('userlogin')->Id_member;
-
 			$param['Id_member'] = $Id_member;
 	
 		}
-		else
+		else // Guest
 		{
+
+			//tanam affiliate
+			if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   //cookie username_login untuk mengecek bahwa browser bersih, blmpernah ada yg login/regist
+			{
+				Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
+			}
+
+
 			$param['Id_member'] ="";
 			if(session()->get('cart'))
 			{
-				$param['cart'] = json_decode(session()->get('cart'));
+				$arr = json_decode(session()->get('cart'));
+				$Id_cart=-1;
+				foreach ($arr as $datacart) {
+					if($datacart->Id_variation == $Id_variation && $datacart->Id_cart>0)
+					{
+						$Id_cart=$datacart->Id_cart;
+					}
+				}
+
+				if($Id_cart==-1)
+				{
+					$baru = array(
+					'Id_cart' => (count($arr)+1),
+					'Id_product' => $Variasi->Id_product, 
+					'Id_variation' => $Id_variation, 
+					'Qty' => $Qty, 
+					);
+
+					array_push($arr, $baru); 
+					session()->forget('cart');
+					session()->put('cart', json_encode($arr));
+					$param['cart'] = json_decode(session()->get('cart'));
+	
+				}
+				else
+				{
+					$arr[($Id_cart*1)-1]->Qty = $Qty;
+					session()->forget('cart');
+					session()->put('cart', json_encode($arr));
+					$param['cart'] = json_decode(session()->get('cart'));
+				}
 			}
 			else
 			{
-				$param['cart'] =[];
+				$arr = [];
+				$baru = array(
+					'Id_cart' => 1,
+					'Id_product' => $Variasi->Id_product, 
+					'Id_variation' => $Id_variation, 
+					'Qty' => $Qty
+					);
+				 array_push($arr, $baru); 
+				 session()->put('cart', json_encode($arr));
+				 $param['cart'] = json_decode(session()->get('cart'));
 			}
 			
 		}
-
-
-
 		$param['product'] = product::where('Status','=',1)
 		->get();
 
@@ -3789,31 +3789,6 @@ class Controller extends BaseController
 		$param['arr_city']  = $arr2; 
 		return view('Cust_checkout',$param);
 
-
-
-
-			// if($request->validate(
-			// 	[
-			// 		// 'txt_product_name' => ['required','max:100',new ValidasiProductName("add","")],
-			// 		// 'cb_type' => ['required'],
-			// 		// 'txt_packaging' => ['max:20'],
-			// 		// 'cb_brand' => ['required'],
-			// 		// 'txt_composition' => ['max:500'],
-			// 		// 'txt_efficacy' => ['max:500'],
-			// 		// 'txt_description' => ['max:1000'],
-			// 		// 'txt_bpom' => ['max:20'],
-			// 		// 'txt_storage_way' => ['max:50'],
-			// 		// 'txt_dose' => ['max:100'],
-			// 		// 'txt_disclaimer' => ['max:50'],
-			// 		// 'cb_status' =>['required',new ValidasiSubCategorySession(), new ValidasiOptionSession()],
-			// 	],
-			// 	[
-
-			// 		// 'cb_status.required' => 'Status cannot be empty'
-			// 	]))
-			// 	{
-					
-			// 	}
 		}
 
 	public function order_confirmation(Request $request)
