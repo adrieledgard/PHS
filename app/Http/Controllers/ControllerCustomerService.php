@@ -76,7 +76,7 @@ class ControllerCustomerService extends Controller
                 $followup = followup::where("Id_member", $member->Id_member)->where("End_followup_date", ">", date("Y-m-d H:i:s"))->first();
                 if(empty($followup)){
                     $jum_transaksi = cust_order_header::where("Id_member", $member->Id_member)->count();
-                    if($jum_transaksi != $request->get('jum_transaksi')){
+                    if($jum_transaksi > $request->get('jum_transaksi')){
                         continue;
                     }
 
@@ -84,12 +84,15 @@ class ControllerCustomerService extends Controller
                         $transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->first();
                         $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
                         $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
-                        if($interval->format("%d") != $request->get("lama_tidak_transaksi")){
+                        if($interval->format("%d") > $request->get("lama_tidak_transaksi")){
                             continue;
                         }
+                        $member->lama_tidak_belanja = $interval->format("%d");
+                    }else {
+                        $member->lama_tidak_belanja = 0;
                     }
                     
-
+                    $member->total_transaksi = $jum_transaksi;
                     $member->Phone = "62" . substr($member->Phone, -(strlen($member->Phone)-1));
                     array_push($available_customers, $member);
                 }

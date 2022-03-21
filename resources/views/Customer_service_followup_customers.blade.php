@@ -73,6 +73,8 @@
           <thead>
             <tr>
               <td>Name</td>
+              <td>Total Transaksi</td>
+              <td>Lama Tidak Belanja</td>
               <td>Action</td>
             </tr>
           </thead>
@@ -80,6 +82,8 @@
             @foreach ($available_customers as $customer)
                 <tr>
                     <td>{{$customer->Username}}</td>
+                    <td>{{$customer->total_transaksi}}</td>
+                    <td>{{$customer->lama_tidak_belanja}} Hari</td>
                     <td>
                         {{ Form::button('Follow up email', ['name'=>'btn_edit','class'=>'btn btn-primary btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#followup_email']) }}
                     </td>
