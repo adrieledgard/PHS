@@ -36,10 +36,11 @@ class supplier extends Model
     }
 
 
-    public function edit_supplier ($id,$name,$email,$phone1,$phone2,$address,$credit)
+    public function edit_supplier ($id,$name,$email,$phone1,$phone2,$address,$credit,$status)
     {
      
         supplier::where('Id_supplier','=',$id)->update(array(
+            'Status'=>strtoupper($status),
             'Supplier_name'=>strtoupper($name),
             'Supplier_email'=>strtoupper($email),
             'Supplier_phone1'=>strtoupper($phone1),

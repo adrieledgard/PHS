@@ -319,13 +319,13 @@
                   <p>Request Assists</p>
                 </a>
               </li>
-              <li class="nav-item">
+              {{-- <li class="nav-item">
                 <a href="{!! url('followup_customers'); !!}" class="nav-link  @yield('followup_customers_atv')">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Follow Up Customer</p>
                 </a>
               </li>
-             
+              --}}
               
             </ul>
           </li>
@@ -339,12 +339,22 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{!! url('list_available_customer'); !!}" class="nav-link  @yield('list_available_customer_atv')">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>List Available Customer</p>
-                </a>
-              </li>
+
+              <?php 
+              if(session()->get('userlogin')->Role =="CUSTOMER SERVICE")
+              {
+                ?>
+                <li class="nav-item">
+                  <a href="{!! url('list_available_customer'); !!}" class="nav-link  @yield('list_available_customer_atv')">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>List Available Customer</p>
+                  </a>
+                </li>
+                <?php 
+              }
+
+              ?>
+
               <?php 
                   if(session()->get('userlogin')->Role =="ADMIN")
                   {

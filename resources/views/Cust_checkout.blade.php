@@ -29,18 +29,27 @@
                     $totalweight =0;
                     if($Id_member=="")
                     {
+                        try {
+                            $nama2 = $Name;
+                            $phone2 = $Phone;
+                            $email2 = $Email;
+                        } catch (\Throwable $th) {
+                            $nama2 = "";
+                            $phone2 = "";
+                            $email2 = "";
+                        }
                         ?>
                             <input type="hidden" id="guess" value="yes">
                             <div class="jumbotron col-md-12 row">
                                 <div class="col-md-6">
                                     {{ Form::label('Full name','') }}
-                                    {{ Form::text('txt_name', '', ['class'=>'form-control','Id'=>'txt_name']) }}
+                                    {{ Form::text('txt_name', $nama2, ['class'=>'form-control','Id'=>'txt_name']) }}
                                     <br>
                                     {{ Form::label('Email','') }}
-                                    {{ Form::text('txt_email', '', ['class'=>'form-control','Id'=>'txt_email']) }}
+                                    {{ Form::text('txt_email', $email2, ['class'=>'form-control','Id'=>'txt_email']) }}
                                     <br>
                                     {{ Form::label('Phone','') }}
-                                    {{ Form::Number('txt_phone', '', ['class'=>'form-control','Id'=>'txt_phone']) }}
+                                    {{ Form::Number('txt_phone', $phone2, ['class'=>'form-control','Id'=>'txt_phone']) }}
                                     <br>
                                 </div>
                                 <div class="col-md-6">

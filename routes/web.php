@@ -175,6 +175,7 @@ Route::get('master_category', ["uses"=>"ControllerMaster@master_category"])->mid
 Route::get('getsubcategoryname', ["uses"=>"ControllerMaster@ajaxsubcategory"]);
 Route::get('getcategory', ["uses"=>"ControllerMaster@getcategory"]);
 Route::get('getsubcategory', ["uses"=>"ControllerMaster@getsubcategory"]);
+// Route::get('getsubcategory_detail', ["uses"=>"ControllerMaster@getsubcategory_detail"]);
 Route::post('add_category', ["uses"=>"ControllerMaster@add_category"]);
 Route::post('edit_category', ["uses"=>"ControllerMaster@edit_category"]);
 Route::post('edit_sub_category', ["uses"=>"ControllerMaster@edit_sub_category"]);
@@ -398,6 +399,11 @@ Route::get('broadcast-view', ['uses' => 'Controller@broadcastView'])->name('broa
 Route::get('broadcast-pembeli-view', ['uses' => 'Controller@broadcastPembeliView'])->name('broadcast_pembeli_view');
 Route::post('broadcast', ['uses' => 'Controller@broadcast']);
 Route::post('broadcast_pembeli', ['uses' => 'Controller@Broadcast_pembeli']);
+
+
+
+Route::get('embed_code/{id}/{Random_code}', ['uses' => 'Controller@embed_code']);
+Route::post('embed_checkout', ["uses"=>"Controller@embed_checkout"]);
 
 Route::get('database_pembeli', ['uses' => 'Controller@Database_pembeli']);
 Route::post('send_email', ['uses' => 'Controller@Send_email_to_customer']);

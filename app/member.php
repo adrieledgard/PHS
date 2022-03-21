@@ -216,6 +216,13 @@ class member extends Model
             'Point' => strtoupper($Point),
         ));
     }
+
+    public function edit_referral($Id_member,$Random_code)
+    {
+        member::where('Id_member','=',$Id_member)->update(array(
+            'Referral' => ($Random_code),
+        ));
+    }
 }
 
 

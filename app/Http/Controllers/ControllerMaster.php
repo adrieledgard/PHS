@@ -2816,7 +2816,7 @@ class ControllerMaster extends Controller
 
 						$param['msg_err'] = "Update Failed,Sub Category code/ Sub category name maybe already exist !";
 						
-						return view('Master_category',$param);
+						return view('Master_sub_category',$param);
 					}
 					else
 					{
@@ -3824,7 +3824,7 @@ class ControllerMaster extends Controller
 
 						//return redirect('Master_team_member')->with('success', 'Data Saved');
 						$param['dtsupplier'] = supplier::where('Id_supplier','>',-1)
-						->select('Id_supplier','Supplier_name','Supplier_email', 'Supplier_phone1', 'Supplier_phone2','Supplier_address','Credit_due_date')
+						->select('Status','Id_supplier','Supplier_name','Supplier_email', 'Supplier_phone1', 'Supplier_phone2','Supplier_address','Credit_due_date')
 						->get();
 
 						return view('Master_supplier',$param);
@@ -3869,7 +3869,7 @@ class ControllerMaster extends Controller
 				]))
 				{
 
-					
+					$status = $request->cb_status;
 					$name = $request->txt_supplier_name;
 					$email = $request->txt_supplier_email;
 					$phone1 = $request->txt_supplier_phone1;
@@ -3878,13 +3878,13 @@ class ControllerMaster extends Controller
 					$credit = $request->txt_credit_due_date;
 
 					$supp = new supplier();
-					$hasil = $supp->edit_supplier($id,$name,$email,$phone1,$phone2,$address,$credit);
+					$hasil = $supp->edit_supplier($id,$name,$email,$phone1,$phone2,$address,$credit,$status);
 
 					if($hasil == "sukses")
 					{
 						//return redirect('Master_team_member')->with('success', 'Data Saved');
 						$param['dtsupplier'] = supplier::where('Id_supplier','>',-1)
-						->select('Id_supplier','Supplier_name','Supplier_email', 'Supplier_phone1', 'Supplier_phone2','Supplier_address','Credit_due_date')
+						->select('Status','Id_supplier','Supplier_name','Supplier_email', 'Supplier_phone1', 'Supplier_phone2','Supplier_address','Credit_due_date')
 						->get();
 
 
