@@ -42,6 +42,7 @@
                             <input type="hidden" id="guess" value="yes">
                             <div class="jumbotron col-md-12 row">
                                 <div class="col-md-6">
+                                    {{-- <input type='text' id='txtsnaptoken{{ $no }}' value='{{ $cr->snap_token }}'> --}}
                                     {{ Form::label('Full name','') }}
                                     {{ Form::text('txt_name', $nama2, ['class'=>'form-control','Id'=>'txt_name']) }}
                                     <br>
@@ -707,6 +708,7 @@
 
 @push('custom-js')
 
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script src ="{{ asset ('js/jquery.js') }}"></script>
 <script src ="{{ asset ('js/bootstrap.js') }}"></script>
 <!-- CDN DATA TABLE -->
@@ -1081,6 +1083,7 @@
          update_grand_total();
     }
 
+    
     function pay()
     {
         var Address= "";
@@ -1132,13 +1135,43 @@
 
             if($('#guess').val()=="yes")
             {
-                var order_id = result;
-                //langsung jalankan midtrans
-                $.get(myurl + '/pay_now_guess',
-                {order_id:result},
-                function(result){
-                    alert('berhasil');
-                });
+                var no = result;
+
+
+                var snaptoken = $("#txtsnaptoken" + no).val(); 
+                snap.pay(snaptoken, {
+                    // Optional
+                    onSuccess: function(result) {
+                        /* You may add your own js here, this is just example */
+                        // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                        console.log("masuk mode onSuccess"); 
+                        console.log(result)
+                    },
+                    // Optional
+                    onPending: function(result) {
+                        /* You may add your own js here, this is just example */
+                        // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                        console.log("masuk mode onPending"); 
+                        console.log(result)
+                    },
+                    // Optional
+                    onError: function(result) {
+                        /* You may add your own js here, this is just example */
+                        // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+                        console.log("masuk mode onError"); 
+                        console.log(result)
+                    }
+                }); 
+
+
+
+
+                // //langsung jalankan midtrans
+                // $.get(myurl + '/pay_now_guess',
+                // {order_id:result},
+                // function(result){
+                //     alert('berhasil');
+                // });
 
             }
             else
