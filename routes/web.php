@@ -43,6 +43,8 @@ Route::post('loginProcess', ["uses"=>"Controller@post_login"]);
 Route::get('validasipromo', ["uses"=>"Controller@validasipromo"]);
 Route::get('edit_profile', ["uses"=>"Controller@edit_profile"]);
 Route::post('update_profile', ["uses"=>"Controller@update_profile"]);
+Route::post('request_otp', ["uses"=>"Controller@request_otp"]);
+Route::post('ganti_password', ["uses"=>"Controller@ganti_password"]);
 
 
 Route::get('Cust_show_cat', ["uses"=>"Controller@Cust_show_cat"]);

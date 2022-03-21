@@ -41,7 +41,9 @@ use App\ebook;
 use App\email_ebook;
 use App\followup;
 use App\Mail\BroadcastMail;
+use App\Mail\RequestOTP;
 use App\Mail\SendEmail;
+use App\otp;
 use App\rate_review;
 use DateTime;
 use App\Rules\ValidasiEmailMember;
@@ -54,6 +56,7 @@ use App\Rules\ValidasiOptionSession;
 use App\Rules\ValidasiSupplierName;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use LDAP\Result;
 use resources\lang\en\validation;
 use SubmittedEmailEbook;
 
@@ -3937,5 +3940,62 @@ class Controller extends BaseController
 		$member->save();
 
 		return redirect()->back()->with('success', 'Sukses');
+	}
+
+	public function request_otp(Request $request)
+	{
+		$is_member = member::where('Email', $request->Email)->first();
+		if(empty($is_member)){
+			return "email_tidak_terdaftar";
+		}
+
+		$actived_kode_otp = otp::where('Email', $request->Email)->where('Status', 'Active')->first();
+		if(!empty($actived_kode_otp)){
+			otp::where('id', $actived_kode_otp->id)->update(['Status' => 'Expired']);
+		}
+		$kode_otp = random_int(000000, 999999);
+		$expired_time = date('Y-m-d H:i:s', strtotime("+30 minutes"));
+		otp::create([
+			'Kode' => $kode_otp,
+			'Email' => $request->Email,
+			'Expired_time' => $expired_time,
+			'Status' => 'Active'
+		]);
+
+		Mail::to(strtolower($request->Email))->send(new RequestOTP($kode_otp));
+
+		return "sukses";
+	}
+	
+	public function ganti_password(Request $request)
+	{
+		$validator = Validator::make($request->all(),[
+			'new_password' => ['required','min:8', 'max:20'],
+			'kon_new_password' => ['required','same:new_password'],
+			'kode_otp' => ['required']
+		],
+		[
+			'kode_otp.required' => 'Kode OTP cant empty',
+			'new_password.required' => 'Password cant empty',
+			'new_password.min' => 'Password min 8 char',
+			'new_password.min' => 'Password max 20 char',
+			'kon_new_password.same' => 'Password & Confirmation password not match'
+		]);
+
+		if($validator->fails()){
+			return view('forgot_password')->withErrors($validator);
+		}
+
+		$otp = otp::where('Kode', $request->kode_otp)->where('Expired_time', '>=', date("Y-m-d H:i:s"))->where('Status', 'Active')->first();
+		if(empty($otp)){
+			return view('forgot_password')->withErrors(['kode_otp'=>'Kode expired/salah']);
+		}
+
+		$member = member::where("Email", $otp->Email)->first();
+		member::where("Id_member", $member->Id_member)->update(['Password' => md5($request->new_password)]);
+
+		otp::where('Kode', $request->kode_otp)->update(['Status' => "Used"]);
+
+		return view('forgot_password')->with(['success' => "Password berhasil diganti"]);
 	}
 }

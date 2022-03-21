@@ -1,0 +1,2 @@
+JANGAN BAGIKAN KODE INI KE SIAPAPUN
+Kode OTP : {{$kode_otp}}
