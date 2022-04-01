@@ -397,13 +397,17 @@
                     </p>
                 </div>
                 <div class="tab-pane fade" id="pro-review" role="tabpanel">
-                    <p style="text-align: left">
+                    <p class="text-right"><button class="btn btn-sm" type="button" onclick="sort({{$dtproduct[0]->Id_product}})"><i class="fa fa-sort"></i> Sort by date</button></p>
+                    <p style="text-align: left" class="review_area">
                         @php
                             if(count($dtproductreview) > 0){
                                 foreach ($dtproductreview as $review) {
                                     echo "
                                     <b>$review->Username</b><br>
-                                    $review->review <br><br>
+                                    $review->review <br>
+                                    <i>". date("d-m-Y", strtotime($review->created_at)) ."</i>
+                                    <br><br>
+
                                     ";
                                 }
                             }
@@ -675,7 +679,7 @@
 <script src="{{ asset('assets/js/owl.carousel.min.js')}}"></script>
 <script src="{{ asset('assets/js/plugins.js')}}"></script>
 <script src="{{ asset('assets/js/main.js')}}"></script> 
-
+<script src="{{asset('assets\plugins\moment\moment.min.js')}}"></script>
 
 
 
@@ -687,18 +691,18 @@
 
 
 
-<script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
-<script src="assets/js/popper.js"></script>
-<script src="assets/js/bootstrap.min.js"></script>
-<script src="assets/js/jquery.magnific-popup.min.js"></script>
-<script src="assets/js/isotope.pkgd.min.js"></script>
-<script src="assets/js/imagesloaded.pkgd.min.js"></script>
-<script src="assets/js/jquery.counterup.min.js"></script>
-<script src="assets/js/waypoints.min.js"></script>
-<script src="assets/js/ajax-mail.js"></script>
-<script src="assets/js/owl.carousel.min.js"></script>
-<script src="assets/js/plugins.js"></script>
-<script src="assets/js/main.js"></script>
+<script src="{{ asset('assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
+<script src="{{ asset('assets/js/popper.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
+<script src="{{ asset('assets/js/isotope.pkgd.min.js') }}"></script>
+<script src="{{ asset('assets/js/imagesloaded.pkgd.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery.counterup.min.js') }}"></script>
+<script src="{{ asset('assets/js/waypoints.min.js') }}"></script>
+<script src="{{ asset('assets/js/ajax-mail.js') }}"></script>
+<script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
+<script src="{{ asset('assets/js/plugins.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
 
 
 <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
@@ -710,7 +714,7 @@
 
 
   });
-
+  var sort_format = "desc";
   var myurl = "<?php echo URL::to('/'); ?>";
   function gantivarian()
   {
@@ -730,6 +734,21 @@
     });
   }
 
+  function sort(Id_product){
+    $.get(myurl + '/sort_review',
+    {Id_product: Id_product, format : sort_format},
+    function(result){
+        console.log(result);
+        sort_format = sort_format == 'desc' ? 'asc' : 'desc';
+        var review_area = document.getElementsByClassName("review_area")[0];
+        var review = "";
+        result.forEach(res => {
+            review += "<b>"+ res.Username +"</b> <br> "+ res.review +" <br> <i>"+ moment(res.created_at).format("DD-MM-YYYY") +"</i><br><br>";
+        });
+
+        review_area.innerHTML = review;
+    });
+  }
 
   function modal_gantivariant()
   {

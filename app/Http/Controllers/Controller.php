@@ -3847,6 +3847,19 @@ class Controller extends BaseController
 		return 'sukses';
 	}
 
+	public function sort_review(Request $request)
+	{
+		$result = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
+		->join('member', 'member.Id_member', 'rating_review.Id_member')
+		->where('cust_order_detail.Id_product', $request->Id_product)
+		->where('rating_review.Status', 'Active')
+		->select('member.*','rating_review.*')
+		->orderBy('created_at', $request->format)
+		->get();
+
+		return $result;
+	}
+
 	public function update_rating_product($id_product)
 	{
 		$product_rating = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
