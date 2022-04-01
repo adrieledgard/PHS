@@ -49,6 +49,13 @@ class cust_order_header extends Model
 
         ]
         );
+
+        $order_history = new cust_order_history();
+		$order_history->Order_status = $Status;
+		$order_history->Record = "Order sudah dibuat";
+		$order_history->Id_order = $this->getlastinvoice();
+		$order_history->save();
+
         return "sukses";
        
 
@@ -60,6 +67,24 @@ class cust_order_header extends Model
         cust_order_header::where('Id_order','=',$Id_order)->update(array(
             'Status'=>($Status),
         ));
+
+        $record = "";
+        if($Status == 3){
+            $record = "Order sedang diproses";
+        }else if($Status == 4){
+            $record = "Order sedang dalam pengiriman";
+        }else if($Status == 0){
+            $record = "Order dibatalkan";
+        }else if($Status == 2){
+            $record = "Pembayaran telah diterima";
+        }
+
+        $order_history = new cust_order_history();
+		$order_history->Order_status = $Status;
+		$order_history->Record = $record;
+		$order_history->Id_order = $Id_order;
+		$order_history->save();
+
         return "sukses";
      
     }

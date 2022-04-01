@@ -24,6 +24,39 @@
 <!-- JQVMap -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/star-rating.css') }}">
+<style>
+  ul.timeline {
+    list-style-type: none;
+    position: relative;
+}
+ul.timeline:before {
+    content: ' ';
+    background: #d4d9df;
+    display: inline-block;
+    position: absolute;
+    left: 29px;
+    width: 2px;
+    height: 100%;
+    z-index: 400;
+}
+ul.timeline > li {
+    margin: 20px 0;
+    padding-left: 20px;
+    margin-left: 10px;
+}
+ul.timeline > li:before {
+    content: ' ';
+    background: white;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid var(--background);
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 400;
+}
+  </style>
 @endpush
 
 @section('Content')
@@ -222,29 +255,35 @@
         </div>
         <div class="modal-body">
             
-            <div class="row">
-                <div class="col-md-12">
-                  <table class='table table-dark'>
-                    <thead>
-                      <tr>
-                        <th>Product Name</th>
-                        <th>Variation</th>
-                        <th>Normal Price</th>
-                        <th>Discount</th>
-                        <th>Fix price</th>
-                        <th>Qty</th>
-                        <th>Total</th>
-                      </tr>
-                  </thead>
-                  <tbody id="detail_order">
-    
-                  </tbody>
-                  </table>
-                </div>
+          <div class="container">
+            <div class="row" style="width: 100%;">
+              <div class="col-12">
+                <table class='table table-dark' style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th>Product Name</th>
+                      <th>Variation</th>
+                      <th>Normal Price</th>
+                      <th>Discount</th>
+                      <th>Fix price</th>
+                      <th>Qty</th>
+                      <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="detail_order">
+  
+                </tbody>
+                </table>
               </div>
-
-           
-            
+            </div>
+            <div class="row mt-3" style="width: 100% !important;">
+              
+              <h4>History</h4>
+              <ul class="timeline timeline_field">
+                
+              </ul>
+            </div>
+          </div>
         </div>
             {{-- <div class="modal-footer">
               {{ Form::button('Close', ['class'=>'btn btn-secondary','data-dismiss'=>'modal','aria-label'=>'Close']) }}
@@ -371,6 +410,7 @@
     function(result){
         // alert(result);
         var cut = result.split("#");
+        var history = JSON.parse(cut[11]);
          $("#detail_order").html(cut[0]);
          $("#name").html(cut[1]);
          $("#phone").html(cut[2]);
@@ -378,6 +418,28 @@
          $("#address").html(cut[4]);
          $("#ekspedisi").html(cut[5]);
          $("#weight").html(cut[6] + "Gr");
+
+        history.forEach(timeline => {
+          $(".timeline_field").append(`<li class="${timeline.id}">
+                <label>${moment(timeline.created_at).format("DD-MM-YYYY")}</label>
+                <p>${timeline.Record}</p>
+              </li>`);
+          
+          var line = document.getElementsByClassName(`${timeline.id}`)[0];
+          if(timeline.Order_status == 0){
+            line.style.setProperty('--background', "#cf4a4f");
+          }else if(timeline.Order_status == 1){
+            line.style.setProperty('--background', "#4d88db");
+          }else if(timeline.Order_status == 2){
+            line.style.setProperty('--background', "#4d88db");
+          }else if(timeline.Order_status == 3){
+            line.style.setProperty('--background', "#9e9228");
+          }else if(timeline.Order_status == 4){
+            line.style.setProperty('--background', "#a638c2");
+          }else if(timeline.Order_status == 5){
+            line.style.setProperty('--background', "#53c95b");
+          }
+        });
     });
      
  })

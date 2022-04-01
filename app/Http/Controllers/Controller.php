@@ -37,6 +37,7 @@ use App\address_member;
 use App\list_city;
 use App\cust_order_header;
 use App\cust_order_detail;
+use App\cust_order_history;
 use App\ebook;
 use App\email_ebook;
 use App\followup;
@@ -3050,6 +3051,8 @@ class Controller extends BaseController
 		->join('product','cust_order_detail.Id_product','product.Id_product')
 		->join('variation_product','cust_order_detail.Id_variation','variation_product.Id_variation')
 		->get();
+
+		$order_history = cust_order_history::where('Id_order', $Id_order)->get();
 		$temp="";
 		$temp2="";
 		$total=0;
@@ -3166,7 +3169,7 @@ class Controller extends BaseController
 			return $temp2;
 		}
 
-		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']."#".$temp2);
+		print_r($temp."#".$headerorder[0]['Name']."#".$headerorder[0]['Phone']."#".$headerorder[0]['Email']."#".$headerorder[0]['Address'].",".$headerorder[0]['Type']." ".$headerorder[0]['City_name'].",".$headerorder[0]['Province_name']."#".$headerorder[0]['Courier']."-".$headerorder[0]['Courier_packet']."#".$headerorder[0]['Weight']."#".$headerorder[0]['Receipt_number']."#".$headerorder[0]['Id_order']."#".$headerorder[0]['Status']."#".$temp2."#".json_encode($order_history));
 	}
 
 	public function update_filter_session(Request $request)
@@ -3827,6 +3830,13 @@ class Controller extends BaseController
 		$order = cust_order_header::find($request->id);
 		$order->status = 5;
 		$order->save();
+
+		$order_history = new cust_order_history();
+		$order_history->Order_status = 5;
+		$order_history->Record = "Order sudah selesai";
+		$order_history->Id_order = $request->id;
+		$order_history->save();
+
 		$this->checkerFollowup($order->Id_member, $order->Date_time);
 		return 'sukses';
 	}
@@ -3906,6 +3916,12 @@ class Controller extends BaseController
 			$update_old_order = cust_order_header::find($order->Id_order);
 			$update_old_order->Status = 5;
 			$update_old_order->save();
+
+			$order_history = new cust_order_history();
+			$order_history->Order_status = 5;
+			$order_history->Record = "Order sudah selesai";
+			$order_history->Id_order = $order->Id_order;
+			$order_history->save();
 		}
 	}
 
