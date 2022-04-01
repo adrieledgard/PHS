@@ -38,6 +38,7 @@ use App\Rules\ValidasiSupplierName;
 use App\Rules\ValidasiInsertPhotoMasterProduct;
 use App\Rules\ValidasiCbProduct;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class ControllerMaster extends Controller
@@ -4234,9 +4235,20 @@ class ControllerMaster extends Controller
 		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
 		{
 			Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
-			$ebook = ebook::find($ebook_id);
-			$total_download = $ebook->Total_didownload == null ? 1 : $ebook->Total_didownload + 1;
-			ebook::where('Id_ebook', $ebook_id)->update(['Total_didownload' => $total_download]);
+			$ebook = DB::table('ebook_member_downloaded')->where('Id_ebook', $ebook_id)->first();
+			$member = member::where('Random_code', $user_token)->first();
+			if(!empty($member)){
+				$total_download = 0;
+				if(!empty($ebook)){
+					$total_download = $ebook->Total_didownload + 1;	
+					DB::update("update ebook_member_downloaded set Total_didownload = $total_download where Id_ebook = $ebook_id");
+				}else {
+					$total_download = 1;
+					DB::insert('insert into ebook_member_downloaded (Total_didownload, Id_member, Id_ebook) values (?, ?, ?)', [$total_download, $member->Id_member, $ebook_id]);
+				}
+			}
+			
+			
 		}
 		
 		return redirect()->back()->with('success', 'Email submitted');

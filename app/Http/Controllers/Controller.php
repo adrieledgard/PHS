@@ -1085,9 +1085,18 @@ class Controller extends BaseController
 		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   //cookie username_login untuk mengecek bahwa browser bersih, blmpernah ada yg login/regist
 		{
 			Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
-			$affiliate = affiliate::where('Id_product', $id)->first();
-			$data_total_diklik = $affiliate->Total_diklik == null ? 1 : $affiliate->Total_diklik + 1;
-			affiliate::where('Id_product', $id)->update(['Total_diklik' => $data_total_diklik]);
+			$affiliate = DB::table('affiliate_member')->where('Id_product', $id)->first();
+			$member = member::where('Random_code', $Random_code)->first();
+			if(!empty($member)){
+				$total_diklik = 0;
+				if(!empty($affiliate)){
+					$total_diklik = $affiliate->Total_diklik + 1;	
+					DB::update("update affiliate_member set Total_diklik = $total_diklik where Id_product = $id");
+				}else {
+					$total_diklik = 1;
+					DB::insert('insert into affiliate_member (Total_diklik, Id_member, Id_product) values (?, ?, ?)', [$total_diklik, $member->Id_member, $id]);
+				}
+			}
 		}
 
 
@@ -1837,7 +1846,7 @@ class Controller extends BaseController
 
 	public function Ebook_marketing()
 	{
-		$ebooks = ebook::where('status', 1)->get();
+		$ebooks = ebook::leftJoin('ebook_member_downloaded', 'ebook.Id_ebook', 'ebook_member_downloaded.Id_ebook')->where('status', 1)->get();
 		foreach ($ebooks as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 		}
@@ -1848,6 +1857,8 @@ class Controller extends BaseController
 	{
 		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
 		->join('product','affiliate.Id_product','product.Id_product')
+		->leftJoin('affiliate_member', 'affiliate_member.Id_product', 'affiliate.Id_product')
+		->select('affiliate.*', 'product.*', 'affiliate_member.Total_diklik')
 		->get();
 
 		$param['dtproduct'] = product::where('product.Status','=', '1')
