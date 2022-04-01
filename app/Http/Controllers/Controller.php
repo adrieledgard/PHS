@@ -1074,9 +1074,20 @@ class Controller extends BaseController
 
 		$param['dtpromodetail'] = promo_detail::where('Status','=',1)
 		->get();
+
+		$param['dtproductreview'] = rate_review::join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
+		->join('member', 'member.Id_member', 'rating_review.Id_member')
+		->where('cust_order_detail.Id_product', $id)
+		->where('rating_review.Status', 'Active')
+		->select("member.*", 'rating_review.*')
+		->get();
+
 		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   //cookie username_login untuk mengecek bahwa browser bersih, blmpernah ada yg login/regist
 		{
 			Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
+			$affiliate = affiliate::where('Id_product', $id)->first();
+			$data_total_diklik = $affiliate->Total_diklik == null ? 1 : $affiliate->Total_diklik + 1;
+			affiliate::where('Id_product', $id)->update(['Total_diklik' => $data_total_diklik]);
 		}
 
 

@@ -32,6 +32,7 @@
                                     <th>Poin</th> --}}
                                     <th>Share Link</th>
                                     <th>Embed Code</th>
+                                    <th>Total Clicked</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,6 +122,8 @@
                                                             <button class="btn btn-primary" onclick="copyToClipboard('{{$dtpro->Id_product}}')"> Copy</button>
                                                             
                                                         </td>
+                                                        <td></td>
+                                                        <td>{{$data_aff->Total_diklik}}</td>
                                                     </tr>
                                                 <?php
                                             }

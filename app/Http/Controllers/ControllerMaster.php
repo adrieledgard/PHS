@@ -4234,6 +4234,9 @@ class ControllerMaster extends Controller
 		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
 		{
 			Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
+			$ebook = ebook::find($ebook_id);
+			$total_download = $ebook->Total_didownload == null ? 1 : $ebook->Total_didownload + 1;
+			ebook::where('Id_ebook', $ebook_id)->update(['Total_didownload' => $total_download]);
 		}
 		
 		return redirect()->back()->with('success', 'Email submitted');

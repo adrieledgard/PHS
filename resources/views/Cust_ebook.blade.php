@@ -32,6 +32,7 @@
                                     {{-- <th>Price</th>
                                     <th>Poin</th> --}}
                                     <th>Share Link</th>
+                                    <th>Total Downloaded</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,6 +73,7 @@
                                         <button class="btn btn-primary" onclick="copyToClipboard('{{$ebook->Id_ebook}}')"> Copy</button>
                                         
                                     </td>
+                                    <td>{{$ebook->Total_didownload}}</td>
                                 </tr>
                                    
                           
