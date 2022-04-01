@@ -2899,6 +2899,12 @@ class Controller extends BaseController
 									$data = cust_order_header::find($row->Id_order); 
 									$data->Status = 2; 
 									$data->save(); 
+
+									$order_history = new cust_order_history();
+									$order_history->Order_status = 2;
+									$order_history->Record = "Pembayaran telah diterima";
+									$order_history->Id_order = $row->Id_order;
+									$order_history->save();
 								}    
 							}
 						}
@@ -3052,7 +3058,7 @@ class Controller extends BaseController
 		->join('variation_product','cust_order_detail.Id_variation','variation_product.Id_variation')
 		->get();
 
-		$order_history = cust_order_history::where('Id_order', $Id_order)->get();
+		$order_history = cust_order_history::where('Id_order', $Id_order)->orderBy('id','desc')->get();
 		$temp="";
 		$temp2="";
 		$total=0;
