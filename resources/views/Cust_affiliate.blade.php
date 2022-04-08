@@ -124,7 +124,43 @@
                                                             
                                                         </td>
                                                         {{-- <td></td> --}}
-                                                        <td>{{$data_aff->Total_diklik}} </td>
+                                                        {{-- <td>{{$data_aff->Total_diklik}} </td> --}}
+                                                        <td>
+                                                            @php
+                                                            $totaldiklik=0;
+                                                            if($data_aff->Total_diklik=='')
+                                                            {
+                                                                $totaldiklik=0;
+                                                            }
+                                                            else {
+                                                                $totaldiklik = $data_aff->Total_diklik;
+                                                            }
+                                                        @endphp
+                                                        {{$totaldiklik}}
+
+                                                        </td>
+
+                                                        @php
+                                                            $count=0;
+                                                        @endphp
+
+                                                        @foreach ($cust_order as $data)
+                                                        @php
+                                                            if(str_contains($data->Tracking_code, 'LINK'))
+                                                            {
+                                                                $temp = explode("-" ,$data->Tracking_code);
+                                                                $Id_product= $temp[1];
+                
+                                                                if($Id_product == $dtpro->Id_product)
+                                                                {
+                                                                    $count++;
+                                                                }
+                                                            }
+                                                        @endphp
+                                                        
+                                                        
+                                                    @endforeach
+                                                    <td>{{ $count }}</td>
                                                     </tr>
                                                 <?php
                                             }

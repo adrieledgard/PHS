@@ -1853,15 +1853,21 @@ class Controller extends BaseController
 	{
 		// $ebooks = ebook::leftJoin('ebook_member_downloaded', 'ebook.Id_ebook', 'ebook_member_downloaded.Id_ebook')->where('status', 1)->get();
 		
-		$ebooks = ebook::where('ebook.Status','=',1)
+		$param['ebooks'] = ebook::where('ebook.Status','=',1)
 		->select('ebook.Id_ebook','ebook.Title','ebook.Image','ebook.Pdf_file','ebook.Status','ebook_member_downloaded.Total_didownload')
 		->leftjoin('ebook_member_downloaded','ebook.Id_ebook','ebook_member_downloaded.Id_ebook')
 		->get();
 		
-		foreach ($ebooks as $book) {
+		$Random_code = session()->get('userlogin')->Random_code;
+
+		$param['cust_order'] = cust_order_header::where('Affiliate','=',$Random_code)
+		->where('Status','>=',2)
+		->get();
+
+		foreach ($param['ebooks'] as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 		}
-		return view('Cust_ebook', compact('ebooks'));
+		return view('Cust_ebook', $param);
 	}
 
 	public function Affiliate_marketing(Request $request)
@@ -1878,6 +1884,13 @@ class Controller extends BaseController
 		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
 		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
 			->get();
+
+		
+		$Random_code = session()->get('userlogin')->Random_code;
+
+		$param['cust_order'] = cust_order_header::where('Affiliate','=',$Random_code)
+		->where('Status','>=',2)
+		->get();
 
 
 		$param['dtvariation']= variation::where('Status','=',1)
@@ -3825,7 +3838,7 @@ class Controller extends BaseController
 			if($member->Referral == 0 || $member->Referral == '0')
 			{
 				$tempmember = new member();
-				$tambahreferral = $tempmember->edit_referral($Id_member,$Random_code);
+				$tambahreferral = $tempmember->edit_referral($Id_member,$Random_code,"EMBED-".$Variasi->Id_product);
 				
 			}
 			
@@ -3867,6 +3880,7 @@ class Controller extends BaseController
 			if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   //cookie username_login untuk mengecek bahwa browser bersih, blmpernah ada yg login/regist
 			{
 				Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
+				Cookie::queue(Cookie::make("Tracking_code", "EMBED-".$Variasi->Id_product, 1500000));
 			}
 
 

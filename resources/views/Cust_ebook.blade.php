@@ -74,7 +74,41 @@
                                         <button class="btn btn-primary" onclick="copyToClipboard('{{$ebook->Id_ebook}}')"> Copy</button>
                                         
                                     </td>
-                                    <td>{{$ebook->Total_didownload}}</td>
+                                    <td>
+                                        @php
+                                            $totaldownload=0;
+                                            if($ebook->Total_didownload=='')
+                                            {
+                                                $totaldownload=0;
+                                            }
+                                            else {
+                                                $totaldownload = $ebook->Total_didownload;
+                                            }
+                                        @endphp
+                                        {{$totaldownload}}
+                                        
+                                    </td>
+
+                                    @php
+                                        $count=0;
+                                    @endphp
+                                    @foreach ($cust_order as $data)
+                                        @php
+                                            if(str_contains($data->Tracking_code, 'EBOOK'))
+                                            {
+                                                $temp = explode("-" ,$data->Tracking_code);
+                                                $Id_ebook= $temp[1];
+
+                                                if($Id_ebook == $ebook->Id_ebook)
+                                                {
+                                                    $count++;
+                                                }
+                                            }
+                                        @endphp
+                                        
+                                        
+                                    @endforeach
+                                    <td>{{ $count }}</td>
                                 </tr>
                                    
                           

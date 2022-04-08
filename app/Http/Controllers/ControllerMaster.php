@@ -4244,6 +4244,8 @@ class ControllerMaster extends Controller
 		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
 		{
 			Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
+			Cookie::queue(Cookie::make("Tracking_code", "EBOOK-".$ebook_id, 1500000));
+			
 			$ebook = DB::table('ebook_member_downloaded')->where('Id_ebook', $ebook_id)->first();
 			$member = member::where('Random_code', $user_token)->first();
 			if(!empty($member)){

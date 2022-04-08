@@ -223,10 +223,11 @@ class member extends Model
         ));
     }
 
-    public function edit_referral($Id_member,$Random_code)
+    public function edit_referral($Id_member,$Random_code,$Tracking_code)
     {
         member::where('Id_member','=',$Id_member)->update(array(
             'Referral' => ($Random_code),
+            'Tracking_code' => $Tracking_code,
         ));
     }
 }
