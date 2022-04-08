@@ -398,21 +398,24 @@
                 </div>
                 <div class="tab-pane fade" id="pro-review" role="tabpanel">
                     <p class="text-right"><button class="btn btn-sm" type="button" onclick="sort({{$dtproduct[0]->Id_product}})"><i class="fa fa-sort"></i> Sort by date</button></p>
-                    <p style="text-align: left" class="review_area">
-                        @php
-                            if(count($dtproductreview) > 0){
-                                foreach ($dtproductreview as $review) {
-                                    echo "
-                                    <b>$review->Username</b><br>
-                                    $review->review <br>
-                                    <i>". date("d-m-Y", strtotime($review->created_at)) ."</i>
-                                    <br><br>
-
-                                    ";
+                    <div class="overflow-auto" style="height: 500px;">
+                        <p style="text-align: left" class="review_area">
+                            @php
+                                if(count($dtproductreview) > 0){
+                                    foreach ($dtproductreview as $review) {
+                                        echo "
+                                        <b>$review->Username</b><br>
+                                        $review->review <br>
+                                        <i>". date("d-m-Y H:i:s", strtotime($review->created_at)) ."</i>
+                                        <br><br>
+    
+                                        ";
+                                    }
                                 }
-                            }
-                        @endphp
-                    </p>
+                            @endphp
+                        </p>
+                    </div>
+                    
                     
                 </div>
             </div>
@@ -712,7 +715,17 @@
       $('.login-info-box').fadeOut();
       $('.login-show').addClass('show-log-panel');
 
-
+      var duplicate_dec_elements = document.querySelectorAll("div.dec");
+      var duplicate_inc_elements = document.querySelectorAll("div.inc");
+      var count_duplicate = duplicate_dec_elements.length;
+      for(var i = 0; i < count_duplicate; i++){
+          if(i+1 != count_duplicate){
+              duplicate_dec_elements[i].remove();
+              duplicate_inc_elements[i].remove();
+          }
+      }
+    //   while()
+        
   });
   var sort_format = "desc";
   var myurl = "<?php echo URL::to('/'); ?>";
@@ -743,7 +756,7 @@
         var review_area = document.getElementsByClassName("review_area")[0];
         var review = "";
         result.forEach(res => {
-            review += "<b>"+ res.Username +"</b> <br> "+ res.review +" <br> <i>"+ moment(res.created_at).format("DD-MM-YYYY") +"</i><br><br>";
+            review += "<b>"+ res.Username +"</b> <br> "+ res.review +" <br> <i>"+ moment(res.created_at).format("DD-MM-YYYY HH:mm:ss") +"</i><br><br>";
         });
 
         review_area.innerHTML = review;

@@ -410,6 +410,7 @@ ul.timeline > li:before {
     function(result){
         // alert(result);
         var cut = result.split("#");
+        console.log(cut);
         var history = JSON.parse(cut[11]);
          $("#detail_order").html(cut[0]);
          $("#name").html(cut[1]);
@@ -419,10 +420,12 @@ ul.timeline > li:before {
          $("#ekspedisi").html(cut[5]);
          $("#weight").html(cut[6] + "Gr");
 
+         $(".timeline_field").html("");
         history.forEach(timeline => {
           $(".timeline_field").append(`<li class="${timeline.id}">
-                <label>${moment(timeline.created_at).format("DD-MM-YYYY")}</label>
+                <label>${moment(timeline.created_at).format("DD-MM-YYYY HH:mm:ss")}</label>
                 <p>${timeline.Record}</p>
+                ${timeline.Order_status == 4 ? "No. resi : <p>" + cut[7] + "</p>" : ""}
               </li>`);
           
           var line = document.getElementsByClassName(`${timeline.id}`)[0];
