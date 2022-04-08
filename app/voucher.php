@@ -11,10 +11,10 @@ class voucher extends Model
     public $table = 'voucher';
     public $primaryKey = 'Id_voucher';
     public $timestamps = false;
-    public $fillable = ['Id_voucher','Voucher_name','Voucher_type','Discount','Point','Redeem_due_date','Joinpromo','Status'];
+    public $fillable = ['Id_voucher','Voucher_name','Voucher_type','Discount','Point','Redeem_due_date','Quota','Joinpromo','Status'];
     public $incrementing = true;
 
-    public function add_voucher($voucher_name, $voucher_type, $discount,$point,$redeem_due_date,$joinpromo)
+    public function add_voucher($voucher_name, $voucher_type, $discount,$point,$redeem_due_date,$joinpromo, $Quota)
     {
         voucher::create(
         [
@@ -24,6 +24,7 @@ class voucher extends Model
             'Discount' => $discount,
             'Point' => $point,
             'Redeem_due_date' => $redeem_due_date,
+            'Quota' => $Quota,
             'Joinpromo' => $joinpromo,
             'Status' =>1 
         ]

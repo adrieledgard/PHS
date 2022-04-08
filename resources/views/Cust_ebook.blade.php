@@ -33,6 +33,7 @@
                                     <th>Poin</th> --}}
                                     <th>Share Link</th>
                                     <th>Total Downloaded</th>
+                                    <th>Total Sales</th>
                                 </tr>
                             </thead>
                             <tbody>

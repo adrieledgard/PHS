@@ -185,6 +185,14 @@
 
     <div class="row">
       <div class="col-md-2">
+        {{ Form::label('Quota','') }}
+        {{ Form::number('txt_quota', 0, ['class'=>'form-control']) }}
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-2">
         {{ Form::label('Redeem Point','') }}
         {{ Form::number('txt_point', 0, ['class'=>'form-control']) }}
       </div>

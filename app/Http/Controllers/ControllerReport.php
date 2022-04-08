@@ -54,13 +54,17 @@ class ControllerReport extends Controller
         $temp="";
         $Id_variation = $request->Id_variation;
 
+        $period = explode(" - ", $request->date_period);
+
+
         $stockcard = stock_card::where('stock_card.Id_variation','=',$Id_variation)
         ->join('Product','stock_card.Id_product','Product.Id_product')
          ->join('variation_product','stock_card.Id_variation','variation_product.Id_variation')
         // ->orderBy('stock_card.Id_stock_card')
         ->orderBy('stock_card.Id_stock_card')
          ->select('stock_card.Id_stock_card','stock_card.Date_card','Product.Name','variation_product.Option_name','stock_card.Expire_date','stock_card.Type_card','stock_card.First_stock','stock_card.Debet','stock_card.Credit','stock_card.Last_stock','stock_card.Transaction_price','stock_card.Capital','stock_card.Fifo_stock')
-        ->get();
+         ->whereBetween("stock_card.Date_card", $period)
+         ->get();
 
         //   $stockcard = stock_card::where('Id_variation','=',$Id_variation)
         //   ->get();

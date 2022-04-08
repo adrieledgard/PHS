@@ -58,12 +58,14 @@
   {{ Form::label('Variation :','') }}
   {{ Form::select('cb_variation', [], 'Kosong', [ 'class'=>'form-control', 'id'=>'cb_variation' ]) }}
   <br>
+
+  {{ Form::label('Date card range :','') }}
   <div class="input-group date" id="reservationdate" data-target-input="nearest">
       {{-- <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate"/> --}}
       <input type="text" class="form-control date_range_picker" />
   </div>
   
-  
+  <br>
   
   {{ Form::button('Process', ['name'=>'process','id'=>'process', 'class'=>'btn btn-primary', 'onclick' => 'process()']) }}
 
@@ -144,7 +146,7 @@
      $(".date_range_picker").daterangepicker({
         opens: 'center',
         locale: {
-            format: 'YYYY-MM-DD'
+            format: 'DD-MM-YYYY'
         }
     });
   function loadvariation()
@@ -181,8 +183,9 @@
     }
     else
     {
+     var date_range = $(".date_range_picker").val();
       $.get(myurl + '/show_table_stock_card',
-      {Id_variation: Id_variation},
+      {Id_variation: Id_variation, date_period: date_range},
       function(result){
         
         $('#stock_card').html(result);

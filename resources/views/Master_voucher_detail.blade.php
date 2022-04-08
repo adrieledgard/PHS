@@ -362,6 +362,15 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-md-2">
+      {{ Form::label('Quota','') }}
+        {{ Form::number('txt_point', $dtvoucher[0]['Quota'], ['class'=>'form-control','disabled'=>'true']) }}
+      
+        {{ Form::label('Voucher Quota Claimed : '. $quotaterpakai,'') }}
+      </div>
+    </div>
+<br>
       <div class="row">
         <div class="col-md-2">
           {{ Form::label('Redeem Point','') }}

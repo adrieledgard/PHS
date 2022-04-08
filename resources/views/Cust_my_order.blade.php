@@ -612,12 +612,12 @@ ul.timeline > li:before {
       //   });
 
 
-        $.get(myurl + '/pay_now',
-        {order_id: id},
-        function(result){
-            alert(result);
+        // $.get(myurl + '/pay_now',
+        // {order_id: id},
+        // function(result){
+        //     alert(result);
 
-        });
+        // });
 
     }
 

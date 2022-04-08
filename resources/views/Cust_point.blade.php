@@ -1,6 +1,8 @@
 @extends('layout_frontend.Master')
 
-
+@php
+         use App\voucher_member;
+@endphp
 @push('custom-css')
 
  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
@@ -51,6 +53,7 @@
                             <th>Redeem point</th>
                             <th>Redemption limit</th> 
                             <th>Join Promo</th>
+                            <th>Quota</th>
                             <th>Action</th>
                           </tr>
                       </thead>
@@ -95,6 +98,13 @@
                                   ?>
                               
                             
+                                </td>
+
+                                <td>
+                                  @php
+                                      $terpakai = voucher_member::where('Id_voucher','=',$data->Id_voucher)->count();
+                                  @endphp
+                                  {{$terpakai." / ".$data->Quota}}
                                 </td>
                               <td>
                                
@@ -348,6 +358,10 @@
         else if (result=="gagal validasi voucher")
         {
           toastr["error"]("Voucher not available", "Failed");
+        }
+        else if (result=="Quota voucher habis")
+        {
+          toastr["error"]("Voucher quota runs out ", "Failed");
         }
         else
         {

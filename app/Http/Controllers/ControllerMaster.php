@@ -22,6 +22,7 @@ use App\promo_header;
 use App\promo_detail;
 use App\voucher;
 use App\voucher_product;
+use App\voucher_member;
 use App\affiliate;
 use App\ebook;
 use App\email_ebook;
@@ -2250,6 +2251,7 @@ class ControllerMaster extends Controller
 					'txt_voucher_name' => ['required','max:30'],
 					'txt_discount' => ['required', 'min:1','max:11'],
 					'txt_date' => ['required'],
+					'txt_quota' => ['required','min:1'],
 				],
 				[
 					'txt_voucher_name.required' => 'Voucher name cannot be empty',
@@ -2257,7 +2259,9 @@ class ControllerMaster extends Controller
 					'txt_discount.required' => 'Discount cannot be empty',
 					'txt_discount.min' => 'Please insert discount',
 					'txt_discount.max' => 'Error discount. >max length',
-					'txt_date.required' => 'Redeem due date cannot empty'
+					'txt_date.required' => 'Redeem due date cannot empty',
+					'txt_quota.required' => 'Quota cannot empty',
+					'txt_quota.min' => 'Quota must > 1',
 
 				]))
 				{
@@ -2265,6 +2269,7 @@ class ControllerMaster extends Controller
 					$discount = $request->txt_discount;
 					$point=$request->txt_point;
 					$joinpromo=$request->select_promo;
+					$quota = $request->txt_quota;
 
 					$redeem_due_date = $request->txt_date;
 					//04/01/2020
@@ -2301,7 +2306,7 @@ class ControllerMaster extends Controller
 						else
 						{
 							$voucher = new voucher();
-							$hasil = $voucher->add_voucher($voucher_name, $tipe, $discount,$point,$redeem_due_date,$joinpromo);
+							$hasil = $voucher->add_voucher($voucher_name, $tipe, $discount,$point,$redeem_due_date,$joinpromo, $quota);
 
 							$lastid = $voucher->getlastid();
 
@@ -2320,7 +2325,7 @@ class ControllerMaster extends Controller
 					else
 					{
 						$voucher = new voucher();
-						$hasil = $voucher->add_voucher($voucher_name, $tipe, $discount,$point,$redeem_due_date,$joinpromo);
+						$hasil = $voucher->add_voucher($voucher_name, $tipe, $discount,$point,$redeem_due_date,$joinpromo, $quota);
 						
 						$param['dtvoucher'] = voucher::where('Status','<>',0)
 						->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo','Status','Status')
@@ -2494,6 +2499,10 @@ class ControllerMaster extends Controller
 		}
 		
 
+
+		//menghitung kuota voucher yg sdh di pake
+		$param['quotaterpakai'] = voucher_member::where('Id_voucher','=',$Id_voucher)->count();
+		
 		
 		return view('Master_voucher_detail',$param);
 	}
