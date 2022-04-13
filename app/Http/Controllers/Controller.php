@@ -3028,25 +3028,22 @@ class Controller extends BaseController
 												member::where('Id_member', $member->Id_member)->update(array(
 													'First_transaction' => 1
 												));
+
+												
+												// Handling ubah Cust_order_header (Affiliate & tracking code)
+
+												$session_member = session()->get('userlogin');
+												$member = member::find($session_member->Id_member); 
+
+
+												
+												$ss = new cust_order_header();
+												$hasil = $ss->update_affiliate_trackingcode($row->Id_order, $member->Referral, $member->Tracking_code);
+												
 												
 											}
 										}
 									}
-
-
-									// Handling ubah Cust_order_header (Affiliate & tracking code)
-
-									$session_member = session()->get('userlogin');
-									$member = member::find($session_member->Id_member); 
-
-									$ss = new cust_order_header();
-									$hasil = $ss->update_affiliate_trackingcode($row->Id_order, $member->Referral, $member->Tracking_code);
-									
-
-
-
-
-
 
 
 									
