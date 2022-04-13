@@ -314,7 +314,7 @@
                             <li class="categories-title">Categories :</li>
 
                             @foreach ($subcat as $sub)
-                             <li><a href="#">{{$sub->Sub_category_name}}</a></li>
+                             <li>{{$sub->Sub_category_name}}</li>
                             @endforeach
                            
                             {{-- <li><a href="#">electronics</a></li>
@@ -334,7 +334,7 @@
                             <li><a href="#">jewellery</a></li>
                         </ul>
                     </div> --}}
-                    <div class="product-share">
+                    {{-- <div class="product-share">
                         <ul>
                             <li class="categories-title">Share :</li>
                             <li>
@@ -358,7 +358,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -398,7 +398,7 @@
                 </div>
                 <div class="tab-pane fade" id="pro-review" role="tabpanel">
                     <p class="text-right"><button class="btn btn-sm" type="button" onclick="sort({{$dtproduct[0]->Id_product}})"><i class="fa fa-sort"></i> Sort by date</button></p>
-                    <div class="overflow-auto" style="height: 500px;">
+                    <div class="overflow-auto" style="height: 300px;">
                         <p style="text-align: left" class="review_area">
                             @php
                                 if(count($dtproductreview) > 0){

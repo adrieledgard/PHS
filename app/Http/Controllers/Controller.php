@@ -1092,6 +1092,7 @@ class Controller extends BaseController
 
 			$affiliate = DB::table('affiliate_member')->where('Id_product', $id)->first();
 			$member = member::where('Random_code', $Random_code)->first();
+			
 			if(!empty($member)){
 				$total_diklik = 0;
 				if(!empty($affiliate)){

@@ -18,6 +18,7 @@ class member extends Model
     {
         $kodeaff="";
         $Id_member_affiliate=0;
+        $tracking_code="";
         if(Cookie::has("Affiliate"))   
 		{
 			$kodeaff  = Cookie::get('Affiliate');

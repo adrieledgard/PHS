@@ -37,10 +37,9 @@
             </div>
             <br>
             <form class="row g-3" method='post' action='loginProcess'>
-                {{-- {{Form::open(array('class'=>'row g-3','url'=>'loginProcess','method'=>'post'))}}
-                --}}
+                
                 @csrf
-               
+
                 <div class="row">
                     <div class="col-md-12">
                         @error('txt_username_email')

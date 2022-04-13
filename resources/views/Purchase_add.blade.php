@@ -93,17 +93,6 @@ Purchase Order
     </div>
     @endif
     
-    {{-- <script>
-      toastr["success"]("we", "de");
-     </script>
-    @php
-     $arra = "aaaa"; 
-      
-    @endphp
-    @if(count($errors)>0)
-   
-    @endif --}}
-    
     <div class="row">
       <div class="col-md-6">
         <div class="card card-primary">
@@ -207,12 +196,6 @@ Purchase Order
                   {{ Form::button('Add Product (+)', ['name'=>'select_supplier','id'=>'select_supplier', 'class'=>'btn btn-primary float-right btn-sm', 'data-toggle' => 'modal', 'data-target' => '#modal-product']) }}
                   <br><br>
                
-                  {{-- UNTUK KEPERLUAN TRACKING SESSION --}}
-                
-                  {{-- <button type="button" onclick='showsession()'>SHOW</button>
-
-                  <textarea name="" id="showsession2" cols="100" rows="10"></textarea> --}}
-               
                 </div>
               </div>
               <div class="row">
@@ -298,9 +281,7 @@ Purchase Order
           </div>
         </div>
       </div>
-      <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
   </div>
   {{ Form::close() }}
 
