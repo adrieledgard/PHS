@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\cust_order_detail;
 use App\cust_order_header;
 use App\followup;
 use App\Mail\FollowUp as MailFollowUp;
@@ -88,8 +89,13 @@ class ControllerCustomerService extends Controller
                             continue;
                         }
                         $member->lama_tidak_belanja = $interval->format("%d");
+                        $member->rincian_transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->get();
+                        foreach ($member->rincian_transaksi as $trans) {
+                            $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $trans->Id_order)->get();
+                        }
                     }else {
                         $member->lama_tidak_belanja = 0;
+                        $member->rincian_transaksi = [];
                     }
                     
                     $member->total_transaksi = $jum_transaksi;

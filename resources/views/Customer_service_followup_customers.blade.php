@@ -88,6 +88,9 @@
                     <td>{{$customer->lama_tidak_belanja}} Hari</td>
                     <td>
                         {{ Form::button('Follow up email', ['name'=>'btn_edit','class'=>'btn btn-primary btn-sm ','data-idmember'=>$customer->Id_member,'data-toggle'=>'modal','data-target'=>'#followup_email']) }}
+                        @if (count($customer->rincian_transaksi) > 0)
+                        {{ Form::button('Detail order', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-order'=>$customer->rincian_transaksi,'data-toggle'=>'modal','data-target'=>'#rincian_order']) }}
+                        @endif
                     </td>
                     
                 </tr>
@@ -110,7 +113,6 @@
           {{Form::open(array('url'=>'followup/','method'=>'post','class'=>'row g-3'))}}
           <div class="col-md-12">
             {{ Form::textarea('follow_up_description', '', ['class'=>'form-control','id'=>'summernote', 'placeholder' => "Masukkan kata-kata", 'required' => 'required']) }}
-            {{-- <input type="text" class="follow_up_description" name="follow_up_description" id="summernote"> --}}
             <input type="hidden" class="Id_member" name="Id_member">
           </div>
         </div>
@@ -120,6 +122,68 @@
         </div>
       </div>
       {{Form::close()}}
+    </div>
+  </div>
+  <div id="rincian_order" class="modal fade" role="dialog" style="max-height:calc(100% - 80px)">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl"> 
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rincian Order </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="overflow-y: scroll">
+            <table class="table-rincian-order">
+                <thead style="width:100%">
+                    <tr>
+                        <th>Nomor Transaksi</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Alamat</th>
+                        <th>Kurir</th>
+                        <th>Grand Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-rincian-order">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="rincian_order_detail" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rincian Order </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="table-rincian-item-order">
+                <thead>
+                    <tr>
+                        <th>Nama Produk</th>
+                        <th>Harga</th>
+                        <th>Total dipesan</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-rincian-item-order">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 @endsection
@@ -176,6 +240,72 @@ $("#followup_email").on('show.bs.modal', function(event){
     var id = button.data('idmember');
     $(".Id_member").val(id);
  });
+ $("#rincian_order").on('show.bs.modal', function(event){
+    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+    if ($.fn.DataTable.isDataTable('.table-rincian-order') ) {
+      $('.table-rincian-order').DataTable().destroy();
+    }
+    var button = $(event.relatedTarget);
+    var orders = button.data('order')
+    $(".table-body-rincian-order").html("");
+    orders.forEach(order => {
+      console.log(order);
+        $(".table-body-rincian-order").append(`
+            <tr>
+                <td>
+                    `+order.Id_order+`
+                </td>
+                <td>
+                    `+order.Date_time+`
+                </td>
+                <td>
+                    `+order.Address+`, `+order.City_name+`, `+order.Province_name+`
+                </td>
+                <td>
+                    `+order.Courier+`
+                </td>
+                <td>
+                    `+formatter.format(order.Grand_total)+`
+                </td>
+                <td>
+                  <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='`+JSON.stringify(order.detail)+`'>Rincian</button>  
+                </td>
+            </tr>
+        `)
+    });
+    $(".table-rincian-order").DataTable()
+ });
+
+$("#rincian_order_detail").on('show.bs.modal', function(event){
+    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+    if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
+      $('.table-rincian-item-order').DataTable().destroy();
+    }
+    var button = $(event.relatedTarget);
+    var detail_order = button.data('order-detail');
+
+    $(".table-body-rincian-item-order").html("");
+    detail_order.forEach(detail => {
+        $(".table-body-rincian-item-order").append(`
+            <tr>
+                <td>
+                    `+detail.Name+`
+                </td>
+                <td>
+                    `+formatter.format(detail.Fix_price)+`
+                </td>
+                <td>
+                    `+detail.Qty+`
+                </td>
+                <td>
+                    `+formatter.format(detail.Qty * detail.Fix_price)+`
+                </td>
+            </tr>
+        `)
+    });
+    $(".table-rincian-item-order").DataTable();
+ });
+
 </script>
     
 @endpush
