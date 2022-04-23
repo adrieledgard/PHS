@@ -1,4 +1,4 @@
-{{$content}}
+{!! $content !!}
 <br>
 <?php
 if($link_product != ""){

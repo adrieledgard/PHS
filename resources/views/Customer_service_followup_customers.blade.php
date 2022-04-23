@@ -41,6 +41,8 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
 
   <link rel="stylesheet" href="{{asset('css/summernote-bs4.css')}}">
+
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 @endpush
 
 
@@ -107,7 +109,8 @@
         <div class="modal-body">
           {{Form::open(array('url'=>'followup/','method'=>'post','class'=>'row g-3'))}}
           <div class="col-md-12">
-            {{ Form::textarea('follow_up_description', '', ['class'=>'form-control','id'=>'follow_up_description', 'placeholder' => "Masukkan kata-kata", 'required' => 'required']) }}
+            {{ Form::textarea('follow_up_description', '', ['class'=>'form-control','id'=>'summernote', 'placeholder' => "Masukkan kata-kata", 'required' => 'required']) }}
+            {{-- <input type="text" class="follow_up_description" name="follow_up_description" id="summernote"> --}}
             <input type="hidden" class="Id_member" name="Id_member">
           </div>
         </div>
@@ -161,9 +164,12 @@ $(document).ready( function () {
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
 <script src="{{ asset('js/summernote-bs4.js') }}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script>
-// $('.summernote').summernote();
+
+
+
+$('#summernote').summernote();
 
 $("#followup_email").on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);

@@ -4235,33 +4235,31 @@ class ControllerMaster extends Controller
 		if(count($existed_user_ebook) == 0){
 			$email_ebook = new email_ebook();
 			$email_ebook->add_email_ebook($request->ebook_id, $request->name, $request->phone, $request->email, $request->user_token);
-		}else {
-			return redirect()->back()->with('error', 'Email existed');	
+			if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
+			{
+				Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
+				Cookie::queue(Cookie::make("Tracking_code", "EBOOK-".$ebook_id, 1500000));
+				
+				$ebook = DB::table('ebook_member_downloaded')->where('Id_ebook', $ebook_id)->first();
+				$member = member::where('Random_code', $user_token)->first();
+				if(!empty($member)){
+					$total_download = 0;
+					if(!empty($ebook)){
+						$total_download = $ebook->Total_didownload + 1;	
+						DB::update("update ebook_member_downloaded set Total_didownload = $total_download where Id_ebook = $ebook_id");
+					}else {
+						$total_download = 1;
+						DB::insert('insert into ebook_member_downloaded (Total_didownload, Id_member, Id_ebook) values (?, ?, ?)', [$total_download, $member->Id_member, $ebook_id]);
+					}
+				}
+				
+				
+			}
 		}
+
 		
 		Mail::to($request->email)->send(new SendEbook($ebook_id));
 
-		if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
-		{
-			Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
-			Cookie::queue(Cookie::make("Tracking_code", "EBOOK-".$ebook_id, 1500000));
-			
-			$ebook = DB::table('ebook_member_downloaded')->where('Id_ebook', $ebook_id)->first();
-			$member = member::where('Random_code', $user_token)->first();
-			if(!empty($member)){
-				$total_download = 0;
-				if(!empty($ebook)){
-					$total_download = $ebook->Total_didownload + 1;	
-					DB::update("update ebook_member_downloaded set Total_didownload = $total_download where Id_ebook = $ebook_id");
-				}else {
-					$total_download = 1;
-					DB::insert('insert into ebook_member_downloaded (Total_didownload, Id_member, Id_ebook) values (?, ?, ?)', [$total_download, $member->Id_member, $ebook_id]);
-				}
-			}
-			
-			
-		}
-		
 		return redirect()->back()->with('success', 'Email submitted');
 	}
 

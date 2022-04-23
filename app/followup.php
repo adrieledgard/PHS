@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class followup extends Model
 {
     protected $table = "followup_customers";
-    protected $fillable = ['Id_customer_service', 'Id_member', 'Followup_date', 'End_followup_date','Is_successful_followup'];
+    protected $fillable = ['Id_customer_service', 'Id_member', 'Followup_date', 'End_followup_date','Is_successful_followup', 'Id_order'];
 
     public function add_followup($Id_customer_service, $Id_member,$Followup_date,$End_followup_date)
     {
@@ -38,11 +38,12 @@ class followup extends Model
         return "sukses";
     }
 
-    public function followup_successful($Id_followup, $Id_member)
+    public function followup_successful($Id_followup, $Id_member, $Id_order)
     {
         followup::where('Id_followup','=',$Id_followup)->where('Id_member', $Id_member)->update(
             [
                 'Is_successful_followup' => 1,
+                'Id_order' => $Id_order
             ]
             );
 
