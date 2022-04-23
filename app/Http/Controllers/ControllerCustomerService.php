@@ -165,6 +165,11 @@ class ControllerCustomerService extends Controller
                 $is_refollowup_available = "";
             }
             $customer->is_refollowup_available = $is_refollowup_available;
+
+            if($followup->Is_successful_followup == 1){
+                $customer->transaksi = cust_order_header::where("Id_order", $followup->Id_order)->first();
+                $customer->transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup->Id_order)->get();
+            }
         }
 
         return view('Customer_service_my_followup', compact('customers'));
