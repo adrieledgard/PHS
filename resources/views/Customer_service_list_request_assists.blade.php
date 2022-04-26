@@ -162,7 +162,7 @@
         </div>
         <div class="modal-body">
           <div style="overflow: auto; height:500px; max-height:500px;">
-            <div class="list_chat">
+            <div class="list_chat" id="list_chat">
                
             </div>
 
@@ -295,7 +295,7 @@ $("#chat").on('show.bs.modal', function(event){
         contentType:false,
         success: function(result)
         {
-            $("#content_chat").val("");
+            $("#content_pesan").val("");
             delete_attachment();
             renderChat(result);
         }
@@ -314,14 +314,14 @@ function renderChat(list_chat){
     if(chat.Id_member == list_chat[1]){
       $(".list_chat").append(`
       <div class="d-flex flex-row justify-content-end mb-4">
-        <div><p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${content}</p>
+        <div style="max-width:300px !important; word-break: break-all"><p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${content}</p>
         <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">${chat.Username} (${chat.Role}) ${moment(chat.created_at).format("DD-MM-YYYY HH:mm:ss")}</p>
         </div>
       </div>`);
     }else {
       $(".list_chat").append(`
       <div class="d-flex flex-row justify-content-start mb-4">
-        <div>
+        <div style="max-width:300px !important; word-break: break-all">
         <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${content}</p>
         <p class="small ms-3 mb-3 rounded-3 text-muted">${chat.Username} (${chat.Role}) ${moment(chat.created_at).format("DD-MM-YYYY HH:mm:ss")}</p>
         </div>
