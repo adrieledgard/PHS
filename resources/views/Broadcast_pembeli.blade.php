@@ -35,6 +35,7 @@
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
   <link rel="stylesheet" href="{{ asset ('assets/css/bootstrap-multiselect.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 @endpush
 
 
@@ -110,7 +111,7 @@
       
               <div class="col-md-12">
                 {{ Form::label('Content :','') }}
-                {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'content', 'placeholder' => "content", 'required' => 'required']) }}
+                {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'summernote', 'placeholder' => "content", 'required' => 'required']) }}
               </div>
         </div>
     </div>
@@ -160,10 +161,10 @@
 
     <script src ="{{ asset ('assets/js/bootstrap.bundle-4.5.2.min.js') }}"></script>
     <script src ="{{ asset ('assets/js/bootstrap-multiselect.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <script>
         $('.filter_produk').multiselect();
-        
+        $('#summernote').summernote();
         $("#filter_produk").click(function(){
             $('.filter_produk').multiselect('enable');
             $(".filter_total_transaksi").attr('disabled', 'disabled');

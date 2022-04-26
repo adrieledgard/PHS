@@ -75,10 +75,27 @@ Update Request Assist
           {{ Form::label('Title :','') }}
           {{ Form::text('title', $ticket->title, ['class'=>'form-control','id'=>'title', 'placeholder' => "Title", 'required' => 'required']) }}
         </div>
+        <div class="col-md-12">
+          {{ Form::label('Platform Komunikasi :','') }}
+          {{ Form::text('platform_komunikasi', $ticket->platform_komunikasi, ['class'=>'form-control','id'=>'platform_komunikasi', 'placeholder' => "Platform Komunikasi", 'required' => 'required']) }}
+        </div>
         <div class="col-md-6">
+          {{ Form::label('Email :','') }}
+          {{ Form::email('email', $ticket->email, ['class'=>'form-control','id'=>'email', 'placeholder' => "email", 'required' => 'required']) }}
+        </div>
+        <div class="col-md-6">
+          {{ Form::label('Phone :','') }}
+          {{ Form::number('phone',  $ticket->phone, ['class'=>'form-control','id'=>'phone', 'placeholder' => "phone", 'required' => 'required']) }}
+        </div>
+        <div class="col-md-12">
           {{ Form::label('Description :','') }}
           {{ Form::textarea('description', $ticket->description, ['class'=>'form-control','id'=>'description', 'placeholder' => "Description", 'required' => 'required']) }}
         </div>
+        <div class="col-md-12">
+          {{ Form::label('Bukti Chat :','') }}
+          {{ Form::textarea('bukti_chat', $ticket->bukti_chat, ['class'=>'form-control','id'=>'bukti_chat', 'placeholder' => "Copy dan paste bukti chat", 'required' => 'required']) }}
+        </div>
+        
       </div>
       <div class="col-12">
         {{ Form::submit('Update', ['name'=>'update_request_assist', 'class'=>'btn btn-primary btn-lg float-right']) }}

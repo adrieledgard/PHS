@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\chat;
+use App\cust_order_detail;
 use App\cust_order_header;
 use App\followup;
 use App\Mail\FollowUp as MailFollowUp;
+use App\Mail\SendEmail;
 use App\member;
 use App\Ticket;
 use App\voucher;
@@ -36,7 +39,7 @@ class ControllerCustomerService extends Controller
     {
         $ticket = new Ticket();
         
-        $ticket->insertdata((session()->get('userlogin'))->Id_member, $request->title, $request->description);
+        $ticket->insertdata((session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi, $request->email, $request->phone);
         
         return redirect()->route('list_request_assist');
     }
@@ -51,7 +54,7 @@ class ControllerCustomerService extends Controller
     {
         $ticket = new Ticket();
         
-        $ticket->updatedata($id,(session()->get('userlogin'))->Id_member, $request->title, $request->description);
+        $ticket->updatedata($id,(session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi, $request->email, $request->phone);
         
         return redirect()->route('list_request_assist');
     }
@@ -59,9 +62,71 @@ class ControllerCustomerService extends Controller
     public function closed( Request $request)
     {
         $ticket = new Ticket();
-        $ticket->closed($request->id, $request->conclusion);
+        $ticket->closed($request->id);
         
         return redirect()->route('list_request_assist');
+    }
+
+    public function get_ticket_chat(Request $request)
+    {
+        $get_chat = chat::join('member', 'member.Id_member', 'chat.Id_member')->where('Id_ticket', $request->id_ticket)->get();
+        $user_id = session()->get('userlogin')->Id_member;
+
+        return [$get_chat, $user_id];
+    }
+
+    public function send_ticket_chat(Request $request)
+    {
+        if($request->hasFile("attachment_file")){
+            $file = $request->file("attachment_file");
+            $attachment_chat = new chat();
+            $attachment_chat->Id_ticket = $request->id_ticket;
+            $attachment_chat->Id_member = session()->get('userlogin')->Id_member;
+            $attachment_chat->Type = "file";
+            $attachment_chat->Content = "";
+            $attachment_chat->save();
+            
+            $name = $attachment_chat->id . "_" . $file->getClientOriginalName();
+            $file->move(public_path() .'/ticket_attachment/', $name); 
+
+            $update_attachment_chat = chat::find($attachment_chat->id);
+            $update_attachment_chat->Content = $name;
+            $update_attachment_chat->save();
+        }
+        $chat = new chat();
+        $chat->Id_ticket = $request->id_ticket;
+        $chat->Id_member = session()->get('userlogin')->Id_member;
+        $chat->Type = "text";
+        $chat->Content = $request->content_pesan;
+        $chat->save();
+
+        $get_chat = chat::join('member', 'member.Id_member', 'chat.Id_member')->where('Id_ticket', $request->id_ticket)->get();
+        $user_id = session()->get('userlogin')->Id_member;
+        return [$get_chat, $user_id];
+    }
+
+    public function download_attachment($nama_file)
+    {
+        $file = public_path() . "/ticket_attachment/" . $nama_file;
+        //Define header information
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header("Cache-Control: no-cache, must-revalidate");
+        header("Expires: 0");
+        header('Content-Disposition: attachment; filename="'.public_path() . "/ticket_attachment/" . $nama_file.'"');
+        header('Content-Length: ' . filesize($file));
+        header('Pragma: public');
+
+        flush();
+        readfile($file);
+
+        die();
+    }
+
+    public function kirim_email(Request $request)
+    {
+        Mail::to($request->email)->send(new SendEmail($request->subject, $request->content));
+        return redirect()->back()->with('success', 'Email sukses dikirim kepada ' . $request->email);
     }
 
     public function list_available_customer(Request $request)
@@ -88,8 +153,13 @@ class ControllerCustomerService extends Controller
                             continue;
                         }
                         $member->lama_tidak_belanja = $interval->format("%d");
+                        $member->rincian_transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->get();
+                        foreach ($member->rincian_transaksi as $trans) {
+                            $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $trans->Id_order)->get();
+                        }
                     }else {
                         $member->lama_tidak_belanja = 0;
+                        $member->rincian_transaksi = [];
                     }
                     
                     $member->total_transaksi = $jum_transaksi;
@@ -159,6 +229,11 @@ class ControllerCustomerService extends Controller
                 $is_refollowup_available = "";
             }
             $customer->is_refollowup_available = $is_refollowup_available;
+
+            if($followup->Is_successful_followup == 1){
+                $customer->transaksi = cust_order_header::where("Id_order", $followup->Id_order)->first();
+                $customer->transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup->Id_order)->get();
+            }
         }
 
         return view('Customer_service_my_followup', compact('customers'));

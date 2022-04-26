@@ -2938,7 +2938,7 @@ class Controller extends BaseController
 									$order_history->Id_order = $row->Id_order;
 									$order_history->save();
 
-
+									$this->checkerFollowup($data->Id_member, $data->Date_time, $row->Id_order);
 									// (HANDLING POINT SYSTEM)
 									// jika ada pembelian member(login) maka di cek dlu di database apakah ada referral, jika tidak ada maka cek cookie
 
@@ -3993,7 +3993,7 @@ class Controller extends BaseController
 		$order_history->Id_order = $request->id;
 		$order_history->save();
 
-		$this->checkerFollowup($order->Id_member, $order->Date_time);
+		
 		return 'sukses';
 	}
 
@@ -4081,11 +4081,11 @@ class Controller extends BaseController
 		}
 	}
 
-	public function checkerFollowup($Id_member, $transaction_date)
+	public function checkerFollowup($Id_member, $transaction_date, $Id_order)
 	{
 		$followup = followup::where("Id_member", $Id_member)->orderBy('Id_followup', 'desc')->first();
 		if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
-			(new followup())->followup_successful($followup->Id_followup, $Id_member);
+			(new followup())->followup_successful($followup->Id_followup, $Id_member, $Id_order);
 		}
 
 	}

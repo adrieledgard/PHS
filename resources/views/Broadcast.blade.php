@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
-
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 @endpush
 
 
@@ -62,7 +62,7 @@
         </div>
         <div class="col-md-12">
           {{ Form::label('Content :','') }}
-          {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'content', 'placeholder' => "content", 'required' => 'required']) }}
+          {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'summernote', 'placeholder' => "content", 'required' => 'required']) }}
         </div>
       </div>
       <div class="col-12">
@@ -111,6 +111,9 @@
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script> 
   <!--End of Tawk.to Script-->
-
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     
+  <script>
+    $('#summernote').summernote();
+  </script>
 @endpush

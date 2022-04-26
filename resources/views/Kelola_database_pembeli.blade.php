@@ -41,7 +41,7 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
 
   <link rel="stylesheet" href="{{asset('css/summernote-bs4.css')}}">
-
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
   <style>
     .dataTables_scrollHeadInner {
 width: 100% !important;
@@ -183,7 +183,7 @@ width: 100% !important;
   
           <div class="col-md-12">
             {{ Form::label('Content :','') }}
-            {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'content', 'placeholder' => "content", 'required' => 'required']) }}
+            {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'summernote', 'placeholder' => "content", 'required' => 'required']) }}
           </div>
           {!! Form::hidden('id_member', 0, ['class' => 'id_member']) !!}
         </div>
@@ -261,10 +261,11 @@ $(document).ready( function () {
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 <script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<script src="{{ asset('js/summernote-bs4.js') }}"></script>
+{{-- <script src="{{ asset('js/summernote-bs4.js') }}"></script> --}}
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
 <script>
-
+$('#summernote').summernote();
 $("#rincian_order").on('show.bs.modal', function(event){
     var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
     if ($.fn.DataTable.isDataTable('.table-rincian-order') ) {

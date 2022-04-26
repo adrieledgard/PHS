@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\cust_order_detail;
+use App\cust_order_header;
 use App\followup;
 use App\member;
 use App\product;
@@ -153,6 +155,7 @@ class ControllerReport extends Controller
 		for ($i=0; $i < count($followup) ; $i++) { 
             $cs = member::where("Id_member", $followup[$i]->Id_customer_service)->first();
             $customer = member::where("Id_member", $followup[$i]->Id_member)->first();
+            $transaksi = "";
             $status = "Wait transaction";
             if($followup[$i]['Is_successful_followup'] == 0){
                 if(date("Y-m-d", strtotime($followup[$i]->End_followup_date)) < date("Y-m-d")){
@@ -161,6 +164,8 @@ class ControllerReport extends Controller
                 }
             }else {
                 $status = "Sucessful";
+                $transaksi = cust_order_header::where("Id_order", $followup[$i]->Id_order)->first();
+                $transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup[$i]->Id_order)->get();
                 $summary[2] ++;
             }
 			$temp =$temp. "<tr>";
@@ -175,6 +180,11 @@ class ControllerReport extends Controller
                 $temp =$temp. "</td>";
                 $temp =$temp. "<td>";
                     $temp =$temp. $status;
+                $temp =$temp. "</td>";
+                $temp =$temp. "<td>";
+                    if($followup[$i]['Is_successful_followup'] == 1){
+                        $temp =$temp. "<button class='btn btn-primary btn-sm' data-order='$transaksi' data-toggle='modal' data-target='#rincian_order'>Transaksi</button>";
+                    }
                 $temp =$temp. "</td>";
             $temp =$temp. "</tr>";
 		}

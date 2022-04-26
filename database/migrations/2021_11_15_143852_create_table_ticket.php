@@ -16,9 +16,13 @@ class CreateTableTicket extends Migration
         Schema::create('table_ticket', function (Blueprint $table) {
             $table->id();
             $table->integer('cs_id');
+            $table->string('nomor_ticket');
             $table->string('title');
+            $table->string('email');
+            $table->string('phone');
+            $table->longText('platform_komunikasi');
+            $table->longText('bukti_chat');
             $table->longText('description');
-            $table->longText('conclusion');
             $table->date('date_request');
             $table->date('date_solve')->nullable();
             $table->string('status');
