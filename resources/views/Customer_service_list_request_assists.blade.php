@@ -165,10 +165,18 @@
             <div class="list_chat">
                
             </div>
+
           </div>
           <div class="text-muted d-flex justify-content-start align-items-center border-1 pt-2">
             
               <div class="container">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="attachment_name" style="display: none">
+                      
+                    </div>
+                  </div>
+                </div>
                 <form action="post" id="form_data_chat" enctype="multipart/form-data" >
                 <div class="row">
                     <input type="hidden" name="id_ticket" id="id_ticket">
@@ -243,6 +251,18 @@ function openModal(id){
   $("#closedAssist").modal();
 }
 
+function delete_attachment(){
+  $("#attachment_file").val("");
+  $('.attachment_name').css('display', 'none');
+  console.log($("#attachment_file")[0].files[0]);
+}
+
+$("#attachment_file").change(function(){
+  $(".attachment_name").html("");
+  $(".attachment_name").append(`${$("#attachment_file")[0].files[0].name} <button type="button" class="btn btn-sm" onclick="delete_attachment()"><i class="fa fa-times"></i></button>`);
+  $('.attachment_name').css('display', 'block');
+})
+
 $("#chat").on('show.bs.modal', function(event){
   var button = $(event.relatedTarget);
   var id_ticket = button.data('id-ticket');
@@ -275,11 +295,9 @@ $("#chat").on('show.bs.modal', function(event){
         contentType:false,
         success: function(result)
         {
+            $("#content_chat").val("");
+            delete_attachment();
             renderChat(result);
-        },
-        error: function(data)
-        {
-            // console.log(data);
         }
     });
 
