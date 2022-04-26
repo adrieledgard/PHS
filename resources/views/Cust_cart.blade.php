@@ -265,17 +265,10 @@
     var myurl = "<?php echo URL::to('/'); ?>";
     function updateqtycart(id_var,id_cart)
     {
-        // alert($("#qtywish"+id).val());
-        // alert($("#harga"+id).val());
-        // alert($("#qtywish"+id).val() * $("#harga"+id).val());
-         $("#subtotal"+id_var).html('Rp. '+ ($("#qtycart"+id_var).val() * $("#harga"+id_var).val()).toString().number_format());
-        // alert($("#qtywish"+id).val());
-        
-
+        $("#subtotal"+id_var).html('Rp. '+ ($("#qtycart"+id_var).val() * $("#harga"+id_var).val()).toString().number_format());
         $.get(myurl + '/updateqtycart',
         {Id_cart: id_cart,Qty:$("#qtycart"+id_var).val()},
         function(result){
-
         });
     }
 

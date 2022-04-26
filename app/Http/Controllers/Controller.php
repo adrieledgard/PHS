@@ -432,12 +432,8 @@ class Controller extends BaseController
 							$carthasil = $cart->add_cart($data->Id_product,$data->Id_variation,$data->Qty,$hasil->Id_member);
 						}
 					}
-
-
 					Cookie::queue(Cookie::make("username_login", $hasil->Username, 1500000));
 					return view('Cust_home',$this->dthome());	
-
-
 				}
 				else
 				{
