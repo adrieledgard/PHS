@@ -79,9 +79,17 @@
           {{ Form::label('Platform Komunikasi :','') }}
           {{ Form::text('platform_komunikasi', '', ['class'=>'form-control','id'=>'platform_komunikasi', 'placeholder' => "Platform Komunikasi", 'required' => 'required']) }}
         </div>
+        <div class="col-md-6">
+          {{ Form::label('Email :','') }}
+          {{ Form::email('email', '', ['class'=>'form-control','id'=>'email', 'placeholder' => "email", 'required' => 'required']) }}
+        </div>
+        <div class="col-md-6">
+          {{ Form::label('Phone :','') }}
+          {{ Form::text('phone', '', ['class'=>'form-control','id'=>'phone', 'placeholder' => "phone", 'required' => 'required']) }}
+        </div>
         <div class="col-md-12">
           {{ Form::label('Description :','') }}
-          {{ Form::textarea('description', '', ['class'=>'form-control','id'=>'description', 'placeholder' => "Description", 'required' => 'required']) }}
+          {{ Form::textarea('description', '', ['class'=>'form-control','id'=>'description', 'placeholder' => "Copy dan paste bukti chat", 'required' => 'required']) }}
         </div>
         <div class="col-md-12">
           {{ Form::label('Bukti Chat :','') }}

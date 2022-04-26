@@ -79,6 +79,14 @@ Update Request Assist
           {{ Form::label('Platform Komunikasi :','') }}
           {{ Form::text('platform_komunikasi', $ticket->platform_komunikasi, ['class'=>'form-control','id'=>'platform_komunikasi', 'placeholder' => "Platform Komunikasi", 'required' => 'required']) }}
         </div>
+        <div class="col-md-6">
+          {{ Form::label('Email :','') }}
+          {{ Form::email('email', $ticket->email, ['class'=>'form-control','id'=>'email', 'placeholder' => "email", 'required' => 'required']) }}
+        </div>
+        <div class="col-md-6">
+          {{ Form::label('Phone :','') }}
+          {{ Form::text('phone',  $ticket->phone, ['class'=>'form-control','id'=>'phone', 'placeholder' => "phone", 'required' => 'required']) }}
+        </div>
         <div class="col-md-12">
           {{ Form::label('Description :','') }}
           {{ Form::textarea('description', $ticket->description, ['class'=>'form-control','id'=>'description', 'placeholder' => "Description", 'required' => 'required']) }}

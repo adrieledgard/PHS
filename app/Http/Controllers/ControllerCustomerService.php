@@ -38,7 +38,7 @@ class ControllerCustomerService extends Controller
     {
         $ticket = new Ticket();
         
-        $ticket->insertdata((session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi);
+        $ticket->insertdata((session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi, $request->email, $request->phone);
         
         return redirect()->route('list_request_assist');
     }
@@ -53,7 +53,7 @@ class ControllerCustomerService extends Controller
     {
         $ticket = new Ticket();
         
-        $ticket->updatedata($id,(session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi);
+        $ticket->updatedata($id,(session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi, $request->email, $request->phone);
         
         return redirect()->route('list_request_assist');
     }

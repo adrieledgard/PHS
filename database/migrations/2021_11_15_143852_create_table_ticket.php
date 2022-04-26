@@ -17,6 +17,8 @@ class CreateTableTicket extends Migration
             $table->id();
             $table->integer('cs_id');
             $table->string('title');
+            $table->string('email');
+            $table->string('phone');
             $table->longText('platform_komunikasi');
             $table->longText('bukti_chat');
             $table->longText('description');
