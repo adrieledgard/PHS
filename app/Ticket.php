@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     protected $table = "table_ticket";
-    protected $fillable = ['cs_id', 'title', 'description', 'conclusion', 'date_request', 'status'];
-    public function insertdata($cs_id, $title, $description)
+    protected $fillable = ['cs_id', 'title', 'platform_komunikasi', 'bukti_chat', 'date_request', 'status', 'description'];
+    public function insertdata($cs_id, $title, $description, $bukti_chat, $platform_komunikasi)
     {
         Ticket::create([
             'cs_id' => $cs_id,
             'title' => strtoupper($title),
-            'description' => strtoupper($description),
-            'conclusion' => '',
+            'bukti_chat' => strtoupper($bukti_chat),
+            'platform_komunikasi' => $platform_komunikasi,
+            'description' => $description,
             'date_request' => date('Y-m-d'),
             'status' => "OPEN",
         ]);
@@ -22,21 +23,22 @@ class Ticket extends Model
         return "sukses";
     }
 
-    public function updatedata($id, $cs_id, $title, $description)
+    public function updatedata($id, $cs_id, $title, $description, $bukti_chat, $platform_komunikasi)
     {
         $ticket = Ticket::find($id);
         $ticket->cs_id = $cs_id;
         $ticket->title = $title;
+        $ticket->bukti_chat = strtoupper($bukti_chat);
+        $ticket->platform_komunikasi = $platform_komunikasi;
         $ticket->description = $description;
         $ticket->save();
 
         return "sukses";
     }
 
-    public function closed($id, $conclusion)
+    public function closed($id)
     {
         $ticket = Ticket::find($id);
-        $ticket->conclusion = $conclusion;
         $ticket->status = "CLOSED";
         $ticket->save();
 

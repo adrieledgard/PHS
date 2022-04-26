@@ -39,10 +39,30 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
+
+  <style>
+    #chat2 .form-control {
+    border-color: transparent;
+    }
+
+    #chat2 .form-control:focus {
+    border-color: transparent;
+    box-shadow: inset 0px 0px 0px 1px transparent;
+    }
+
+    .divider:after,
+    .divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+    }
+  </style>
 @endpush
 
 
 @section('Content')
+<input type="hidden" class="csrf_token" value="{{csrf_token()}}">
   <div class="container-fluid" style="height:100%;">
     <div class="row">
       <div class="col-md-12">
@@ -71,7 +91,6 @@
               <td>Status</td>
               <td>Title</td>
               <td>Description</td>
-              <td>Conclusion</td>
               <td>Actions</td>
             </tr>
           </thead>
@@ -88,29 +107,16 @@
                 @endphp
                 <td>{{$ticket->title}}</td>
                 <td>{{$ticket->description}}</td>
-                <td>{{$ticket->conclusion}}</td>
-                
                 <td>
-                 
+                  <button type="button" class="btn btn-success btn-sm" data-toggle='modal' data-target='#chat' data-id-ticket="{{$ticket->id}}">Chat</button>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button>
                   @php
-                    if((session()->get('userlogin'))->Role == "ADMIN"){
-                      if($ticket->status != "CLOSED"){
-                        
-                          echo '<button type="button" class="btn btn-danger btn-sm" onclick="openModal(' . $ticket->id. ')">Closed</button>';
-                        }
-                    }
-                    else {
-
-                      if($ticket->status != "CLOSED"){
+                    if($ticket->status != "CLOSED"){
                         echo '<button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button>';
                       }
                       else {
                         echo '<button type="button" class="btn btn-warning btn-sm" disabled onclick="onEdit(' . $ticket->id. ')">Edit</button>';
                       }
-                     
-                      // echo '<button class="btn btn-sm btn-warning" {{$ticket->status == "CLOSED" ? "disabled" : ""}} onclick="onEdit({{$ticket->id}})">Edit</button>';
-                    }
-                      
                   @endphp
                 </td>
               </tr>
@@ -133,14 +139,58 @@
         <div class="modal-body">
           {{Form::open(array('url'=>'closed_request_assist/','method'=>'post','class'=>'row g-3'))}}
           <div class="col-md-12">
-            {{ Form::label('conclusion :','') }}
-            {{ Form::textarea('conclusion', '', ['class'=>'form-control','id'=>'conclusion', 'placeholder' => "Conclusion", 'required' => 'required']) }}
+            Apakah anda yakin ingin menutup tiket ini ?
             {{ Form::hidden('id', '1', ['class' => 'ticket_id']) }}
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           {{ Form::submit('Update', ['name'=>'closed_request_assist', 'class'=>'btn btn-primary btn-md float-right']) }}
+        </div>
+      </div>
+      {{Form::close()}}
+    </div>
+  </div>
+  <div id="chat" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Chat</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div style="overflow: auto; height:500px; max-height:500px;">
+            <div class="list_chat">
+               
+            </div>
+          </div>
+          <div class="text-muted d-flex justify-content-start align-items-center border-1 pt-2">
+            
+              <div class="container">
+                <form action="post" id="form_data_chat" enctype="multipart/form-data" >
+                <div class="row">
+                    <input type="hidden" name="id_ticket" id="id_ticket">
+                    <input type="file" style="display:none" id="attachment_file" name="attachment_file"/>
+                    <div class="col-10">
+                      <textarea name="content_pesan" placeholder="Type here" class="form-control " id="content_pesan" cols="10" rows="1"></textarea>
+                    </div>
+                    <div class="col-1">
+                      <button type="button" class="btn btn-sm"  onclick="document.getElementById('attachment_file').click()"><i class="fas fa-paperclip"></i></button>
+                    </div>
+                    <div class="col-1 justify-content-center">
+                      <button type="submit" class="btn btn-sm"><i class="fas fa-paper-plane"></i></button>
+                      {{-- <a class="" href="#!" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></a> --}}
+                    </div>
+                  
+                </div>
+              </form>
+              </div>
+            
+          </div>
+        </div>
+        <div class="modal-footer">
         </div>
       </div>
       {{Form::close()}}
@@ -186,10 +236,80 @@ $('#table_id').DataTable();
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
 <script>
+   var myurl = "<?php echo URL::to('/'); ?>";
 function openModal(id){
   $(".ticket_id").val(id);
 
   $("#closedAssist").modal();
+}
+
+$("#chat").on('show.bs.modal', function(event){
+  var button = $(event.relatedTarget);
+  var id_ticket = button.data('id-ticket');
+  var element_id_ticket = document.getElementById("id_ticket");
+  element_id_ticket.value = id_ticket;
+  var token = $(".csrf_token").val();
+  $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': token
+    }
+  });
+  
+  $.post(myurl + '/get_ticket_chat',
+  {id_ticket: id_ticket , CSRF: token},
+  function(result){
+      renderChat(result);
+      
+  });
+    
+ });
+ 
+ $('form').submit(function(event) {
+    event.preventDefault();
+    var formData = new FormData($(this)[0]);
+    $.ajax({
+        url: myurl + '/send_ticket_chat',
+        type: 'POST',              
+        data: formData,
+        processData:false,
+        contentType:false,
+        success: function(result)
+        {
+            renderChat(result);
+        },
+        error: function(data)
+        {
+            // console.log(data);
+        }
+    });
+
+});
+
+function renderChat(list_chat){
+  $(".list_chat").html("");
+
+  list_chat[0].forEach(chat => {
+    var content = chat.Content;
+    if(chat.Type == 'file'){
+      content = `Click <a href='${myurl + "/download_attachment/" + chat.Content}' target="_blank">here</a> to download the attachment`;
+    }
+    if(chat.Id_member == list_chat[1]){
+      $(".list_chat").append(`
+      <div class="d-flex flex-row justify-content-end mb-4">
+        <div><p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${content}</p>
+        <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">${chat.Username} (${chat.Role}) ${moment(chat.created_at).format("DD-MM-YYYY HH:mm:ss")}</p>
+        </div>
+      </div>`);
+    }else {
+      $(".list_chat").append(`
+      <div class="d-flex flex-row justify-content-start mb-4">
+        <div>
+        <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">${content}</p>
+        <p class="small ms-3 mb-3 rounded-3 text-muted">${chat.Username} (${chat.Role}) ${moment(chat.created_at).format("DD-MM-YYYY HH:mm:ss")}</p>
+        </div>
+      </div>`)
+    }
+  });
 }
 
 function onEdit(id){
