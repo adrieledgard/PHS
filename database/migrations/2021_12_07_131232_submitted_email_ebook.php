@@ -15,13 +15,13 @@ class SubmittedEmailEbook extends Migration
     {
         Schema::create('submitted_email_ebook', function (Blueprint $table) {
             $table->id();
-            $table->integer('ebook_id');
-            $table->string('user_token');
-            $table->string('name');
-            $table->string('phone');
-            $table->string('email');
-            $table->date('date_request');
-            $table->tinyInteger('status');
+            $table->integer('Ebook_id');
+            $table->string('User_token');
+            $table->string('Name');
+            $table->string('Phone');
+            $table->string('Email');
+            $table->date('Date_request');
+            $table->tinyInteger('Status');
             $table->timestamps();
         });
     }

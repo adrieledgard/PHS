@@ -253,7 +253,7 @@
             var disable = rating.Status == 'Deleted' ? "disabled" : "";
             var bintang = "";
             for(var i =1; i <= 5; i++){
-              if(i <= Math.floor(rating.rate)){
+              if(i <= Math.floor(rating.Rate)){
                 bintang += '<i class="fas fa-star"></i>';
               }else {
                 bintang += '<i class="far fa-star"></i>'
@@ -268,7 +268,7 @@
                         `+bintang+`
                     </td>
                     <td>
-                        `+rating.review+`
+                        `+rating.Review+`
                     </td>
                     <td>
                         `+rating.Status+`

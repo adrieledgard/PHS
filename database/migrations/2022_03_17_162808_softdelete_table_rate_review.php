@@ -14,7 +14,7 @@ class SoftdeleteTableRateReview extends Migration
     public function up()
     {
         Schema::table('rating_review', function (Blueprint $table) {
-            $table->string('Status')->after('review')->nullable();
+            $table->string('Status')->after('Review')->nullable();
         });
          
         

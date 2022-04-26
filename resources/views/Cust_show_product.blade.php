@@ -405,7 +405,7 @@
                                     foreach ($dtproductreview as $review) {
                                         echo "
                                         <b>$review->Username</b><br>
-                                        $review->review <br>
+                                        $review->Review <br>
                                         <i>". date("d-m-Y H:i:s", strtotime($review->created_at)) ."</i>
                                         <br><br>
     
@@ -756,7 +756,7 @@
         var review_area = document.getElementsByClassName("review_area")[0];
         var review = "";
         result.forEach(res => {
-            review += "<b>"+ res.Username +"</b> <br> "+ res.review +" <br> <i>"+ moment(res.created_at).format("DD-MM-YYYY HH:mm:ss") +"</i><br><br>";
+            review += "<b>"+ res.Username +"</b> <br> "+ res.Review +" <br> <i>"+ moment(res.created_at).format("DD-MM-YYYY HH:mm:ss") +"</i><br><br>";
         });
 
         review_area.innerHTML = review;

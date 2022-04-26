@@ -8,20 +8,20 @@ class email_ebook extends Model
 {
     protected $table="submitted_email_ebook";
     
-    protected $fillable = ['ebook_id', 'name', 'phone' ,'email', 'user_token', 'date_request', 'status'];
+    protected $fillable = ['Ebook_id', 'Name', 'Phone' ,'Email', 'User_token', 'Date_request', 'Status'];
 
     public function add_email_ebook($ebook_id, $name, $phone, $email, $user_token)
     {
         email_ebook::create(
         [
             'Id_ebook' => null,
-            'ebook_id' => $ebook_id,
-            'user_token' => $user_token,
-            'name' => $name,
-            'phone' => $phone,
-            'email' => $email,
-            'date_request' => date("Y-m-d"),
-            'status'=> 1
+            'Ebook_id' => $ebook_id,
+            'User_token' => $user_token,
+            'Name' => $name,
+            'Phone' => $phone,
+            'Email' => $email,
+            'Date_request' => date("Y-m-d"),
+            'Status'=> 1
         ]
         );
         return "sukses";
