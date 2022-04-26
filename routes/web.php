@@ -367,7 +367,7 @@ Route::post('simpan_pengaturan_followup', ['uses' => "ControllerCustomerService@
 Route::post('get_ticket_chat', ['uses' => "ControllerCustomerService@get_ticket_chat"]);
 Route::post('send_ticket_chat', ['uses' => "ControllerCustomerService@send_ticket_chat"]);
 Route::get('download_attachment/{nama_file}', ['uses' => 'ControllerCustomerService@download_attachment']);
-
+Route::post('kirim_email', ['uses' => 'ControllerCustomerService@kirim_email']);
 
 Route::get('Purchase_payment', ["uses"=>"ControllerTransaction@Purchase_payment"]);
 Route::get('get_receive_detail_payment', ["uses"=>"ControllerTransaction@get_receive_detail_payment"]);

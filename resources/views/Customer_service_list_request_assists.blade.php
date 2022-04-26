@@ -39,7 +39,7 @@
   <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
-
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
   <style>
     #chat2 .form-control {
     border-color: transparent;
@@ -62,6 +62,11 @@
 
 
 @section('Content')
+@if(session()->has('success'))
+<div class="alert alert-success">
+    {{ session()->get('success') }}
+</div>
+@endif
 <input type="hidden" class="csrf_token" value="{{csrf_token()}}">
   <div class="container-fluid" style="height:100%;">
     <div class="row">
@@ -74,6 +79,7 @@
                 {{ Form::button('<i class="fa fa-plus" aria-hidden="true"></i> Insert',['class'=>'btn btn-primary','name'=>'btn_add']) }}
                 {{-- <button class="btn btn-primary"><i class="fa fa-plus"></i> Insert</button> --}}
               </a>
+              <button class="btn btn-info" data-toggle='modal' data-target='#kirim_email' >Kirim Email</button>
           <?php
         }
           ?>
@@ -125,6 +131,7 @@
                         echo '<button type="button" class="btn btn-warning btn-sm" disabled onclick="onEdit(' . $ticket->id. ')">Edit</button>';
                       }
                   @endphp
+                  <button type="button" class="btn btn-info btn-sm" data-toggle='modal' data-target='#bukti_chat_customer' data-chat="{{$ticket->bukti_chat}}">Bukti Chat</button>
                 </td>
               </tr>
             @endforeach
@@ -158,6 +165,26 @@
       {{Form::close()}}
     </div>
   </div>
+
+  <div id="bukti_chat_customer" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Bukti Chat Customer</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          
+        </div>
+        <div class="modal-body bukti_chat_customer">
+          
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="chat" class="modal fade" role="dialog">
     <div class="modal-dialog">
   
@@ -184,7 +211,7 @@
                     </div>
                   </div>
                 </div>
-                <form action="post" id="form_data_chat" enctype="multipart/form-data" >
+              <form action="post" id="form_data_chat" enctype="multipart/form-data" >
                 <div class="row">
                     <input type="hidden" name="id_ticket" id="id_ticket">
                     <input type="file" style="display:none" id="attachment_file" name="attachment_file"/>
@@ -206,6 +233,39 @@
           </div>
         </div>
         <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="kirim_email" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Kirim Email</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          {{Form::open(array('url'=>'kirim_email/','method'=>'post','class'=>'row g-3'))}}
+          <div class="col-md-12">
+            <h5>Email Customer : </h5>
+            {{ Form::email('email', '', ['class'=>'form-control', 'placeholder' => "Email Customer", 'required' => 'required']) }}
+          </div>
+          <div class="col-md-12">
+            <h5>Subject : </h5>
+            {{ Form::text('subject', '', ['class'=>'form-control', 'placeholder' => "Title", 'required' => 'required']) }}
+          </div>
+          
+          <div class="col-md-12 mt-3">
+            <h5>Content : </h5>
+            {{ Form::textarea('content', '', ['class'=>'form-control','id'=>'summernote', 'placeholder' => "Masukkan kata-kata", 'required' => 'required']) }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          {{ Form::submit('Kirim', ['name'=>'closed_request_assist', 'class'=>'btn btn-primary btn-md float-right']) }}
         </div>
       </div>
       {{Form::close()}}
@@ -250,7 +310,10 @@ $('#table_id').DataTable();
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
 <script>
+  $('#summernote').summernote();
    var myurl = "<?php echo URL::to('/'); ?>";
 function openModal(id){
   $(".ticket_id").val(id);
@@ -269,6 +332,13 @@ $("#attachment_file").change(function(){
   $(".attachment_name").append(`${$("#attachment_file")[0].files[0].name} <button type="button" class="btn btn-sm" onclick="delete_attachment()"><i class="fa fa-times"></i></button>`);
   $('.attachment_name').css('display', 'block');
 })
+
+$("#bukti_chat_customer").on('show.bs.modal', function(event){
+  var button = $(event.relatedTarget);
+  var chat = button.data('chat');
+  $(".bukti_chat_customer").html("");
+  $(".bukti_chat_customer").append(chat);
+});
 
 $("#chat").on('show.bs.modal', function(event){
   var button = $(event.relatedTarget);
@@ -291,7 +361,7 @@ $("#chat").on('show.bs.modal', function(event){
     
  });
  
- $('form').submit(function(event) {
+ $('#form_data_chat').submit(function(event) {
     event.preventDefault();
     var formData = new FormData($(this)[0]);
     $.ajax({

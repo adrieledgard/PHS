@@ -7,6 +7,7 @@ use App\cust_order_detail;
 use App\cust_order_header;
 use App\followup;
 use App\Mail\FollowUp as MailFollowUp;
+use App\Mail\SendEmail;
 use App\member;
 use App\Ticket;
 use App\voucher;
@@ -116,14 +117,16 @@ class ControllerCustomerService extends Controller
         header('Content-Length: ' . filesize($file));
         header('Pragma: public');
 
-        //Clear system output buffer
         flush();
-
-        //Read the size of the file
         readfile($file);
 
-        //Terminate from the script
         die();
+    }
+
+    public function kirim_email(Request $request)
+    {
+        Mail::to($request->email)->send(new SendEmail($request->subject, $request->content));
+        return redirect()->back()->with('success', 'Email sukses dikirim kepada ' . $request->email);
     }
 
     public function list_available_customer(Request $request)
