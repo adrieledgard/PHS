@@ -85,7 +85,7 @@ Update Request Assist
         </div>
         <div class="col-md-6">
           {{ Form::label('Phone :','') }}
-          {{ Form::text('phone',  $ticket->phone, ['class'=>'form-control','id'=>'phone', 'placeholder' => "phone", 'required' => 'required']) }}
+          {{ Form::number('phone',  $ticket->phone, ['class'=>'form-control','id'=>'phone', 'placeholder' => "phone", 'required' => 'required']) }}
         </div>
         <div class="col-md-12">
           {{ Form::label('Description :','') }}

@@ -16,6 +16,7 @@ class CreateTableTicket extends Migration
         Schema::create('table_ticket', function (Blueprint $table) {
             $table->id();
             $table->integer('cs_id');
+            $table->string('nomor_ticket');
             $table->string('title');
             $table->string('email');
             $table->string('phone');

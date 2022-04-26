@@ -85,7 +85,7 @@
         </div>
         <div class="col-md-6">
           {{ Form::label('Phone :','') }}
-          {{ Form::text('phone', '', ['class'=>'form-control','id'=>'phone', 'placeholder' => "phone", 'required' => 'required']) }}
+          {{ Form::number('phone', '', ['class'=>'form-control','id'=>'phone', 'placeholder' => "phone", 'required' => 'required']) }}
         </div>
         <div class="col-md-12">
           {{ Form::label('Description :','') }}

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     protected $table = "table_ticket";
-    protected $fillable = ['cs_id', 'title', 'platform_komunikasi', 'bukti_chat', 'date_request', 'status', 'description', 'email', 'phone'];
+    protected $fillable = ['cs_id', 'title', 'platform_komunikasi', 'bukti_chat', 'date_request', 'status', 'description', 'email', 'phone', 'nomor_ticket'];
     public function insertdata($cs_id, $title, $description, $bukti_chat, $platform_komunikasi, $email, $phone)
     {
         Ticket::create([
+            'nomor_ticket' => mt_rand(1000000, 9999999),
             'cs_id' => $cs_id,
             'title' => strtoupper($title),
             'bukti_chat' => strtoupper($bukti_chat),

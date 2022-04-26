@@ -88,6 +88,9 @@
         <table id="table_id"  class='table table-striped display'>
           <thead>
             <tr>
+              <td>Nomor Ticket</td>
+              <td>Email</td>
+              <td>Phone</td>
               <td>Status</td>
               <td>Title</td>
               <td>Description</td>
@@ -97,6 +100,10 @@
           <tbody>
             @foreach ($tickets as $ticket)
               <tr>
+                
+                <td>{{$ticket->nomor_ticket}}</td>
+                <td>{{$ticket->email}}</td>
+                <td>{{$ticket->phone}}</td>
                 @php
                     if($ticket->status == "OPEN"){
                       echo "<td><button type='button' class='btn btn-warning btn-sm' disabled>$ticket->status</button></td>";
