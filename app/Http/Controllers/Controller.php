@@ -4000,7 +4000,7 @@ class Controller extends BaseController
 	public function rate_review_order(Request $request)
 	{
 		$order_detail = cust_order_detail::find($request->id_detail_order);
-<<<<<<< HEAD
+
 		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)
 		->get();
 		
@@ -4009,27 +4009,13 @@ class Controller extends BaseController
 			$rate_review = new rate_review();
 			$hasil = $rate_review->edit_rating_review($request->id_detail_order, $request->rate, $request->review);
 			
-=======
-		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)->first();
-		if($exist_rate_review !== null){
-			$exist_rate_review->Rate = $request->rate;
-			$exist_rate_review->Review = $request->review;
-			$exist_rate_review->save();
-
->>>>>>> 722ab48a7636d17c47694fd9d5e7a19fbf74a188
-			$this->update_rating_product($order_detail->Id_product);	
 		}
 		else 
 		{
-			$rate_review = new rate_review();
-			$rate_review->Id_detail_order = $request->id_detail_order;
-			$rate_review->Id_order = $order_detail->Id_order;
-			$rate_review->Id_member = session()->get('userlogin')->Id_member;
-			$rate_review->Rate = $request->rate;
-			$rate_review->Review = $request->review;
-			$rate_review->Status = "Active";
-			$rate_review->save();
 
+
+			$rate_review = new rate_review();
+			$hasil = $rate_review->insert_rating_review( $request->id_detail_order ,$order_detail->Id_order ,session()->get('userlogin')->Id_member,$request->rate,$request->review);
 			$this->update_rating_product($order_detail->Id_product);
 		}
 
