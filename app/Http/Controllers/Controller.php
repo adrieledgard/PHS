@@ -4000,14 +4000,18 @@ class Controller extends BaseController
 	public function rate_review_order(Request $request)
 	{
 		$order_detail = cust_order_detail::find($request->id_detail_order);
-		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)->first();
-		if($exist_rate_review !== null){
-			$exist_rate_review->rate = $request->rate;
-			$exist_rate_review->review = $request->review;
-			$exist_rate_review->save();
-
+		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)
+		->get();
+		
+		if($exist_rate_review !== null)
+		{
+			$rate_review = new rate_review();
+			$hasil = $rate_review->edit_rating_review($request->id_detail_order, $request->rate, $request->review);
+			
 			$this->update_rating_product($order_detail->Id_product);	
-		}else {
+		}
+		else 
+		{
 			$rate_review = new rate_review();
 			$rate_review->Id_detail_order = $request->id_detail_order;
 			$rate_review->Id_order = $order_detail->Id_order;

@@ -231,8 +231,6 @@ Receive Order
 
      function Approve(no_receive)
      {
-      //  alert(no_receive)
-
       var myurl = "<?php echo URL::to('/'); ?>";
        swal({
       title: "Are you sure to Approve this?",
@@ -243,8 +241,6 @@ Receive Order
     })
     .then((willDelete) => {
       if (willDelete) {
-      
-
         $.get(myurl + '/set_status_receive',
         {No_receive:no_receive,Status:2},
         function(result){
@@ -254,30 +250,9 @@ Receive Order
           
         });
 
-
-      // $.get(myurl + '/void_purchase',
-      // {noinv:noinv},
-      // function(result){
-      //   if(result=="no")
-      //   {
-      //     toastr["error"]("Void can only if the status is open ", "Failed");
-      //   }
-      //   else
-      //   {
-      //   toastr["success"]("Success to void", "Success");
-      //   window.location = myurl + "/Purchase/";
-      //   }
-        
-      // });
-
-
       } else {
-       // swal("Cancelled");
       }
-    });     
-
-
-     
+    });  
      }
 
 
