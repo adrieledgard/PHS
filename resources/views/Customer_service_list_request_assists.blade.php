@@ -107,31 +107,31 @@
             @foreach ($tickets as $ticket)
               <tr>
                 
-                <td>{{$ticket->nomor_ticket}}</td>
-                <td>{{$ticket->email}}</td>
-                <td>{{$ticket->phone}}</td>
+                <td>{{$ticket->Nomor_ticket}}</td>
+                <td>{{$ticket->Email}}</td>
+                <td>{{$ticket->Phone}}</td>
                 @php
-                    if($ticket->status == "OPEN"){
-                      echo "<td><button type='button' class='btn btn-warning btn-sm' disabled>$ticket->status</button></td>";
+                    if($ticket->Status == "OPEN"){
+                      echo "<td><button type='button' class='btn btn-warning btn-sm' disabled>$ticket->Status</button></td>";
                     }
-                    else if($ticket->status == "CLOSED"){
-                      echo "<td><button type='button' class='btn btn-danger btn-sm' disabled>$ticket->status</button></td>";
+                    else if($ticket->Status == "CLOSED"){
+                      echo "<td><button type='button' class='btn btn-danger btn-sm' disabled>$ticket->Status</button></td>";
                     }
                 @endphp
-                <td>{{$ticket->title}}</td>
-                <td>{{$ticket->description}}</td>
+                <td>{{$ticket->Title}}</td>
+                <td>{{$ticket->Description}}</td>
                 <td>
                   <button type="button" class="btn btn-success btn-sm" data-toggle='modal' data-target='#chat' data-id-ticket="{{$ticket->id}}">Chat</button>
                   <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button>
                   @php
-                    if($ticket->status != "CLOSED"){
+                    if($ticket->Status != "CLOSED"){
                         echo '<button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button>';
                       }
                       else {
                         echo '<button type="button" class="btn btn-warning btn-sm" disabled onclick="onEdit(' . $ticket->id. ')">Edit</button>';
                       }
                   @endphp
-                  <button type="button" class="btn btn-info btn-sm" data-toggle='modal' data-target='#bukti_chat_customer' data-chat="{{$ticket->bukti_chat}}">Bukti Chat</button>
+                  <button type="button" class="btn btn-info btn-sm" data-toggle='modal' data-target='#bukti_chat_customer' data-chat="{{$ticket->Bukti_chat}}">Bukti Chat</button>
                 </td>
               </tr>
             @endforeach

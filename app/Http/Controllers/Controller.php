@@ -3298,13 +3298,13 @@ class Controller extends BaseController
 						if($review[0]->Status == 'Active'){
 							$detail->Status = $review[0]->Status;
 							$detail->is_review = true;
-							$detail->rate = $review[0]->rate;
-							$detail->review = $review[0]->review;
+							$detail->Rate = $review[0]->Rate;
+							$detail->Review = $review[0]->Review;
 						}else {
 							$detail->Status = $review[0]->Status;
 							$detail->is_review = true;
-							$detail->rate = $review[0]->rate;
-							$detail->review = $review[0]->review;
+							$detail->Rate = $review[0]->Rate;
+							$detail->Review = $review[0]->Review;
 						}
 					}
 				}
@@ -3759,15 +3759,15 @@ class Controller extends BaseController
 					->where('product.Id_product', $request->product)
 					->get();
 		foreach ($products as $product) {
-			$submitted_email_ebook = email_ebook::join('ebook', 'ebook.Id_ebook', 'submitted_email_ebook.ebook_id')
+			$submitted_email_ebook = email_ebook::join('ebook', 'ebook.Id_ebook', 'submitted_email_ebook.Ebook_id')
 					->where('ebook.Id_sub_category', $product->Id_sub_category)
 					->get();
 
 			foreach ($submitted_email_ebook as $user) {
 				
 				$jumlahterkirim += 1;
-				$link_product = "https://localhost/PusatHerbalStore/public/Cust_show_product/$request->product/$user->user_token";
-				Mail::to($user->email)->send(new BroadcastMail($request->subject, $request->content, $link_product));
+				$link_product = "https://localhost/PusatHerbalStore/public/Cust_show_product/$request->product/$user->User_token";
+				Mail::to($user->Email)->send(new BroadcastMail($request->subject, $request->content, $link_product));
 			}
 		}
 		
@@ -3984,7 +3984,7 @@ class Controller extends BaseController
 	public function order_confirmation(Request $request)
 	{
 		$order = cust_order_header::find($request->id);
-		$order->status = 5;
+		$order->Status = 5;
 		$order->save();
 
 		$order_history = new cust_order_history();
@@ -4000,6 +4000,7 @@ class Controller extends BaseController
 	public function rate_review_order(Request $request)
 	{
 		$order_detail = cust_order_detail::find($request->id_detail_order);
+<<<<<<< HEAD
 		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)
 		->get();
 		
@@ -4008,6 +4009,14 @@ class Controller extends BaseController
 			$rate_review = new rate_review();
 			$hasil = $rate_review->edit_rating_review($request->id_detail_order, $request->rate, $request->review);
 			
+=======
+		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)->first();
+		if($exist_rate_review !== null){
+			$exist_rate_review->Rate = $request->rate;
+			$exist_rate_review->Review = $request->review;
+			$exist_rate_review->save();
+
+>>>>>>> 722ab48a7636d17c47694fd9d5e7a19fbf74a188
 			$this->update_rating_product($order_detail->Id_product);	
 		}
 		else 
@@ -4016,8 +4025,8 @@ class Controller extends BaseController
 			$rate_review->Id_detail_order = $request->id_detail_order;
 			$rate_review->Id_order = $order_detail->Id_order;
 			$rate_review->Id_member = session()->get('userlogin')->Id_member;
-			$rate_review->rate = $request->rate;
-			$rate_review->review = $request->review;
+			$rate_review->Rate = $request->rate;
+			$rate_review->Review = $request->review;
 			$rate_review->Status = "Active";
 			$rate_review->save();
 

@@ -15,17 +15,17 @@ class CreateTableTicket extends Migration
     {
         Schema::create('table_ticket', function (Blueprint $table) {
             $table->id();
-            $table->integer('cs_id');
-            $table->string('nomor_ticket');
-            $table->string('title');
-            $table->string('email');
-            $table->string('phone');
-            $table->longText('platform_komunikasi');
-            $table->longText('bukti_chat');
-            $table->longText('description');
-            $table->date('date_request');
-            $table->date('date_solve')->nullable();
-            $table->string('status');
+            $table->integer('Cs_id');
+            $table->string('Nomor_ticket');
+            $table->string('Title');
+            $table->string('Email');
+            $table->string('Phone');
+            $table->longText('Platform_komunikasi');
+            $table->longText('Bukti_chat');
+            $table->longText('Description');
+            $table->date('Date_request');
+            $table->date('Date_solve')->nullable();
+            $table->string('Status');
             $table->timestamps();
         });
     }

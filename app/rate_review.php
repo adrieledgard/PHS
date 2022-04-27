@@ -35,4 +35,5 @@ class rate_review extends Model
         );
         return "sukses";
     }
+   
 }

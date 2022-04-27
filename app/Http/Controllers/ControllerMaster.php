@@ -64,7 +64,7 @@ class ControllerMaster extends Controller
 			$product->rating = rate_review::join('member', 'rating_review.Id_member', 'member.Id_member')
 								->join('cust_order_detail', 'cust_order_detail.Id_detail_order', 'rating_review.Id_detail_order')
 								->where('Id_product', $product->Id_product)
-								->select('Id_product', 'member.Username', 'rating_review.rate', 'rating_review.review', 'rating_review.id', 'rating_review.Status')
+								->select('Id_product', 'member.Username', 'rating_review.Rate', 'rating_review.Review', 'rating_review.id', 'rating_review.Status')
 								->get();
 		}
 		return($param);
@@ -4225,9 +4225,9 @@ class ControllerMaster extends Controller
 
 	public function submit_email_ebook(Request $request, $ebook_id, $user_token)
 	{
-		$existed_user_ebook = email_ebook::where('email', $request->email)
-		->where('user_token', $user_token)
-		->where('ebook_id', $ebook_id)
+		$existed_user_ebook = email_ebook::where('Email', $request->email)
+		->where('User_token', $user_token)
+		->where('Ebook_id', $ebook_id)
 		->get();
 
 
