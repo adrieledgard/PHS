@@ -4012,8 +4012,6 @@ class Controller extends BaseController
 		}
 		else 
 		{
-
-
 			$rate_review = new rate_review();
 			$hasil = $rate_review->insert_rating_review( $request->id_detail_order ,$order_detail->Id_order ,session()->get('userlogin')->Id_member,$request->rate,$request->review);
 			$this->update_rating_product($order_detail->Id_product);
