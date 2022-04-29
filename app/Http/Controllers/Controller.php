@@ -567,14 +567,13 @@ class Controller extends BaseController
 				]))
 				{
 
-					$id = $request->Id_member;
 					$username = $request->txt_username;
 					$email = $request->txt_email;
 					$phone = $request->txt_phone;
 
 
 					$member = new member();
-					$hasil = $member->edit_team_member_cust($id,$username,$email ,$phone);
+					$hasil = $member->edit_team_member_cust(session()->get('userlogin')->Id_member ,$username,$email ,$phone);
 
 					if($hasil == "failed")
 					{
@@ -582,9 +581,44 @@ class Controller extends BaseController
 					}
 					else
 					{
-						return view('Cust_home',$this->dthome());
+						//----Update session----
+						$member = new member();
+						$hasil = $member->getteammember(session()->get('userlogin')->Id_member);
+
+						session()->forget('userlogin');
+						session()->put("userlogin",$hasil[0]);
+
+						//-----------------------
+						
+						$Id_member =session()->get('userlogin')->Id_member;
+						$param['dtaddress'] = address_member::where('address_member.Id_member','=',$Id_member)
+						->where('address_member.Status','=',1)
+						->join('list_city','address_member.Id_city','list_city.Id_city')
+						// ->join('list_city','address_member.Id_province','list_city.Id_province')
+						->get();
+
+						$db = list_city::all(); 
+						$arr= [];  // array 
+						$arr2= [];  // array 
+						foreach($db as $row) {
+							$arr[0] = "";
+							$arr2[0] = "";
+							$arr[$row->Id_province] = $row->Province_name; 
+							$arr2[$row->Id_city] = $row->City_name; 
+						
+						}
+						
+						$param['arr_province']  = $arr; 
+						$param['arr_city']  = $arr2; 
+
+						
+
+
+						return view('Cust_edit_profile',$param);
 					}
 				}
+
+
 		
 	}
 
@@ -4002,22 +4036,20 @@ class Controller extends BaseController
 		$order_detail = cust_order_detail::find($request->id_detail_order);
 
 		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)
-		->get();
+		->first();
 		
 		if($exist_rate_review !== null)
 		{
 			$rate_review = new rate_review();
 			$hasil = $rate_review->edit_rating_review($request->id_detail_order, $request->rate, $request->review);
-			
 		}
 		else 
 		{
 			$rate_review = new rate_review();
 			$hasil = $rate_review->insert_rating_review( $request->id_detail_order ,$order_detail->Id_order ,session()->get('userlogin')->Id_member,$request->rate,$request->review);
-			$this->update_rating_product($order_detail->Id_product);
 		}
 
-		
+		$this->update_rating_product($order_detail->Id_product);
 		return 'sukses';
 	}
 

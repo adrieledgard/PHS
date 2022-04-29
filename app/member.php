@@ -168,7 +168,7 @@ class member extends Model
             member::where('Id_member','=',$id)->update(array(
                 'Username' => strtoupper($username),
                 'Email'=>strtoupper($email),
-                'Phone'=>$phone,
+                'Phone'=>$phone
             ));
             return "sukses";
           
@@ -206,7 +206,7 @@ class member extends Model
         }
     }
 
-
+    
 
 
 
