@@ -284,9 +284,13 @@ $.widget.bridge('uibutton', $.ui.button)
 <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
    <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script>
 $(document).ready( function () {
 $('#table_id').DataTable();
+$('#summernote').summernote();
+
 } );
 </script>
 <!-- ChartJS -->
@@ -310,10 +314,8 @@ $('#table_id').DataTable();
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
 <script>
-  $('#summernote').summernote();
    var myurl = "<?php echo URL::to('/'); ?>";
 function openModal(id){
   $(".ticket_id").val(id);
