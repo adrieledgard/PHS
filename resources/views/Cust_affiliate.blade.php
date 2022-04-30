@@ -132,7 +132,8 @@
                                                             {
                                                                 $totaldiklik=0;
                                                             }
-                                                            else {
+                                                            else if( $data_aff->Id_member == session()->get('userlogin')->Id_member)
+                                                            {
                                                                 $totaldiklik = $data_aff->Total_diklik;
                                                             }
                                                         @endphp
