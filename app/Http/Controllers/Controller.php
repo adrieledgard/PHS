@@ -432,12 +432,8 @@ class Controller extends BaseController
 							$carthasil = $cart->add_cart($data->Id_product,$data->Id_variation,$data->Qty,$hasil->Id_member);
 						}
 					}
-
-
 					Cookie::queue(Cookie::make("username_login", $hasil->Username, 1500000));
 					return view('Cust_home',$this->dthome());	
-
-
 				}
 				else
 				{
@@ -571,14 +567,13 @@ class Controller extends BaseController
 				]))
 				{
 
-					$id = $request->Id_member;
 					$username = $request->txt_username;
 					$email = $request->txt_email;
 					$phone = $request->txt_phone;
 
 
 					$member = new member();
-					$hasil = $member->edit_team_member_cust($id,$username,$email ,$phone);
+					$hasil = $member->edit_team_member_cust(session()->get('userlogin')->Id_member ,$username,$email ,$phone);
 
 					if($hasil == "failed")
 					{
@@ -586,9 +581,44 @@ class Controller extends BaseController
 					}
 					else
 					{
-						return view('Cust_home',$this->dthome());
+						//----Update session----
+						$member = new member();
+						$hasil = $member->getteammember(session()->get('userlogin')->Id_member);
+
+						session()->forget('userlogin');
+						session()->put("userlogin",$hasil[0]);
+
+						//-----------------------
+						
+						$Id_member =session()->get('userlogin')->Id_member;
+						$param['dtaddress'] = address_member::where('address_member.Id_member','=',$Id_member)
+						->where('address_member.Status','=',1)
+						->join('list_city','address_member.Id_city','list_city.Id_city')
+						// ->join('list_city','address_member.Id_province','list_city.Id_province')
+						->get();
+
+						$db = list_city::all(); 
+						$arr= [];  // array 
+						$arr2= [];  // array 
+						foreach($db as $row) {
+							$arr[0] = "";
+							$arr2[0] = "";
+							$arr[$row->Id_province] = $row->Province_name; 
+							$arr2[$row->Id_city] = $row->City_name; 
+						
+						}
+						
+						$param['arr_province']  = $arr; 
+						$param['arr_city']  = $arr2; 
+
+						
+
+
+						return view('Cust_edit_profile',$param);
 					}
 				}
+
+
 		
 	}
 
@@ -1089,18 +1119,26 @@ class Controller extends BaseController
 			Cookie::queue(Cookie::make("Tracking_code", "LINK-".$id, 1500000));
 
 
+			$member_aff = member::where('Random_code', $Random_code)->first();
 
-			$affiliate = DB::table('affiliate_member')->where('Id_product', $id)->first();
-			$member = member::where('Random_code', $Random_code)->first();
+			$affiliate = DB::table('affiliate_member')
+			->where('Id_product', $id)
+			->where('Id_member',$member_aff->Id_member)
+			->first();
 			
-			if(!empty($member)){
+			
+			if(!empty($member_aff))
+			{
 				$total_diklik = 0;
-				if(!empty($affiliate)){
+				if(!empty($affiliate))
+				{
 					$total_diklik = $affiliate->Total_diklik + 1;	
-					DB::update("update affiliate_member set Total_diklik = $total_diklik where Id_product = $id");
-				}else {
+					DB::update("update affiliate_member set Total_diklik = $total_diklik where Id_product = $id and Id_member = $member_aff->Id_member");
+				}
+				else 
+				{
 					$total_diklik = 1;
-					DB::insert('insert into affiliate_member (Total_diklik, Id_member, Id_product) values (?, ?, ?)', [$total_diklik, $member->Id_member, $id]);
+					DB::insert('insert into affiliate_member (Total_diklik, Id_member, Id_product) values (?, ?, ?)', [$total_diklik, $member_aff->Id_member, $id]);
 				}
 			}
 		}
@@ -1876,7 +1914,8 @@ class Controller extends BaseController
 		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
 		->join('product','affiliate.Id_product','product.Id_product')
 		->leftJoin('affiliate_member', 'affiliate_member.Id_product', 'affiliate.Id_product')
-		->select('affiliate.*', 'product.*', 'affiliate_member.Total_diklik')
+		// ->where('affiliate_member.Id_member','=',session()->get('userlogin')->Id_member)
+		->select('affiliate.*', 'product.*', 'affiliate_member.Total_diklik', 'affiliate_member.Id_member')
 		->get();
 
 		$param['dtproduct'] = product::where('product.Status','=', '1')
@@ -1902,6 +1941,40 @@ class Controller extends BaseController
 		$param['dtproductimage'] = Product_image::all();
 
 		return view('Cust_affiliate',$param);
+	}
+
+
+	public function Affiliate_embed_code(Request $request)
+	{
+		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
+		->join('product','affiliate.Id_product','product.Id_product')
+		->leftJoin('embed_member', 'embed_member.Id_product', 'affiliate.Id_product')
+		->select('affiliate.*', 'product.*', 'embed_member.Total_diklik', 'embed_member.Id_member')
+		->get();
+
+		$param['dtproduct'] = product::where('product.Status','=', '1')
+		->join('brand','product.Id_brand','brand.Id_brand')
+		->join('type','product.Id_type','type.Id_type')
+		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
+		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+			->get();
+
+		
+		$Random_code = session()->get('userlogin')->Random_code;
+
+		$param['cust_order'] = cust_order_header::where('Affiliate','=',$Random_code)
+		->where('Status','>=',2)
+		->get();
+
+
+		$param['dtvariation']= variation::where('Status','=',1)
+		// ->select("Option_name","Id_product")
+		->get();
+
+
+		$param['dtproductimage'] = Product_image::all();
+
+		return view('Cust_embed_code',$param);
 	}
 
 	public function point(Request $request)
@@ -3831,14 +3904,39 @@ class Controller extends BaseController
 		if($Id_member!="") //Member
 		{
 			//tanam affiliate
-			$member = member::find($Id_member);
+			// $member_target = member::find($Id_member);
 
-			if($member->Referral == 0 || $member->Referral == '0')
-			{
-				$tempmember = new member();
-				$tambahreferral = $tempmember->edit_referral($Id_member,$Random_code,"EMBED-".$Variasi->Id_product);
+			// if($member_target->Referral == 0 || $member_target->Referral == '0')
+			// {
+			// 	if ($member_target->First_transaction == 0 || $member_target->First_transaction == '0')
+			// 	{
+			// 		$tempmember = new member();
+			// 		$tambahreferral = $tempmember->edit_referral($Id_member,$Random_code,"EMBED-".$Variasi->Id_product);
 				
-			}
+			// 		$member_aff = member::where('Random_code', $Random_code)->first();
+			// 		$embed = DB::table('embed_member')
+			// 		->where('Id_product', $Variasi->Id_product)
+			// 		->where('Id_member', $member_aff->Id_member)
+			// 		->first();
+
+					
+			// 		if(!empty($member_aff)){
+			// 			$total_diklik = 0;
+			// 			if(!empty($embed))
+			// 			{
+			// 				$total_diklik = $embed->Total_diklik + 1;	
+			// 				DB::update("update embed_member set Total_diklik = $Total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
+			// 			}
+			// 			else 
+			// 			{
+			// 				$total_diklik = 1;
+			// 				DB::insert('insert into embed_member (Id_member, Id_product, Total_diklik) values (?, ?, ?)', [$member_aff->Id_member, $Variasi->Id_product, $total_diklik]);
+			// 			}
+			// 		}
+				
+			// 	}
+				
+			// }
 			
 
 			//tambah data cart
@@ -3879,6 +3977,28 @@ class Controller extends BaseController
 			{
 				Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
 				Cookie::queue(Cookie::make("Tracking_code", "EMBED-".$Variasi->Id_product, 1500000));
+			
+
+				$member_aff = member::where('Random_code', $Random_code)->first();
+				$embed = DB::table('embed_member')
+				->where('Id_product', $Variasi->Id_product)
+				->where('Id_member', $member_aff->Id_member)
+				->first();
+
+				
+				if(!empty($member_aff)){
+					$total_diklik = 0;
+					if(!empty($embed))
+					{
+						$total_diklik = $embed->Total_diklik + 1;	
+						DB::update("update embed_member set Total_diklik = $Total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
+					}
+					else 
+					{
+						$total_diklik = 1;
+						DB::insert('insert into embed_member (Id_member, Id_product, Total_diklik) values (?, ?, ?)', [$member_aff->Id_member, $Variasi->Id_product, $total_diklik]);
+					}
+				}
 			}
 
 
@@ -4004,27 +4124,22 @@ class Controller extends BaseController
 	public function rate_review_order(Request $request)
 	{
 		$order_detail = cust_order_detail::find($request->id_detail_order);
-		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)->first();
-		if($exist_rate_review !== null){
-			$exist_rate_review->Rate = $request->rate;
-			$exist_rate_review->Review = $request->review;
-			$exist_rate_review->save();
 
-			$this->update_rating_product($order_detail->Id_product);	
-		}else {
+		$exist_rate_review = rate_review::where("Id_detail_order", $request->id_detail_order)
+		->first();
+		
+		if($exist_rate_review !== null)
+		{
 			$rate_review = new rate_review();
-			$rate_review->Id_detail_order = $request->id_detail_order;
-			$rate_review->Id_order = $order_detail->Id_order;
-			$rate_review->Id_member = session()->get('userlogin')->Id_member;
-			$rate_review->Rate = $request->rate;
-			$rate_review->Review = $request->review;
-			$rate_review->Status = "Active";
-			$rate_review->save();
-
-			$this->update_rating_product($order_detail->Id_product);
+			$hasil = $rate_review->edit_rating_review($request->id_detail_order, $request->rate, $request->review);
+		}
+		else 
+		{
+			$rate_review = new rate_review();
+			$hasil = $rate_review->insert_rating_review( $request->id_detail_order ,$order_detail->Id_order ,session()->get('userlogin')->Id_member,$request->rate,$request->review);
 		}
 
-		
+		$this->update_rating_product($order_detail->Id_product);
 		return 'sukses';
 	}
 

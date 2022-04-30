@@ -12,12 +12,23 @@
 
  <link href="{{ asset ('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
 
+ 
 @endpush
 
 
 
 
 @section('Content')
+
+@php
+$msgerror = "";
+  if($errors->any()){
+    foreach ($errors->all() as $error) {
+      $msgerror = $error;
+    }
+  }
+@endphp
+
 
 <div class="register-area ptb-100">
     <div class="container-fluid">
@@ -205,6 +216,9 @@
 
 
 @push('custom-js')
+
+<!-- TOASTR Utk ERROR -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 <script src ="{{ asset ('js/jquery.js') }}"></script>
 <script src ="{{ asset ('js/bootstrap.js') }}"></script>
@@ -422,6 +436,16 @@
 
         });
   }
+</script>
+
+<script>
+  var msgerror = "<?php echo $msgerror ?>"; //validate
+  if(msgerror != "")
+  {
+     toastr["error"](msgerror, "Failed");
+  }
+ 
+
 </script>
 @endpush
 

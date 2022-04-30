@@ -91,7 +91,6 @@
             <tr> 
               <td width='200px'>
                 {{ Form::button('View Image', ['name'=>'viewimage','id'=>'viewimage','data-image'=>$data->Banner_image, 'class'=>'btn btn-secondary float-left btn-sm', 'data-toggle' => 'modal', 'data-target' => '#modal-image']) }}
-                {{-- <img src="{{ asset('Uploads/Banner/'. $data->Banner_image )}}" width='150px' height='150px' class="center">  --}}
               </td>
               <td>{{$data->Banner_header}}</td>
               <td>{{$data->Banner_content}}</td>
@@ -100,7 +99,7 @@
               <td>{{$data->Urutan}}</td>
         
               <td>
-                {{-- <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#edit_modal" data-cat="{{$data->Id_category}}">Edit</button> --}}
+              
                 {{ Form::button('Edit', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-banner'=>$data->Id_banner,'data-toggle'=>'modal','data-target'=>'#edit_banner']) }}
                 {{ Form::button('Delete', ['name'=>'btn_delete','class'=>'btn btn-danger btn-sm ','onclick'=>'deletebanner('.$data->Id_banner.')']) }}
               

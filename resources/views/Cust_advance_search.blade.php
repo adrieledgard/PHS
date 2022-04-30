@@ -609,7 +609,7 @@
         })
 
       
-      if(end_price<start_price)
+      if(end_price*1<start_price*1)
       {
         toastr["error"]("Error price range", "Error");
       }

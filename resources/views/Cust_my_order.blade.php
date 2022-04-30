@@ -537,7 +537,6 @@ ul.timeline > li:before {
             $(".submit-" + id_detail_order).prop('disabled', 'true');
             $(".edit-" + id_detail_order).removeProp('disabled');
           }
-          
       });
    }
 

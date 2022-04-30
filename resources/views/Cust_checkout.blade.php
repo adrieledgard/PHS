@@ -1127,6 +1127,20 @@
         }
 
 
+
+        if(Courier == "" || Courier == null)
+        {
+            toastr["error"]("Please select expedition", "Error");
+        }
+        else if ($('#guess').val()=="yes" ) 
+        {
+            if(Address=="" || Id_city== 0 || Id_province==0)
+            {
+                toastr["error"]("Please choose your address", "Error");
+            }
+        }
+       
+
         $.get(myurl + '/Pay_cust',
         {Address:Address,Id_city:Id_city,Id_province:Id_province,Phone:Phone,Email:Email,Name:Name,Courier:Courier,
             Courier_packet:Courier_packet,Id_voucher:Id_voucher,Weight:Weight,Gross_total:Gross_total,Shipping_cost:Shipping_cost

@@ -30,12 +30,10 @@ class cart extends Model
 
     public function edit_cart($Id_cart,$Qty)
     {
-     
         cart::where('Id_cart','=',$Id_cart)->update(array(
             'Qty'=>strtoupper($Qty),
         ));
         return "sukses";
-     
     }
 
 

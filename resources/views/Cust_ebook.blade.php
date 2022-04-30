@@ -81,7 +81,8 @@
                                             {
                                                 $totaldownload=0;
                                             }
-                                            else {
+                                            else if($ebook->Id_member == session()->get('userlogin')->Id_member)
+                                            {
                                                 $totaldownload = $ebook->Total_didownload;
                                             }
                                         @endphp

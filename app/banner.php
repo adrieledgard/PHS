@@ -116,8 +116,6 @@ class banner extends Model
     {
         banner::where('Id_banner','=',$Id_banner)
         ->delete();
-
-
         $br= banner::where('Banner_position','=',1)
         ->orderby('Urutan')
         ->get();
@@ -131,9 +129,6 @@ class banner extends Model
             'Urutan' => $ctr,
             ));
         }
-
-
-        
     }
 
     

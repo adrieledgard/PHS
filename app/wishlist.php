@@ -44,7 +44,5 @@ class wishlist extends Model
     {
         wishlist::where('Id_wishlist','=',$Id_wishlist)
             ->delete();
-
-
     }
 }
