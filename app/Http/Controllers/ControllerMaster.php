@@ -4248,7 +4248,7 @@ class ControllerMaster extends Controller
 				->where('Id_member', $member_aff->Id_member)
 				->first();
 				
-				if(!empty($member))
+				if(!empty($member_aff))
 				{
 					$total_download = 0;
 					if(!empty($ebook))

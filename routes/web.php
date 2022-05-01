@@ -85,6 +85,8 @@ Route::get('deletewishlist', ["uses"=>"Controller@deletewishlist"]);
 
 
 Route::get('Affiliate_marketing', ["uses"=>"Controller@Affiliate_marketing"]);
+Route::get('Show_detail_order', ["uses"=>"Controller@show_detail_order"]);
+
 Route::get('Affiliate_embed_code', ["uses"=>"Controller@Affiliate_embed_code"]);
 Route::get('Get_cost_shipping', ["uses"=>"Controller@Get_cost_shipping"]);
 

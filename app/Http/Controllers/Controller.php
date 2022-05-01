@@ -1893,7 +1893,7 @@ class Controller extends BaseController
 		// $ebooks = ebook::leftJoin('ebook_member_downloaded', 'ebook.Id_ebook', 'ebook_member_downloaded.Id_ebook')->where('status', 1)->get();
 		
 		$param['ebooks'] = ebook::where('ebook.Status','=',1)
-		->select('ebook.Id_ebook','ebook.Title','ebook.Image','ebook.Pdf_file','ebook.Status','ebook_member_downloaded.Total_didownload')
+		->select('ebook.Id_ebook','ebook.Title','ebook.Image','ebook.Pdf_file','ebook.Status','ebook_member_downloaded.Total_didownload','ebook_member_downloaded.Id_member')
 		->leftjoin('ebook_member_downloaded','ebook.Id_ebook','ebook_member_downloaded.Id_ebook')
 		->get();
 		
@@ -1941,6 +1941,49 @@ class Controller extends BaseController
 		$param['dtproductimage'] = Product_image::all();
 
 		return view('Cust_affiliate',$param);
+	}
+
+	public function show_detail_order(Request $request)
+	{
+		//adrieljenn
+		$temp="";
+		$kumpulan_id_order = $request->kumpulan_id_order;
+
+		$arr_id_order = explode("," ,$kumpulan_id_order);
+
+		foreach ($arr_id_order as $data) {
+			if($data!="")
+			{
+				$custorder = cust_order_header::find($data); 
+
+				$temp = $temp. "<tr>";
+					$temp = $temp. "<td>";
+						$temp = $temp. $custorder->Id_order;
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp. $custorder->Date_time;
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp. $custorder->Address.$custorder->City_name.$custorder->Province_name ;
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp. $custorder->Courier;
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp. number_format($custorder->Grand_total);
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp.  "<button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='`+JSON.stringify(order.detail)+`'>Rincian</button>";
+					$temp = $temp. "</td>";
+				
+				$temp = $temp. "</tr>";
+
+				
+			}
+			
+		}
+
+		return $temp;
 	}
 
 
@@ -1996,7 +2039,7 @@ class Controller extends BaseController
 		$param['dtvoucher_all'] = voucher::all();
 
 		$param['dtpoint_card'] = point_card::where('Id_member','=',$Id)
-		->orderby('Id_point_card','asc')
+		->orderby('Id_point_card','DESC')
 		->get();
 
 		$param['dtcustheader'] = cust_order_header::all();
@@ -3033,10 +3076,16 @@ class Controller extends BaseController
 									if($Receive_point_random_code!="")
 									{
 										if($session_member->Random_code != $Receive_point_random_code){ //untuk menghindari cookie sama dgn random code user
-											$member = member::find($session_member->Id_member); //member pemberi
-											$penambahanpoin=0;
-											$receive_point_member = member::where('Random_code', $Receive_point_random_code)->first(); //member yang menerima
-											$point = $receive_point_member->Point;
+											
+											try {
+												$member = member::find($session_member->Id_member); //member pemberi
+												$penambahanpoin=0;
+												$receive_point_member = member::where('Random_code', $Receive_point_random_code)->first(); //member yang menerima
+												$point = $receive_point_member->Point;
+											} catch (\Throwable $th) {
+												//throw $th;
+											}
+											
 											
 											if($member->First_transaction == 0){
 												$order = cust_order_header::where('cust_order_header.Id_order',$row->Id_order)
@@ -4203,9 +4252,18 @@ class Controller extends BaseController
 	public function checkerFollowup($Id_member, $transaction_date, $Id_order)
 	{
 		$followup = followup::where("Id_member", $Id_member)->orderBy('Id_followup', 'desc')->first();
-		if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
-			(new followup())->followup_successful($followup->Id_followup, $Id_member, $Id_order);
+
+		if(empty($followup))
+		{
+			return null;
+		} 
+		else
+		{
+			if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
+				(new followup())->followup_successful($followup->Id_followup, $Id_member, $Id_order);
+			}
 		}
+	
 
 	}
 

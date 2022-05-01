@@ -124,6 +124,8 @@
       {{Form::close()}}
     </div>
   </div>
+
+
   <div id="rincian_order" class="modal fade" role="dialog" style="max-height:calc(100% - 80px)">
     <div class="modal-dialog modal-dialog-scrollable modal-xl"> 
   
@@ -240,6 +242,8 @@ $("#followup_email").on('show.bs.modal', function(event){
     var id = button.data('idmember');
     $(".Id_member").val(id);
  });
+
+ 
  $("#rincian_order").on('show.bs.modal', function(event){
     var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
     if ($.fn.DataTable.isDataTable('.table-rincian-order') ) {
