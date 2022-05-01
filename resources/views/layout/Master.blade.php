@@ -75,8 +75,8 @@
 <!-- jQuery -->
 <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
 <link href="{{ asset ('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
-<script src ="{{ asset ('js/jquery.js') }}"></script>
-<script src ="{{ asset ('js/bootstrap.js') }}"></script>
+{{-- <script src ="{{ asset ('js/jquery.js') }}"></script>
+<script src ="{{ asset ('js/bootstrap.js') }}"></script> --}}
 <script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 
