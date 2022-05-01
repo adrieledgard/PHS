@@ -35,7 +35,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                @php
+                                    $totalcart =0;
+                                @endphp
                                 @foreach ($cart as $cr)
                                 <?php 
                                     if($cr->Id_cart!=-1) //-1 itu cart yang di delete
@@ -203,11 +205,13 @@
                                                         ?>
                                                             Rp. {{number_format($cr->Qty * $harga)}}
                                                         <?php 
+                                                        $totalcart+= $cr->Qty * $harga;
                                                     }
                                                     else {
                                                         ?>
                                                             Rp. {{number_format($cr->Qty * $hargabaru)}}
                                                         <?php 
+                                                        $totalcart+= $cr->Qty * $hargabaru;
                                                     }
                                                 ?>
                                                 
@@ -221,6 +225,18 @@
                                     
                                 @endforeach
                                 
+                                <tr>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> <b style="font-size: 200%">TOTAL :</b> </td>
+                                    <td> 
+                                      <b style="font-size: 200%">  Rp. {{number_format($totalcart)}}
+                                       
+                                    </td>
+                                </tr>
                                
                             </tbody>
                         </table>

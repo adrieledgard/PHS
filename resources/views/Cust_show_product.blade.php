@@ -286,12 +286,12 @@
                         <div class="cart-plus-minus">
                             <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box" id="qty" onchange="changeqty(3)">
                         </div>
-                        <div class="quickview-btn-cart">
-                            <a class="btn-hover-black" onclick="add_cart()">add to cart</a>
+                        <div class="quickview-btn-cart" style="color:white">
+                            <a class="btn-hover btn-primary" onclick="add_cart()">add to cart</a>
                         </div>
                        
-                        <div class="quickview-btn-wishlist">
-                            <a class="btn-hover" onclick="add_wishlist()" ><i class="pe-7s-like"></i></a>
+                        <div class="quickview-btn-wishlist" style="color: white">
+                            <a class="btn-hover btn-danger" onclick="add_wishlist()" ><i class="pe-7s-like"></i></a>
                         </div>
                     </div>
 

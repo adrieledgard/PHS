@@ -5,17 +5,17 @@
       <div class="container-fluid">
           <div class="header-bottom-wrapper">
               <div class="logo-2 furniture-logo ptb-30">
-                  <a href="index.html">
-                      <img src="assets/img/logo/2.png" alt="">
+                  <a href="{!!url('/')!!}">
+                      <img src="assets/img/logo/PHS.png" alt="">
                   </a>
               </div>
               <div class="menu-style-2 furniture-menu menu-hover">
                   <nav>
-                      <ul>
-                        <li><a href="{!!url('/')!!}">HOME</a>
+                      <ul style="align-items: left">
+                        {{-- <li><a href="{!!url('/')!!}">HOME</a> --}}
                                 
                         </li>
-                          <li><a href="#">pages</a>
+                          {{-- <li><a href="#">pages</a>
                               <ul class="single-dropdown">
                                   <li><a href="about-us.html">about us</a></li>
                                   <li><a href="menu-list.html">menu list</a></li>
@@ -73,7 +73,7 @@
                                   <li><a href="blog-details-sidebar.html">blog details 2</a></li>
                               </ul>
                           </li>
-                          <li><a href="contact.html">contact</a></li>
+                          <li><a href="contact.html">contact</a></li> --}}
                       </ul>
                     </nav>
               </div>
@@ -381,7 +381,7 @@
               </div>
               <div class="furniture-wishlist">
                   <ul>
-                      <li><a data-bs-toggle="modal" data-target="#exampleCompare" href="#"><i class="ti-reload"></i> Compare</a></li>
+                      {{-- <li><a data-bs-toggle="modal" data-target="#exampleCompare" href="#"><i class="ti-reload"></i> Compare</a></li> --}}
                       <li><a onclick="wishlist()"><i class="ti-heart"></i> Wishlist</a></li> 
              
                       <span class="badge bg-dark text-white position-absolute" id="badgewishlist" style="align-content: center; font-size:70%;margin-left:0.2%">
