@@ -131,6 +131,7 @@ class ControllerCustomerService extends Controller
 
     public function list_available_customer(Request $request)
     {
+        logger($request->all());
         $available_customers = [];
         if($request->exists('lama_tidak_transaksi')){
             $date = date('Y-m-d', strtotime( "-" .$request->get('lama_tidak_transaksi') . " day" , strtotime (date("Y-m-d H:i:s"))));
@@ -141,17 +142,40 @@ class ControllerCustomerService extends Controller
                 $followup = followup::where("Id_member", $member->Id_member)->where("End_followup_date", ">", date("Y-m-d H:i:s"))->first();
                 if(empty($followup)){
                     $jum_transaksi = cust_order_header::where("Id_member", $member->Id_member)->count();
-                    if($jum_transaksi > $request->get('jum_transaksi')){
-                        continue;
+                    if($request->get('operasi_jumlah_transaksi') == "="){
+                        if($jum_transaksi == (int)$request->get('jum_transaksi')){
+                            continue;
+                        }
+                    }else if($request->get('operasi_jumlah_transaksi') == ">"){
+                        if(!($jum_transaksi > (int)$request->get('jum_transaksi'))){
+                            continue;
+                        }
+                    }else if($request->get('operasi_jumlah_transaksi') == "<"){
+                        if(!($jum_transaksi < (int)$request->get('jum_transaksi'))){
+                            continue;
+                        }
                     }
+                    
 
                     if($jum_transaksi != 0){
                         $transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->first();
                         $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
                         $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
-                        if($interval->format("%d") > $request->get("lama_tidak_transaksi")){
-                            continue;
+                        if($request->get('operasi_lama_tidak_transaksi') == "="){
+                            if(!($interval->format("%d") == (int)$request->get("lama_tidak_transaksi"))){
+                                continue;
+                            }
+                        }else if($request->get('operasi_lama_tidak_transaksi') == ">"){
+                            if(!($interval->format("%d") > (int)$request->get("lama_tidak_transaksi"))){
+                                continue;
+                            }
+                        }else if($request->get('operasi_lama_tidak_transaksi') == "<"){
+                            if(!($interval->format("%d") < (int)$request->get("lama_tidak_transaksi"))){
+                                logger('ngentot');
+                                continue;
+                            }
                         }
+                        
                         $member->lama_tidak_belanja = $interval->format("%d");
                         $member->rincian_transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->get();
                         foreach ($member->rincian_transaksi as $trans) {

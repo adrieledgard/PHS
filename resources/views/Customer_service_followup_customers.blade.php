@@ -60,8 +60,13 @@
                     {{Form::open(array('url'=>'list_available_customer/','method'=>'get','class'=>'row g-3'))}}
                     {{ Form::label('Jumlah Transaksi :','') }}
                     {{ Form::number('jum_transaksi', app('request')->input('jum_transaksi'), ['class'=>'form-control','id'=>'jumlah_transaksi', 'placeholder' => "0", 'required' => 'required']) }}
+                    {{ Form::label('Operasi Jumlah Transaksi:','') }}
+                    {{ Form::select('operasi_jumlah_transaksi', ['=' => '=', '>' => '>', '<' => '<' ], app('request')->input('operasi_jumlah_transaksi'),['class'=>'form-control','id'=>'title','required' => 'required']) }}
+                    <br>
                     {{ Form::label('Lama Tidak Transaksi (dalam hari):','') }}
                     {{ Form::number('lama_tidak_transaksi', app('request')->input('lama_tidak_transaksi'), ['class'=>'form-control','id'=>'lama_tidak_transaksi', 'placeholder' => "0", 'required' => 'required']) }}
+                    {{ Form::label('Operasi Lama Tidak Transaksi:','') }}
+                    {{ Form::select('operasi_lama_tidak_transaksi', ['=' => '=', '>' => '>', '<' => '<' ], app('request')->input('operasi_lama_tidak_transaksi'), ['class'=>'form-control','id'=>'title','required' => 'required']) }}
                     <br>
                     {{ Form::submit('Search', ['class'=>'btn btn-primary']) }}
                     {{Form::close()}}
