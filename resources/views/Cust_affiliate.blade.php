@@ -223,6 +223,9 @@
                         <th>Tanggal Transaksi</th>
                         <th>Alamat</th>
                         <th>Kurir</th>
+                        <th>Gross Total</th>
+                        <th>Shipping Cost</th>
+                        <th>Diskon Voucher</th>
                         <th>Grand Total</th>
                         <th>Action</th>
                     </tr>
@@ -257,7 +260,10 @@
                 <thead>
                     <tr>
                         <th>Nama Produk</th>
-                        <th>Harga</th>
+                        <th>Variant</th>
+                        <th>Normal Price</th>
+                        <th>Discount</th>
+                        <th>Fix Price</th>
                         <th>Total dipesan</th>
                         <th>Subtotal</th>
                     </tr>
@@ -358,6 +364,7 @@ $(document).ready( function () {
             location.reload();
         });
     }
+
     $("#rincian_order").on('show.bs.modal', function(event){
        var button = $(event.relatedTarget);
        var orders = button.data('order')
@@ -371,40 +378,48 @@ $(document).ready( function () {
            $(".table-rincian-order").DataTable();
           
        });
+       
     });
    
    
-   
-   
-//    $("#rincian_order_detail").on('show.bs.modal', function(event){
-//        var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
-//        if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
-//          $('.table-rincian-item-order').DataTable().destroy();
-//        }
-//        var button = $(event.relatedTarget);
-//        var detail_order = button.data('order-detail');
-   
-//        $(".table-body-rincian-item-order").html("");
-//        detail_order.forEach(detail => {
-//            $(".table-body-rincian-item-order").append(`
-//                <tr>
-//                    <td>
-//                        `+detail.Name+`
-//                    </td>
-//                    <td>
-//                        `+formatter.format(detail.Fix_price)+`
-//                    </td>
-//                    <td>
-//                        `+detail.Qty+`
-//                    </td>
-//                    <td>
-//                        `+formatter.format(detail.Qty * detail.Fix_price)+`
-//                    </td>
-//                </tr>
-//            `)
-//        });
-//        $(".table-rincian-item-order").DataTable();
-//     });
+   $("#rincian_order_detail").on('show.bs.modal', function(event){
+       var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+       if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
+         $('.table-rincian-item-order').DataTable().destroy();
+       }
+       var button = $(event.relatedTarget);
+       var detail_order = button.data('order-detail');
+
+       $(".table-body-rincian-item-order").html("");
+       detail_order.forEach(detail => {
+           $(".table-body-rincian-item-order").append(`
+               <tr>
+                    <td>
+                        `+detail.Name+`
+                    </td>
+                    <td>
+                        `+detail.Variant_name + `(`+ detail.Variant_option_name+`)
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Normal_price)+`
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Discount_promo)+`
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Fix_price)+`
+                    </td>
+                    <td>
+                        `+detail.Qty+`
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Qty * detail.Fix_price)+`
+                    </td>
+               </tr>
+           `)
+       });
+       $(".table-rincian-item-order").DataTable();
+    });
     
 </script>
 
