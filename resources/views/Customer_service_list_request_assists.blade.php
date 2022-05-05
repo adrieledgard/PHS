@@ -23,23 +23,22 @@
 
 
 @push('custom-css')
- <!-- CDN data table -->
- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
-    <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="{{ asset('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}">
-  <!-- summernote -->
-  <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
-  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<!-- overlayScrollbars -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+<!-- Daterange picker -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}">
+<!-- summernote -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+<!-- iCheck -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+<!-- JQVMap -->
+<link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
   <style>
     #chat2 .form-control {
     border-color: transparent;
@@ -121,11 +120,11 @@
                 <td>{{$ticket->Title}}</td>
                 <td>{{$ticket->Description}}</td>
                 <td>
-                  <button type="button" class="btn btn-success btn-sm" data-toggle='modal' data-target='#chat' data-id-ticket="{{$ticket->id}}">Chat</button>
+                  
                   <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button>
                   @php
                     if($ticket->Status != "CLOSED"){
-                        echo '<button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button>';
+                        echo '<button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button> <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#chat" data-id-ticket="' . $ticket->id . '">Chat</button>';
                       }
                       else {
                         echo '<button type="button" class="btn btn-warning btn-sm" disabled onclick="onEdit(' . $ticket->id. ')">Edit</button>';

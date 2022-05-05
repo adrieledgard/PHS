@@ -40,7 +40,7 @@
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
 
-  <link rel="stylesheet" href="{{asset('css/summernote-bs4.css')}}">
+  {{-- <link rel="stylesheet" href="{{asset('css/summernote-bs4.css')}}"> --}}
 
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 @endpush

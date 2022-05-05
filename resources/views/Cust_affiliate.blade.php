@@ -2,15 +2,8 @@
 
 
 @push('custom-css')
-
-    {{-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="{{ asset ('css/register-login/register-login.css') }}" rel="stylesheet" type="text/css">  --}}
-
-     <!-- CDN data table -->
- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
- <!-- overlayScrollbars -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+<!-- overlayScrollbars -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
 <!-- Daterange picker -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}">
@@ -24,9 +17,6 @@
 <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
 <!-- JQVMap -->
 <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
-
-<link rel="stylesheet" href="{{asset('css/summernote-bs4.css')}}">
-
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 @endpush
 
@@ -301,15 +291,18 @@ $.widget.bridge('uibutton', $.ui.button)
    <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
 <script>
 $(document).ready( function () {
 //   $('#rincian_order').DataTable();
-  $("#table-order-1").DataTable();
+    // $("#table-order-1").DataTable();
   
+    $('.login-info-box').fadeOut();
+    $('.login-show').addClass('show-log-panel');
 });
 </script>
 
-<!-- ChartJS -->
 <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->
 <script src="{{ asset('assets/plugins/sparklines/sparkline.js') }}"></script>
@@ -323,48 +316,22 @@ $(document).ready( function () {
 <script src="{{ asset('assets/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-<!-- Summernote -->
-<script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
 <!-- overlayScrollbars -->
 <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
 
-<script src="{{ asset('js/summernote-bs4.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-
-
-
-<script>
-    $(document).ready(function(){
-
-      $('.login-info-box').fadeOut();
-      $('.login-show').addClass('show-log-panel');
-
-  });
-  
-  function copyToClipboard(Id_product) {
-  var copyText = document.getElementById('linkshare_'+Id_product)
-  copyText.select();
-  document.execCommand('copy')
-  toastr["success"]("Success Copy", "Success");
-}
-
-
-
-
-  String.prototype.number_format = function(d) {
-    var n = this;
-    var c = isNaN(d = Math.abs(d)) ? 2 : d;
-    var s = n < 0 ? "-" : "";
-    var i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
-    return s + (j ? i.substr(0, j) + ',' : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + ',');
-}
-</script>
-
 <script src ="{{ asset ('js/register-login/register-login.js') }}"></script>
 
+
 <script>
+    function copyToClipboard(Id_product) {
+        var copyText = document.getElementById('linkshare_'+Id_product)
+        copyText.select();
+        document.execCommand('copy')
+        toastr["success"]("Success Copy", "Success");
+        }
+
     var myurl = "<?php echo URL::to('/'); ?>";
     function updateqtywishlist(id_var,id_wish)
     {
@@ -391,106 +358,54 @@ $(document).ready( function () {
             location.reload();
         });
     }
-
-    
-</script>
-
-<script>
-$("#rincian_order").on('show.bs.modal', function(event){
+    $("#rincian_order").on('show.bs.modal', function(event){
+       var button = $(event.relatedTarget);
+       var orders = button.data('order')
+       $(".table-body-rincian-order").html("");
    
-//     var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
-    // if ($.fn.DataTable.isDataTable('.table-rincian-order') ) {
-    //   $('.table-rincian-order').DataTable().destroy();
-    // }
-
-    $(".table-rincian-order").DataTable();
-    var button = $(event.relatedTarget);
-    var orders = button.data('order')
-    $(".table-body-rincian-order").html("");
-
-    $.get(myurl + '/Show_detail_order',
-    {kumpulan_id_order: orders},
-    function(result){
-       
-        $(".table-body-rincian-order").append(result);
-        $(".table-rincian-order").DataTable();
-       
+       $.get(myurl + '/Show_detail_order',
+       {kumpulan_id_order: orders},
+       function(result){
+          
+           $(".table-body-rincian-order").append(result);
+           $(".table-rincian-order").DataTable();
+          
+       });
     });
-
-  
-
-
-
-
-
-    // var cutorders = orders.split(",");
-
-
-    // cutorders.forEach(order => {
-    //     alert(order);
-    //   console.log(order);
-
-
-
-
-    //     $(".table-body-rincian-order").append(`
-    //         <tr>
-    //             <td>
-    //                 `+order.Id_order+`
-    //             </td>
-    //             <td>
-    //                 `+order.Date_time+`
-    //             </td>
-    //             <td>
-    //                 `+order.Address+`, `+order.City_name+`, `+order.Province_name+`
-    //             </td>
-    //             <td>
-    //                 `+order.Courier+`
-    //             </td>
-    //             <td>
-    //                 `+formatter.format(order.Grand_total)+`
-    //             </td>
-    //             <td>
-    //               <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='`+JSON.stringify(order.detail)+`'>Rincian</button>  
-    //             </td>
-    //         </tr>
-    //     `)
-    // });
-    //  $(".table-rincian-order").DataTable()
- });
-
-
-
-
-$("#rincian_order_detail").on('show.bs.modal', function(event){
-    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
-    if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
-      $('.table-rincian-item-order').DataTable().destroy();
-    }
-    var button = $(event.relatedTarget);
-    var detail_order = button.data('order-detail');
-
-    $(".table-body-rincian-item-order").html("");
-    detail_order.forEach(detail => {
-        $(".table-body-rincian-item-order").append(`
-            <tr>
-                <td>
-                    `+detail.Name+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Fix_price)+`
-                </td>
-                <td>
-                    `+detail.Qty+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Qty * detail.Fix_price)+`
-                </td>
-            </tr>
-        `)
-    });
-    $(".table-rincian-item-order").DataTable();
- });
+   
+   
+   
+   
+//    $("#rincian_order_detail").on('show.bs.modal', function(event){
+//        var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+//        if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
+//          $('.table-rincian-item-order').DataTable().destroy();
+//        }
+//        var button = $(event.relatedTarget);
+//        var detail_order = button.data('order-detail');
+   
+//        $(".table-body-rincian-item-order").html("");
+//        detail_order.forEach(detail => {
+//            $(".table-body-rincian-item-order").append(`
+//                <tr>
+//                    <td>
+//                        `+detail.Name+`
+//                    </td>
+//                    <td>
+//                        `+formatter.format(detail.Fix_price)+`
+//                    </td>
+//                    <td>
+//                        `+detail.Qty+`
+//                    </td>
+//                    <td>
+//                        `+formatter.format(detail.Qty * detail.Fix_price)+`
+//                    </td>
+//                </tr>
+//            `)
+//        });
+//        $(".table-rincian-item-order").DataTable();
+//     });
+    
 </script>
 
 
