@@ -164,7 +164,7 @@ class ControllerReport extends Controller
                 }
             }else {
                 $status = "Sucessful";
-                $transaksi = cust_order_header::where("Id_order", $followup[$i]->Id_order)->first();
+                $transaksi = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where("Id_order", $followup[$i]->Id_order)->first();
                 $transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup[$i]->Id_order)->get();
                 $summary[2] ++;
             }

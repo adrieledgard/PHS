@@ -177,7 +177,7 @@ class ControllerCustomerService extends Controller
                         }
                         
                         $member->lama_tidak_belanja = $interval->format("%d");
-                        $member->rincian_transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->get();
+                        $member->rincian_transaksi = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->get();
                         foreach ($member->rincian_transaksi as $trans) {
                             $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $trans->Id_order)->get();
                         }
@@ -255,7 +255,7 @@ class ControllerCustomerService extends Controller
             $customer->is_refollowup_available = $is_refollowup_available;
 
             if($followup->Is_successful_followup == 1){
-                $customer->transaksi = cust_order_header::where("Id_order", $followup->Id_order)->first();
+                $customer->transaksi = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where("Id_order", $followup->Id_order)->first();
                 $customer->transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup->Id_order)->get();
             }
         }

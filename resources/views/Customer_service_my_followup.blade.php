@@ -253,7 +253,7 @@ $("#followup_email").on('show.bs.modal', function(event){
                     `+order.Address+`, `+order.City_name+`, `+order.Province_name+`
                 </td>
                 <td>
-                    `+order.Courier+`
+                    `+order.Courier + " (" +order.Courier_packet+`)
                 </td>
                 <td>
                     `+formatter.format(order.Grand_total)+`
