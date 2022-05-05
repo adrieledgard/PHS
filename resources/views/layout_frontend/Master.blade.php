@@ -35,7 +35,7 @@
 
 
 
-    {{-- <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}"> --}}
+    <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/magnific-popup.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/animate.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css')}}">
@@ -46,11 +46,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bundle.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css')}}">
     <link rel="stylesheet" href="{{ asset('assets/css/responsive.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome-free/css/all.min.css') }}">
-  
+    <script src="{{asset('assets/js/vendor/modernizr-3.11.7.min.js')}}"></script>
+
 </head>
 
 <body>
@@ -84,7 +81,7 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 
-<script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+  <script src="{{ asset('assets/js/vendor/jquery-1.12.4.min.js') }}"></script>
   <script src="{{ asset('assets/js/popper.js') }}"></script>
   <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
   <script src="{{ asset('assets/js/jquery.magnific-popup.min.js') }}"></script>
@@ -96,12 +93,24 @@
   <script src="{{ asset('assets/js/owl.carousel.min.js') }}"></script>
   <script src="{{ asset('assets/js/plugins.js') }}"></script>
   <script src="{{ asset('assets/js/main.js') }}"></script>
-  <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
   @stack('custom-js')
 
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
   
 <script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="{{asset('assets/js/complete_order_automation.js')}}"></script>
+{{-- <!--Start of Tawk.to Script-->
+<script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/619102886bb0760a49428cdd/1fkf73ppd';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script--> --}}
 </body>
 </html>
