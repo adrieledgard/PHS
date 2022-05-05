@@ -144,12 +144,15 @@
             <table class="table-rincian-order">
                 <thead style="width:100%">
                     <tr>
-                        <th>Nomor Transaksi</th>
-                        <th>Tanggal Transaksi</th>
-                        <th>Alamat</th>
-                        <th>Kurir</th>
-                        <th>Grand Total</th>
-                        <th>Action</th>
+                      <th>Nomor Transaksi</th>
+                      <th>Tanggal Transaksi</th>
+                      <th>Alamat</th>
+                      <th>Kurir</th>
+                      <th>Gross Total</th>
+                      <th>Shipping Cost</th>
+                      <th>Diskon Voucher</th>
+                      <th>Grand Total</th>
+                      <th>Action</th>
                     </tr>
                 </thead>
                 <tbody class="table-body-rincian-order">
@@ -176,10 +179,13 @@
             <table class="table-rincian-item-order">
                 <thead>
                     <tr>
-                        <th>Nama Produk</th>
-                        <th>Harga</th>
-                        <th>Total dipesan</th>
-                        <th>Subtotal</th>
+                      <th>Nama Produk</th>
+                      <th>Variant</th>
+                      <th>Normal Price</th>
+                      <th>Discount</th>
+                      <th>Fix Price</th>
+                      <th>Total dipesan</th>
+                      <th>Subtotal</th>
                     </tr>
                 </thead>
                 <tbody class="table-body-rincian-item-order">
@@ -261,7 +267,7 @@ $("#followup_email").on('show.bs.modal', function(event){
       console.log(order);
         $(".table-body-rincian-order").append(`
             <tr>
-                <td>
+              <td>
                     `+order.Id_order+`
                 </td>
                 <td>
@@ -271,7 +277,16 @@ $("#followup_email").on('show.bs.modal', function(event){
                     `+order.Address+`, `+order.City_name+`, `+order.Province_name+`
                 </td>
                 <td>
-                    `+order.Courier+ " (" +order.Courier_packet+`)
+                  `+order.Courier+ " (" +order.Courier_packet+`)
+                </td>
+                <td>
+                  `+formatter.format(order.Gross_total) +`
+                </td>
+                <td>
+                  `+formatter.format(order.Shipping_cost) +`
+                </td>
+                <td>
+                  `+formatter.format(order.Discount) +`
                 </td>
                 <td>
                     `+formatter.format(order.Grand_total)+`
@@ -292,13 +307,21 @@ $("#rincian_order_detail").on('show.bs.modal', function(event){
     }
     var button = $(event.relatedTarget);
     var detail_order = button.data('order-detail');
-
     $(".table-body-rincian-item-order").html("");
     detail_order.forEach(detail => {
         $(".table-body-rincian-item-order").append(`
             <tr>
-                <td>
+              <td>
                     `+detail.Name+`
+                </td>
+                <td>
+                    `+detail.Variant_name + `(`+ detail.Variant_option_name+`)
+                </td>
+                <td>
+                    `+formatter.format(detail.Normal_price)+`
+                </td>
+                <td>
+                    `+formatter.format(detail.Discount_promo)+`
                 </td>
                 <td>
                     `+formatter.format(detail.Fix_price)+`

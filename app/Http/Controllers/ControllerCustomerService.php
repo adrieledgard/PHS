@@ -131,7 +131,6 @@ class ControllerCustomerService extends Controller
 
     public function list_available_customer(Request $request)
     {
-        logger($request->all());
         $available_customers = [];
         if($request->exists('lama_tidak_transaksi')){
             $date = date('Y-m-d', strtotime( "-" .$request->get('lama_tidak_transaksi') . " day" , strtotime (date("Y-m-d H:i:s"))));
@@ -171,15 +170,14 @@ class ControllerCustomerService extends Controller
                             }
                         }else if($request->get('operasi_lama_tidak_transaksi') == "<"){
                             if(!($interval->format("%d") < (int)$request->get("lama_tidak_transaksi"))){
-                                logger('ngentot');
                                 continue;
                             }
                         }
                         
                         $member->lama_tidak_belanja = $interval->format("%d");
-                        $member->rincian_transaksi = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->get();
+                        $member->rincian_transaksi = cust_order_header::where('cust_order_header.Id_member', $member->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->orderBy('Id_order', 'desc')->get();
                         foreach ($member->rincian_transaksi as $trans) {
-                            $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $trans->Id_order)->get();
+                            $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $trans->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get();
                         }
                     }else {
                         $member->lama_tidak_belanja = 0;
@@ -256,7 +254,7 @@ class ControllerCustomerService extends Controller
 
             if($followup->Is_successful_followup == 1){
                 $customer->transaksi = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where("Id_order", $followup->Id_order)->first();
-                $customer->transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup->Id_order)->get();
+                $customer->transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $followup->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get();
             }
         }
 

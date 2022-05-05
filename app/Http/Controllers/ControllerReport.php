@@ -164,9 +164,10 @@ class ControllerReport extends Controller
                 }
             }else {
                 $status = "Sucessful";
-                $transaksi = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where("Id_order", $followup[$i]->Id_order)->first();
-                $transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup[$i]->Id_order)->get();
+                $transaksi = cust_order_header::where("Id_order", $followup[$i]->Id_order)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->first();
+                $transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $followup[$i]->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get();
                 $summary[2] ++;
+
             }
 			$temp =$temp. "<tr>";
                 $temp =$temp. "<td>";
