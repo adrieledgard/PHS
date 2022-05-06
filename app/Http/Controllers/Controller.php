@@ -1905,6 +1905,7 @@ class Controller extends BaseController
 
 		foreach ($param['ebooks'] as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
+			$book->downloaded_detail = email_ebook::where('Ebook_id', $book->Id_ebook)->where('User_token', $Random_code)->get();
 		}
 		return view('Cust_ebook', $param);
 	}
