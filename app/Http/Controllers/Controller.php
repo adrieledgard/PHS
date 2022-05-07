@@ -1905,6 +1905,7 @@ class Controller extends BaseController
 
 		foreach ($param['ebooks'] as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
+			$book->downloaded_detail = email_ebook::where('Ebook_id', $book->Id_ebook)->where('User_token', $Random_code)->get();
 		}
 		return view('Cust_ebook', $param);
 	}
@@ -1954,7 +1955,9 @@ class Controller extends BaseController
 		foreach ($arr_id_order as $data) {
 			if($data!="")
 			{
-				$custorder = cust_order_header::find($data); 
+				$custorder = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where('Id_order', $data)->first(); 
+
+				$order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $data)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get()->toArray();
 
 				$temp = $temp. "<tr>";
 					$temp = $temp. "<td>";
@@ -1964,16 +1967,25 @@ class Controller extends BaseController
 						$temp = $temp. $custorder->Date_time;
 					$temp = $temp. "</td>";
 					$temp = $temp. "<td>";
-						$temp = $temp. $custorder->Address.$custorder->City_name.$custorder->Province_name ;
+						$temp = $temp. $custorder->Address.", " .$custorder->City_name. ", ".$custorder->Province_name ;
 					$temp = $temp. "</td>";
 					$temp = $temp. "<td>";
-						$temp = $temp. $custorder->Courier;
+						$temp = $temp. $custorder->Courier . "($custorder->Courier_packet)";
 					$temp = $temp. "</td>";
 					$temp = $temp. "<td>";
-						$temp = $temp. number_format($custorder->Grand_total);
+						$temp = $temp. "Rp. ". number_format($custorder->Gross_total);
 					$temp = $temp. "</td>";
 					$temp = $temp. "<td>";
-						$temp = $temp.  "<button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='`+JSON.stringify(order.detail)+`'>Rincian</button>";
+						$temp = $temp. "Rp. ". number_format($custorder->Shipping_cost);
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp. "Rp. ". number_format($custorder->Discount);
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp. "Rp. ". number_format($custorder->Grand_total);
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp.  "<button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='". json_encode($order_detail) ."'>Rincian</button>";
 					$temp = $temp. "</td>";
 				
 				$temp = $temp. "</tr>";
@@ -2039,7 +2051,7 @@ class Controller extends BaseController
 		$param['dtvoucher_all'] = voucher::all();
 
 		$param['dtpoint_card'] = point_card::where('Id_member','=',$Id)
-		->orderby('Id_point_card','DESC')
+		->orderby('Id_point_card', 'desc')
 		->get();
 
 		$param['dtcustheader'] = cust_order_header::all();
@@ -4280,7 +4292,7 @@ class Controller extends BaseController
 			$items = [];
 			$orders = cust_order_header::where('cust_order_header.Id_member', $customer->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->get();
 			foreach ($orders as $order) {
-				$detail_order = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where('cust_order_detail.Id_order', $order->Id_order)->select('product.Name', 'cust_order_detail.Qty', 'cust_order_detail.Fix_price')->get()->toArray();
+				$detail_order = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $order->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get()->toArray();
 				$order->detail_order = $detail_order;
 			}
 			$customer->orders = $orders;

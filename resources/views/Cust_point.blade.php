@@ -335,7 +335,7 @@
 <script>
     $(document).ready( function () {
       $('#table_id').DataTable();
-      $('.table_id_2').DataTable();
+      $('.table_id_2').DataTable({"order": [] });
       $('.table_id_3').DataTable();
       
     } );

@@ -141,21 +141,43 @@ class ControllerCustomerService extends Controller
                 $followup = followup::where("Id_member", $member->Id_member)->where("End_followup_date", ">", date("Y-m-d H:i:s"))->first();
                 if(empty($followup)){
                     $jum_transaksi = cust_order_header::where("Id_member", $member->Id_member)->count();
-                    if($jum_transaksi > $request->get('jum_transaksi')){
-                        continue;
+                    if($request->get('operasi_jumlah_transaksi') == "="){
+                        if($jum_transaksi == (int)$request->get('jum_transaksi')){
+                            continue;
+                        }
+                    }else if($request->get('operasi_jumlah_transaksi') == ">"){
+                        if(!($jum_transaksi > (int)$request->get('jum_transaksi'))){
+                            continue;
+                        }
+                    }else if($request->get('operasi_jumlah_transaksi') == "<"){
+                        if(!($jum_transaksi < (int)$request->get('jum_transaksi'))){
+                            continue;
+                        }
                     }
+                    
 
                     if($jum_transaksi != 0){
                         $transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->first();
                         $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
                         $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
-                        if($interval->format("%d") > $request->get("lama_tidak_transaksi")){
-                            continue;
+                        if($request->get('operasi_lama_tidak_transaksi') == "="){
+                            if(!($interval->format("%d") == (int)$request->get("lama_tidak_transaksi"))){
+                                continue;
+                            }
+                        }else if($request->get('operasi_lama_tidak_transaksi') == ">"){
+                            if(!($interval->format("%d") > (int)$request->get("lama_tidak_transaksi"))){
+                                continue;
+                            }
+                        }else if($request->get('operasi_lama_tidak_transaksi') == "<"){
+                            if(!($interval->format("%d") < (int)$request->get("lama_tidak_transaksi"))){
+                                continue;
+                            }
                         }
+                        
                         $member->lama_tidak_belanja = $interval->format("%d");
-                        $member->rincian_transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->get();
+                        $member->rincian_transaksi = cust_order_header::where('cust_order_header.Id_member', $member->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->orderBy('Id_order', 'desc')->get();
                         foreach ($member->rincian_transaksi as $trans) {
-                            $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $trans->Id_order)->get();
+                            $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $trans->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get();
                         }
                     }else {
                         $member->lama_tidak_belanja = 0;
@@ -231,8 +253,8 @@ class ControllerCustomerService extends Controller
             $customer->is_refollowup_available = $is_refollowup_available;
 
             if($followup->Is_successful_followup == 1){
-                $customer->transaksi = cust_order_header::where("Id_order", $followup->Id_order)->first();
-                $customer->transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->where("Id_order", $followup->Id_order)->get();
+                $customer->transaksi = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where("Id_order", $followup->Id_order)->first();
+                $customer->transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $followup->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get();
             }
         }
 
