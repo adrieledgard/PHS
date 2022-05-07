@@ -203,6 +203,7 @@
                         <th>Shipping Cost</th>
                         <th>Diskon Voucher</th>
                         <th>Grand Total</th>
+                        <th>Total Point</th>
                         <th>Action</th>
                     </tr>
                 </thead>

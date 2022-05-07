@@ -7,7 +7,22 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="{{ asset ('css/register-login/register-login.css') }}" rel="stylesheet" type="text/css">  --}}
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{{ asset('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{{ asset('assets/plugins/daterangepicker/daterangepicker.css') }}">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="{{ asset('assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{{ asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 @endpush
 
 
@@ -155,11 +170,12 @@
 
                                                         @php
                                                             $count=0;
+                                                            $daftarorder="";
                                                         @endphp
 
                                                         @foreach ($cust_order as $data)
                                                         @php
-                                                            if(str_contains($data->Tracking_code, 'LINK'))
+                                                            if(str_contains($data->Tracking_code, 'EMBED'))
                                                             {
                                                                 $temp = explode("-" ,$data->Tracking_code);
                                                                 $Id_product= $temp[1];
@@ -167,13 +183,16 @@
                                                                 if($Id_product == $dtpro->Id_product)
                                                                 {
                                                                     $count++;
+                                                                    $daftarorder = $daftarorder.",".$data->Id_order;
                                                                 }
                                                             }
                                                         @endphp
                                                         
                                                         
                                                     @endforeach
-                                                    <td>{{ $count }}</td>
+                                                    <td>{{ $count }} <br>
+                                                        {{ Form::button('Detail order', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-order'=>$daftarorder,'data-toggle'=>'modal','data-target'=>'#rincian_order']) }}
+                                                    </td>
                                                     </tr>
                                                 <?php
                                             }
@@ -194,11 +213,100 @@
     </div>
 </div>
 
+<div id="rincian_order" class="modal fade" role="dialog" style="max-height:calc(100% - 80px)">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl"> 
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rincian Order </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="overflow-y: scroll">
+            <table class="table-rincian-order" id="table-order-1">
+                <thead style="width:100%">
+                    <tr>
+                        <th>Nomor Transaksi</th>
+                        <th>Tanggal Transaksi</th>
+                        <th>Alamat</th>
+                        <th>Kurir</th>
+                        <th>Gross Total</th>
+                        <th>Shipping Cost</th>
+                        <th>Diskon Voucher</th>
+                        <th>Grand Total</th>
+                        <th>Total Point</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-rincian-order">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  <div id="rincian_order_detail" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rincian Order </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="table-rincian-item-order">
+                <thead>
+                    <tr>
+                        <th>Nama Produk</th>
+                        <th>Variant</th>
+                        <th>Normal Price</th>
+                        <th>Discount</th>
+                        <th>Fix Price</th>
+                        <th>Total dipesan</th>
+                        <th>Subtotal</th>
+                        <th>Point</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-rincian-item-order">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 @endsection
 
 
 @push('custom-js')
 
+<!-- jQuery UI 1.11.4 -->
+<script src="{{ asset('assets/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+$.widget.bridge('uibutton', $.ui.button)
+</script>
+<!-- Bootstrap 4 -->
+<script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+   <!-- CDN DATA TABLE -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script>
     $(document).ready(function(){
 
@@ -260,6 +368,64 @@
             location.reload();
         });
     }
+    $("#rincian_order").on('show.bs.modal', function(event){
+       var button = $(event.relatedTarget);
+       var orders = button.data('order')
+       $(".table-body-rincian-order").html("");
+   
+       $.get(myurl + '/Show_detail_order',
+       {kumpulan_id_order: orders},
+       function(result){
+          
+           $(".table-body-rincian-order").append(result);
+           $(".table-rincian-order").DataTable();
+          
+       });
+       
+    });
+   
+   
+   $("#rincian_order_detail").on('show.bs.modal', function(event){
+       var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+       if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
+         $('.table-rincian-item-order').DataTable().destroy();
+       }
+       var button = $(event.relatedTarget);
+       var detail_order = button.data('order-detail');
+
+       $(".table-body-rincian-item-order").html("");
+       detail_order.forEach(detail => {
+           $(".table-body-rincian-item-order").append(`
+               <tr>
+                    <td>
+                        `+detail.Name+`
+                    </td>
+                    <td>
+                        `+detail.Variant_name + `(`+ detail.Variant_option_name+`)
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Normal_price)+`
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Discount_promo)+`
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Fix_price)+`
+                    </td>
+                    <td>
+                        `+detail.Qty+`
+                    </td>
+                    <td>
+                        `+formatter.format(detail.Qty * detail.Fix_price)+`
+                    </td>
+                    <td>
+                        `+detail.point+`
+                    </td>
+               </tr>
+           `)
+       });
+       $(".table-rincian-item-order").DataTable();
+    });
 </script>
 
 @endpush

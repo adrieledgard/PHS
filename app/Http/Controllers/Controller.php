@@ -1907,6 +1907,8 @@ class Controller extends BaseController
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 			$book->downloaded_detail = email_ebook::where('Ebook_id', $book->Id_ebook)->where('User_token', $Random_code)->get();
 		}
+
+
 		return view('Cust_ebook', $param);
 	}
 
@@ -1951,13 +1953,27 @@ class Controller extends BaseController
 		$kumpulan_id_order = $request->kumpulan_id_order;
 
 		$arr_id_order = explode("," ,$kumpulan_id_order);
-
+		
 		foreach ($arr_id_order as $data) {
+			
 			if($data!="")
 			{
 				$custorder = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where('Id_order', $data)->first(); 
 
-				$order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $data)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get()->toArray();
+				$order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $data)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name', 'cust_order_detail.Id_product', 'cust_order_detail.Id_variation')->get();
+				
+				if($custorder->Tracking_code != "0"){
+					
+					foreach ($order_detail as $detail) {
+						$affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->first();
+						if(!empty($affiliate)){
+							$detail->point = $affiliate->Poin;
+							$custorder->total_point += $affiliate->Poin;
+						}else {
+							$detail->point = 0;
+						}
+					}
+				}
 
 				$temp = $temp. "<tr>";
 					$temp = $temp. "<td>";
@@ -1983,6 +1999,9 @@ class Controller extends BaseController
 					$temp = $temp. "</td>";
 					$temp = $temp. "<td>";
 						$temp = $temp. "Rp. ". number_format($custorder->Grand_total);
+					$temp = $temp. "</td>";
+					$temp = $temp. "<td>";
+						$temp = $temp. $custorder->total_point;
 					$temp = $temp. "</td>";
 					$temp = $temp. "<td>";
 						$temp = $temp.  "<button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order_detail' data-order-detail='". json_encode($order_detail) ."'>Rincian</button>";
