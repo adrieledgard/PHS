@@ -1965,7 +1965,7 @@ class Controller extends BaseController
 				if($custorder->Tracking_code != "0"){
 					
 					foreach ($order_detail as $detail) {
-						$affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->first();
+						$affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->where("status", 1)->first();
 						if(!empty($affiliate)){
 							$detail->point = $affiliate->Poin;
 							$custorder->total_point += $affiliate->Poin;

@@ -224,7 +224,7 @@
 
 
   <div id="rincian_order_detail" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
   
       <!-- Modal content-->
       <div class="modal-content">
@@ -243,6 +243,7 @@
                         <th>Fix Price</th>
                         <th>Total dipesan</th>
                         <th>Subtotal</th>
+                        <th>Point</th>
                     </tr>
                 </thead>
                 <tbody class="table-body-rincian-item-order">
@@ -404,6 +405,9 @@ $.widget.bridge('uibutton', $.ui.button)
                     </td>
                     <td>
                         `+formatter.format(detail.Qty * detail.Fix_price)+`
+                    </td>
+                    <td>
+                        `+detail.point+`
                     </td>
                </tr>
            `)
