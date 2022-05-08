@@ -713,7 +713,7 @@
 <script src ="{{ asset ('js/bootstrap.js') }}"></script>
 <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script>
     $(document).ready(function(){
 
@@ -1149,24 +1149,25 @@
 
             if($('#guess').val()=="yes")
             {
-                var no = result;
-
-
-                var snaptoken = $("#txtsnaptoken" + no).val(); 
-                snap.pay(snaptoken, {
+                snap.pay(result, {
                     // Optional
                     onSuccess: function(result) {
                         /* You may add your own js here, this is just example */
                         // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                        console.log("masuk mode onSuccess"); 
-                        console.log(result)
+                        console.log('ngentot');
                     },
                     // Optional
                     onPending: function(result) {
-                        /* You may add your own js here, this is just example */
-                        // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                        console.log("masuk mode onPending"); 
-                        console.log(result)
+                        var check_status = setInterval(() => {
+                            $.get(myurl + "/Status_transaksi/" + result.order_id, function(result){
+                                var json_res = JSON.parse(result);
+                                if(json_res.transaction_status == 'settlement'){
+                                    clearInterval(check_status);
+                                    payment_success(json_res.order_id);
+                                }
+
+                            })
+                        }, 1500);
                     },
                     // Optional
                     onError: function(result) {
@@ -1197,7 +1198,14 @@
 
     }
 
-    
+    function payment_success(id_order){
+        $.get(myurl + "/Send_tracking_order", {'Id_order' : id_order}, function(result){
+            toastr["success"]("Silahkan check email anda untuk melacak pesanan anda", "Success");
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        })
+    }
     
 </script>
  

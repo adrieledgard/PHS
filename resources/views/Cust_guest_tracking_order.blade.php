@@ -41,7 +41,7 @@ ul.timeline:before {
 }
 ul.timeline > li {
     margin: 20px 0;
-    padding-left: 20px;
+    padding-left: 35px;
     margin-left: 10px;
 }
 ul.timeline > li:before {
@@ -66,136 +66,16 @@ ul.timeline > li:before {
     <div class="container">
       <div class="row">
         <div class="col-md-3">
-
-          <?php
-            $ix=1;
-            if(session()->get('Filter_my_order'))
-            {
-              $ix = session()->get('Filter_my_order');
-            }
-          ?>
-          {{ Form::select('Choose Status', ['Cancelled','Pending','Payment receive','Processing','Shipping','Complete','All'], $ix,['class'=>'form-control','id'=>'filter', 'placeholder' => "Choose Status",'onchange' => 'ganti_filter()']) }}
-         
-        </div>
-        <div class="col-md-2">
-          {{ Form::button('Filter', ['name'=>'btn_filter','class'=>'btn btn-info btn-sm','onclick'=>'filter()']) }}
-        </div>
       </div>
       <br><br>
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-           
-                <form action="#">
-                            @php $no = 0; @endphp
-                            @foreach ($datatransaksi as $cr)
-                                <div class="card" id='card{{ $no }}'>
-                                    <div class="card-body">
-                                        <?php
-                                        if($cr->Status ==0)
-                                        {
-                                          echo "<td><button type='button' class='btn btn-danger btn-sm' disabled>Canceled</button></td>";
-                                        }
-                                        else if($cr->Status ==1)
-                                        {
-                                          echo "<td><button type='button' class='btn btn-warning btn-sm' disabled>Pending</button></td>";
-                                        }
-                                        else if($cr->Status ==2)
-                                        {
-                                          echo "<td><button type='button' class='btn btn-light btn-sm' disabled>Payment Receive</button></td>";
-                                        }
-                                        else if($cr->Status ==3)
-                                        {
-                                          echo "<td><button type='button' class='btn btn-primary btn-sm' disabled>Processing</button></td>";
-                                        }
-                                        else if($cr->Status ==4)
-                                        {
-                                          echo "<td><button type='button' class='btn btn-secondary btn-sm' disabled>Shipping</button></td>";
-                                        }
-                                        else if($cr->Status ==5)
-                                        {
-                                          echo "<td><button type='button' class='btn btn-success btn-sm' disabled>Complete</button></td>";
-                                        }
-
-                                        ?>
-                                        <h5 class="card-title">Nota : {{ $cr->Id_order }}</h5>
-                                        <p class="card-text">
-                                            <b><h5>{{ date("d-m-Y", strtotime($cr->Date_time)) }}</h5></b>
-                                            <b><h5>Grand Total : Rp. {{number_format($cr->Grand_total) }}</h5></b>
-                                        </p>
-                                        {{-- <button data-toggle="modal" data-target="#View_detail" class="btn-primary" data-Idorder="{{$cr->Id_order}}">View detail</button> --}}
-                                        {{ Form::button('View detail', ['name'=>'btn_edit','class'=>'btn btn-warning btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.viewdetail']) }}
-
-                                        <?php
-                                          if($cr->Status == 4){ ?>
-                                            {{ Form::button('Complete Order', ['name'=>'btn_edit','class'=>'btn btn-success btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.konfirmasi_selesai']) }}
-                                         <?php } ?>
-                                        
-                                       
-                                        <?php
-                                          if($cr->Status ==1)
-                                          {
-                                            ?>
-                                            <br><br>
-                                             {{-- {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm', 'onclick' => 'pay_now('. $cr->Id_order . ')']) }} --}}
-                                             <input type='button' value='Pay now' onclick=bayarmidtrans('{{ $no }}') class='btn btn-success btn-sm'>
-     
-                                              <hr size="10px"  style="margin-top: 2%">
-                                              <h6>Please finish transaction before : </h6>
-                                              <input type='text' id='txtsnaptoken{{ $no }}' value='{{ $cr->snap_token }}'>
-                                              <input type='hidden' id='txtnomernota{{ $no }}' value='{{ $cr->Id_order }}'>
-                                              <input type='hidden' id='txtdatetime{{ $no }}' value='{{ $cr->jatuhtempo }}'>
-                                              <input type='text' id='txtselisih{{ $no }}' value='0'>
-                                            <?php
-                                          }
-                                        ?>
-                                       
-                                        <?php
-                                          if($cr->Status == 5){ ?>
-                                            {{ Form::button('Give Review', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-idorder'=>$cr->Id_order,'data-toggle'=>'modal','data-target'=>'.rating_review']) }}
-                                        <?php } ?>
-                                    </div>
-                                </div>           
-                                <br><br>                 
-                                @php $no++; @endphp
-                            @endforeach
-                            <input type='text' id='maxno' value='{{ $no }}'>
-                </form>
             
             </div>
            
         </div>
     </div>
 </div>
-
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
-<script>
-    function bayarmidtrans(no) {
-      var snaptoken = $("#txtsnaptoken" + no).val(); 
-      snap.pay(snaptoken, {
-          // Optional
-          onSuccess: function(result) {
-              /* You may add your own js here, this is just example */
-              // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-              console.log("masuk mode onSuccess"); 
-              console.log(result)
-          },
-          // Optional
-          onPending: function(result) {
-              /* You may add your own js here, this is just example */
-              // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-              console.log("masuk mode onPending"); 
-              console.log(result)
-          },
-          // Optional
-          onError: function(result) {
-              /* You may add your own js here, this is just example */
-              // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-              console.log("masuk mode onError"); 
-              console.log(result)
-          }
-      });        
-    };
-</script>
 
 <div class="modal fade viewdetail">
     <div class="modal-dialog modal-xl">
@@ -287,10 +167,15 @@ ul.timeline > li:before {
             </div>
             <div class="row mt-3" style="width: 100% !important;">
               
-              <h4>History</h4>
-              <ul class="timeline timeline_field">
-                
-              </ul>
+              <div class="col-md-6">
+                <h4>History</h4>
+                <ul class="timeline timeline_field">
+                  
+                </ul>
+              </div>
+              <div class="col-md-6">
+                {{ Form::button('Complete Order', ['name'=>'btn_edit','class'=>'btn btn-success btn-sm button_konfirmasi_order','data-idorder'=>$id_order,'data-toggle'=>'modal','data-target'=>'.konfirmasi_selesai', 'style' => "display:none"]) }}
+              </div>
             </div>
           </div>
         </div>
@@ -316,26 +201,6 @@ ul.timeline > li:before {
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <button class="btn btn-success btn-sm" onclick="konfirmasi_selesai()">Confirm</button>
-        </div>
-      </div>
-    </div>
-</div>
-<div class="modal fade rating_review">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Rating and Review</h4>
-          <button style="color:black" type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="container-fluid">
-
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
@@ -409,13 +274,14 @@ ul.timeline > li:before {
 
 
 <script>
+  var id_order = {!! $id_order !!};
   $('.viewdetail').on('show.bs.modal', function(event){
     var button = $(event.relatedTarget);
-    var id = button.data('idorder');
+    // var id = button.data('idorder');
     var modal = $(this);
 
     $.get(myurl + '/get_cust_detail_order',
-    {id: id},
+    {id: id_order},
     function(result){
         // alert(result);
         var cut = result.split("#");
@@ -429,6 +295,10 @@ ul.timeline > li:before {
          $("#ekspedisi").html(cut[5]);
          $("#weight").html(cut[6] + "Gr");
          $("#no_resi").html(cut[7]);
+
+         if(cut[9] == "4"){
+           $(".button_konfirmasi_order").css('display', 'block');
+         }
 
          $(".timeline_field").html("");
         history.forEach(timeline => {
@@ -464,44 +334,6 @@ ul.timeline > li:before {
     var modal = $(this);
  });
 
- $(".rating_review").on('show.bs.modal', function(event){
-    var button = $(event.relatedTarget);
-    var id = button.data('idorder');
-    var modal = $(this);
-
-    $.get(myurl + '/get_cust_detail_order',
-    {id: id, request_from: 'rating_review'},
-    function(result){
-      var html = "";
-       result.forEach(item => {
-         console.log(item.Status);
-         var is_review = item.is_review ? 'disabled' : '';
-         var is_deleted = item.Status == 'Deleted' ? 'disabled' : '';
-         html += `
-         <div class="row border-bottom-1">
-          <div class="col-12">
-          <strong>${item.Name}</strong> - <i>${item.Status == 'Deleted' ? "YOUR REVIEW HAS BEEN DELETED BY ADMIN": ''}</i>
-          <div class="starrating risingstar d-flex justify-content-end flex-row-reverse">
-                <input type="radio" id="star5-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="5" ${item.Rate == 5 ? 'checked' : ''} ${is_review}/><label for="star5-${item.Id_detail_order}" title="5 star"></label>
-                <input type="radio" id="star4-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="4" ${item.Rate == 4 ? 'checked' : ''} ${is_review}/><label for="star4-${item.Id_detail_order}" title="4 star"></label>
-                <input type="radio" id="star3-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="3" ${item.Rate == 3 ? 'checked' : ''} ${is_review}/><label for="star3-${item.Id_detail_order}" title="3 star"></label>
-                <input type="radio" id="star2-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="2" ${item.Rate == 2 ? 'checked' : ''} ${is_review}/><label for="star2-${item.Id_detail_order}" title="2 star"></label>
-                <input type="radio" id="star1-${item.Id_detail_order}" name="rating-${item.Id_detail_order}" value="1" ${item.Rate == 1 ? 'checked' : ''} ${is_review}/><label for="star1-${item.Id_detail_order}" title="1 star"></label>
-            </div>
-            <div class="form-group">
-              <label>Review</label>
-              <textarea class="form-control review-${item.Id_detail_order}" rows="3" ${is_review}>${is_review ? item.Review : ''}</textarea>
-            </div>
-            ${item.Status == 'Active' || !item.is_review ? `<button type="button" class="btn btn-success btn-sm mb-2 submit-${item.Id_detail_order}" onclick="send_rating_review(${item.Id_detail_order})" ${is_review}>Submit</button>
-            <button type="button" class="btn btn-warning btn-sm mb-2 edit-${item.Id_detail_order}" ${(!item.is_review) ? 'disabled' : ''} onclick="edit_review(${item.Id_detail_order})">Edit review</button>` : ''} 
-          </div>
-        </div> 
-        `
-        
-       });
-       $(".rating_review .modal-body .container-fluid").html(html);
-    });
- });
 </script>
 
 
@@ -521,42 +353,11 @@ ul.timeline > li:before {
       {id: id, CSRF: token},
       function(result){
           if(result == 'sukses'){
-            $("#filter").val("4");
-            filter();
+            window.location.reload();
           }
           
       });
    }
-
-   function send_rating_review(id_detail_order){
-    var token = $(".csrf_token").val();
-    var rate = $(`input[name='rating-${id_detail_order}']:checked`).val();
-    var review = $(".review-" + id_detail_order).val();
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': token
-        }
-      });
-
-      $.post(myurl + '/rate_review_order',
-      {id_detail_order: id_detail_order, CSRF: token, review : review, rate: rate},
-      function(result){
-          if(result == 'sukses'){
-            $(`input[name='rating-${id_detail_order}']`).prop("disabled", 'true');
-            $(".review-" + id_detail_order).prop('disabled', 'true');
-            $(".submit-" + id_detail_order).prop('disabled', 'true');
-            $(".edit-" + id_detail_order).removeProp('disabled');
-          }
-      });
-   }
-
-   function edit_review(id_detail_order){
-    $(`input[name='rating-${id_detail_order}']`).removeProp("disabled");
-    $(".review-" + id_detail_order).removeProp('disabled');
-    $(".submit-" + id_detail_order).removeProp('disabled');
-    $(".edit-" + id_detail_order).prop('disabled', 'true');
-   }
-
     function cariSelisih(tgl2) {
         var dt = new Date();
         var time = dt.getFullYear() + "-" + (dt.getMonth()+1) + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
@@ -601,6 +402,8 @@ ul.timeline > li:before {
 
     $(document).ready(function(){
         var tmr = setInterval("animasi()", 1000); 
+        $(".viewdetail").modal("show");
+        console.log('test');
     });
 
     function ganti_filter()

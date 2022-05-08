@@ -2914,7 +2914,17 @@ class Controller extends BaseController
 				}
 				
 			}
+			$cust_header = new cust_order_header();
+			$last_id = $cust_header->getlastinvoice();
+			$order = cust_order_header::find($last_id);
+			$order_detail = cust_order_detail::where("Id_order", $last_id)->get();
+			$midtrans = new CreateSnapTokenService($order, $order_detail);
+			$snapToken = $midtrans->getSnapToken(); 
 			
+			$email_content = "Silahkan melakukan dengan mengklik link di bawah ini <br> <a href='https://app.sandbox.veritrans.co.id/snap/v2/vtweb/$snapToken' target='_blank'>Click link untuk melakukan pembayaran</a> <br><br><br> <b>Hiraukan email ini jika anda sudah melakukan pembayaran</b>";
+			Mail::to($order->Email)->send(new SendEmail("Konfirmasi Pembayaran", $email_content));
+
+			return $snapToken;   
 		}
 		else //Member
 		{
@@ -3024,6 +3034,19 @@ class Controller extends BaseController
 		 echo $last_id;
 	}
 
+	public function Send_tracking_order(Request $request)
+	{
+		$order = cust_order_header::find($request->Id_order);
+		$email_content = "Silahkan melacak pesanan anda dengan mengklik link di bawah ini <br> <a href='https://localhost/PusatHerbalStore/public/Tracking/$request->Id_order' target='_blank'>Click link untuk melacak pesanan</a>";
+		Mail::to($order->Email)->send(new SendEmail("Pesanan $request->Id_order", $email_content));
+
+		return true;
+	}
+
+	public function Tracking($id_order)
+	{
+		return view('Cust_guest_tracking_order', compact('id_order'));
+	}
 
 	public function atc_from_wishlist(Request $request)
 	{
