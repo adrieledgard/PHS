@@ -46,7 +46,7 @@
                                     {{-- <th>Price</th>
                                     <th>Poin</th> --}}
                                     <th>Embed Code</th>
-                                    <th>Total Clicked</th>
+                                    <th>Total Checkout</th>
                                     <th>Total Sales</th>
                                 </tr>
                             </thead>
@@ -165,7 +165,10 @@
                                                             }
                                                         @endphp
                                                         {{$totaldiklik}}
-
+                                                        <br>
+                                                        @if ($totaldiklik > 0)
+                                                        {{ Form::button('Detail Checkout', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-checkout'=>$affiliate->checkout_detail,'data-toggle'=>'modal','data-target'=>'#checkout_detail']) }}
+                                                        @endif
                                                         </td>
 
                                                         @php
@@ -213,6 +216,39 @@
     </div>
 </div>
 
+<div id="checkout_detail" class="modal fade" role="dialog" style="max-height:calc(100% - 80px)">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl"> 
+  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Rincian Checkout </h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" style="overflow-y: scroll">
+            <table class="table-download-detail" >
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Produk</th>
+                        <th>Qty</th>
+                        <th>Already buy</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body-download-detail">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 <div id="rincian_order" class="modal fade" role="dialog" style="max-height:calc(100% - 80px)">
     <div class="modal-dialog modal-dialog-scrollable modal-xl"> 
   
@@ -289,7 +325,6 @@
       </div>
     </div>
   </div>
-
 
 @endsection
 

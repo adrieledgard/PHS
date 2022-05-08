@@ -27,6 +27,7 @@ use App\affiliate;
 use App\ebook;
 use App\email_ebook;
 use App\Mail\SendEbook;
+use App\cust_order_header;
 use App\rate_review;
 use App\Rules\ValidasiEmailMember;
 use App\Rules\ValidasiPasswordEditTeamMember;
@@ -4230,15 +4231,20 @@ class ControllerMaster extends Controller
 		->where('Ebook_id', $ebook_id)
 		->get();
 
-		$email_kembar = email_ebook::where('Email', $request->email)
+		$sub_email = email_ebook::where('Email', $request->email)
+		->orwhere('Phone', $request->phone)
 		->get();
 
-		$phone_kembar = email_ebook::where('Phone', $request->phone)
+		$cust_order = cust_order_header::where('Email', $request->email)
+		->orwhere('Phone', $request->phone)
 		->get();
 
+		$cust_member = member::where('Email', $request->email)
+		->orwhere('Phone', $request->phone)
+		->get();
 
 		
-		if(count($existed_user_ebook) == 0 && count($email_kembar)==0 && count($phone_kembar)==0)
+		if(count($existed_user_ebook) == 0 && count($sub_email)==0 && count($cust_order)==0 && count($cust_member)==0)
 		{
 		
 			if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   

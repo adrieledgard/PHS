@@ -40,6 +40,7 @@ use App\cust_order_detail;
 use App\cust_order_history;
 use App\ebook;
 use App\email_ebook;
+use App\embed_checkout;
 use App\followup;
 use App\Mail\BroadcastMail;
 use App\Mail\RequestOTP;
@@ -4077,20 +4078,31 @@ class Controller extends BaseController
 				->where('Id_member', $member_aff->Id_member)
 				->first();
 
-				
+				$ec = new embed_checkout();
+					$hasil = $ec->add_embed_checkout($Random_code, $param['Name'], $param['Phone'], $param['Email'], $Variasi->Id_product, $Id_variation, $Qty);
 				if(!empty($member_aff)){
 					$total_diklik = 0;
 					if(!empty($embed))
 					{
 						$total_diklik = $embed->Total_diklik + 1;	
-						DB::update("update embed_member set Total_diklik = $Total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
+						DB::update("update embed_member set Total_diklik = $total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
 					}
 					else 
 					{
 						$total_diklik = 1;
 						DB::insert('insert into embed_member (Id_member, Id_product, Total_diklik) values (?, ?, ?)', [$member_aff->Id_member, $Variasi->Id_product, $total_diklik]);
 					}
+
+					
 				}
+
+				//cayang
+
+
+				
+		
+				// return "sukses";
+
 			}
 
 
@@ -4138,12 +4150,15 @@ class Controller extends BaseController
 					'Id_variation' => $Id_variation, 
 					'Qty' => $Qty
 					);
-				 array_push($arr, $baru); 
-				 session()->put('cart', json_encode($arr));
-				 $param['cart'] = json_decode(session()->get('cart'));
+				array_push($arr, $baru); 
+				session()->put('cart', json_encode($arr));
+				$param['cart'] = json_decode(session()->get('cart'));
 			}
 			
 		}
+
+
+		
 		$param['product'] = product::where('Status','=',1)
 		->get();
 
@@ -4184,7 +4199,7 @@ class Controller extends BaseController
 		$arr= [];  // array 
 		$arr2= [];  // array 
 		foreach($db as $row) {
-            $arr[0] = "";
+			$arr[0] = "";
 			$arr2[0] = "";
 			$arr[$row->Id_province] = $row->Province_name; 
 			$arr2[$row->Id_city] = $row->City_name; 
@@ -4195,7 +4210,7 @@ class Controller extends BaseController
 		$param['arr_city']  = $arr2; 
 		return view('Cust_checkout',$param);
 
-		}
+	}
 
 	public function order_confirmation(Request $request)
 	{
