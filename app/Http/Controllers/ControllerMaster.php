@@ -4230,16 +4230,27 @@ class ControllerMaster extends Controller
 		->where('Ebook_id', $ebook_id)
 		->get();
 
+		$email_kembar = email_ebook::where('Email', $request->email)
+		->get();
+
+		$phone_kembar = email_ebook::where('Phone', $request->phone)
+		->get();
+
 
 		
-		if(count($existed_user_ebook) == 0)
+		if(count($existed_user_ebook) == 0 && count($email_kembar)==0 && count($phone_kembar)==0)
 		{
-			$email_ebook = new email_ebook();
-			$email_ebook->add_email_ebook($request->ebook_id, $request->name, $request->phone, $request->email, $request->user_token);
+		
 			if(!Cookie::has("username_login") && !Cookie::has("Affiliate"))   
 			{
+				$email_ebook = new email_ebook();
+				$email_ebook->add_email_ebook($request->ebook_id, $request->name, $request->phone, $request->email, $request->user_token);
+
 				Cookie::queue(Cookie::make("Affiliate", $user_token, 1500000));
 				Cookie::queue(Cookie::make("Tracking_code", "EBOOK-".$ebook_id, 1500000));
+
+				$email_ebook2 = new email_ebook();
+				Cookie::queue(Cookie::make("Id_prospect",$email_ebook2->getlastid() , 1500000));
 				
 				$member_aff = member::where('Random_code', $user_token)->first();
 

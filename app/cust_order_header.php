@@ -12,7 +12,7 @@ class cust_order_header extends Model
     public $primaryKey = 'Id_order';
     public $timestamps = false;
     public $fillable = ['Id_order','Date_time','Id_member','Address','Id_province',
-                        'Id_city','Name','Email','Phone','Courier','Courier_packet','Affiliate','Tracking_code','Id_voucher'
+                        'Id_city','Name','Email','Phone','Courier','Courier_packet','Affiliate','Tracking_code','Id_prospect','Id_voucher'
                         ,'Weight','Gross_total','Receipt_number','Shipping_cost','Discount','Grand_total','Shipper','Resi_input_shipper','Printed','Status'];
     public $incrementing = true;
 
@@ -143,11 +143,12 @@ class cust_order_header extends Model
     }
 
 
-    public function update_affiliate_trackingcode($Id_order, $Affiliate, $Tracking_code)
+    public function update_affiliate_trackingcode($Id_order, $Affiliate, $Tracking_code, $Id_prospect)
     {
         cust_order_header::where('Id_order','=',$Id_order)->update(array(
             'Affiliate'=> $Affiliate,
-            'Tracking_code'=>$Tracking_code
+            'Tracking_code'=>$Tracking_code,
+            'Id_prospect' => $Id_prospect
         ));
         return "sukses";
     }

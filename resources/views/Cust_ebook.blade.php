@@ -151,13 +151,15 @@
         </div>
     </div>
 </div>
+
+
 <div id="download_detail" class="modal fade" role="dialog" style="max-height:calc(100% - 80px)">
-    <div class="modal-dialog modal-dialog-scrollable modal-xl"> 
+    <div class="modal-dialog modal-dialog-scrollable modal-lg"> 
   
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Rincian Order </h4>
+          <h4 class="modal-title">Rincian Download </h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body" style="overflow-y: scroll">
@@ -168,6 +170,7 @@
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Tanggal Download</th>
+                        <th>Already buy</th>
                     </tr>
                 </thead>
                 <tbody class="table-body-download-detail">
@@ -197,8 +200,9 @@
                     <tr>
                         <th>Nomor Transaksi</th>
                         <th>Tanggal Transaksi</th>
+                        <th>Name & Phone</th>
                         <th>Alamat</th>
-                        <th>Kurir</th>
+                        {{-- <th>Kurir</th> --}}
                         <th>Gross Total</th>
                         <th>Shipping Cost</th>
                         <th>Diskon Voucher</th>
@@ -336,7 +340,10 @@ $.widget.bridge('uibutton', $.ui.button)
 
        $(".table-body-download-detail").html("");
        download_detail.forEach(detail => {
-           $(".table-body-download-detail").append(`
+
+            if(detail.Address == null) // blm beli
+            {
+                $(".table-body-download-detail").append(`
                <tr>
                     <td>
                         `+detail.Name+`
@@ -350,8 +357,39 @@ $.widget.bridge('uibutton', $.ui.button)
                     <td>
                         `+detail.Date_request+`
                     </td>
+                    <td>
+                        No
+                    </td>
+                   
                </tr>
-           `)
+                `)
+            }
+            else //allready buy
+            {
+                $(".table-body-download-detail").append(`
+               <tr>
+                    <td>
+                        `+detail.Name+`
+                    </td>
+                    <td>
+                        `+detail.Email +`
+                    </td>
+                    <td>
+                        `+detail.Phone+`
+                    </td>
+                    <td>
+                        `+detail.Date_request+`
+                    </td>
+                    <td>
+                        Yes
+                        <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order' data-order='`+detail.Id_order+`'>Rincian</button>
+                        
+                    </td>
+                   
+               </tr>
+                `)
+            }
+           
        });
        $(".table-download-detail").DataTable();
     });

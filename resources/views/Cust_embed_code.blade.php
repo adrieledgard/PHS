@@ -228,8 +228,9 @@
                     <tr>
                         <th>Nomor Transaksi</th>
                         <th>Tanggal Transaksi</th>
+                        <th>Name & Phone</th>
                         <th>Alamat</th>
-                        <th>Kurir</th>
+                        {{-- <th>Kurir</th> --}}
                         <th>Gross Total</th>
                         <th>Shipping Cost</th>
                         <th>Diskon Voucher</th>

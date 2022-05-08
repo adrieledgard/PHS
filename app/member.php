@@ -10,7 +10,7 @@ class member extends Model
     public $table = 'member';
     public $primaryKey = 'Id_member';
     public $timestamps = false;
-    public $fillable = ['Id_member','Username','Email','Phone','Password','Role','Status','Random_code','Referral','Tracking_code','First_transaction','Point','Catatan'];
+    public $fillable = ['Id_member','Username','Email','Phone','Password','Role','Status','Random_code','Referral','Tracking_code','Id_prospect','First_transaction','Point','Catatan'];
     public $incrementing = true;
 
 
@@ -19,6 +19,8 @@ class member extends Model
         $kodeaff="";
         $Id_member_affiliate=0;
         $tracking_code="";
+        $Id_prospect=0;
+
         if(Cookie::has("Affiliate"))   
 		{
 			$kodeaff  = Cookie::get('Affiliate');
@@ -31,6 +33,11 @@ class member extends Model
             if(Cookie::has("Tracking_code")) 
             {
                 $tracking_code = Cookie::get('Tracking_code');
+            }
+
+            if(Cookie::has("Id_prospect")) 
+            {
+                $Id_prospect = Cookie::get('Id_prospect');
             }
 		}
 
@@ -53,7 +60,8 @@ class member extends Model
                 'Status' =>1,
                 'Random_code' => uniqid(),
                 'Referral' =>  $Id_member_affiliate,
-                'Tracking_code' =>  $tracking_code
+                'Tracking_code' =>  $tracking_code,
+                'Id_prospect' => $Id_prospect,
                 
             ]
             );

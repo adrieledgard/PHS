@@ -135,8 +135,9 @@ ul.timeline > li:before {
                                           if($cr->Status ==1)
                                           {
                                             ?>
-                                             {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm', 'onclick' => 'pay_now('. $cr->Id_order . ')']) }}
-                                             <input type='button' value='Bayar' onclick=bayarmidtrans('{{ $no }}') class='btn btn-warning btn-sm'>
+                                            <br><br>
+                                             {{-- {{ Form::button('Pay now', ['name'=>'btn_pay','class'=>'btn btn-success btn-sm', 'onclick' => 'pay_now('. $cr->Id_order . ')']) }} --}}
+                                             <input type='button' value='Pay now' onclick=bayarmidtrans('{{ $no }}') class='btn btn-success btn-sm'>
      
                                               <hr size="10px"  style="margin-top: 2%">
                                               <h6>Please finish transaction before : </h6>
@@ -598,30 +599,30 @@ ul.timeline > li:before {
      
     }
 
-    function pay_now(id) {
-      // $.ajaxSetup({
-      //       headers:
-      //       { 'X-CSRF-TOKEN': $(".csrf_token").val() }
-      //   });
-      // $.ajax({
-      //       type: "POST",
-      //       url: myurl + '/pay_now',
-      //       data: { order_id : id}
-      //   })
-      //   .done(function( msg ) {
-      //     alert(msg);
-      //       console.log(msg);
-      //   });
+    // function pay_now(id) {
+    //   // $.ajaxSetup({
+    //   //       headers:
+    //   //       { 'X-CSRF-TOKEN': $(".csrf_token").val() }
+    //   //   });
+    //   // $.ajax({
+    //   //       type: "POST",
+    //   //       url: myurl + '/pay_now',
+    //   //       data: { order_id : id}
+    //   //   })
+    //   //   .done(function( msg ) {
+    //   //     alert(msg);
+    //   //       console.log(msg);
+    //   //   });
 
 
-        // $.get(myurl + '/pay_now',
-        // {order_id: id},
-        // function(result){
-        //     alert(result);
+    //     // $.get(myurl + '/pay_now',
+    //     // {order_id: id},
+    //     // function(result){
+    //     //     alert(result);
 
-        // });
+    //     // });
 
-    }
+    // }
 
     function filter()
     {

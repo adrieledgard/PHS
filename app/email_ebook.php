@@ -27,4 +27,19 @@ class email_ebook extends Model
         return "sukses";
 
     }
+
+    public function getlastid()
+    {
+        $temp = email_ebook::all();
+        $c = 0;
+
+        for ($i=0; $i < count($temp) ; $i++) { 
+            if($temp[$i]['id']>$c)
+            {
+                $c = $temp[$i]['id'];
+            }
+        }
+
+        return $c;
+    }
 }
