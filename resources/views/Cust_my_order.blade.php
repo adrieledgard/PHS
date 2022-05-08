@@ -254,6 +254,14 @@ ul.timeline > li:before {
             <b id="ekspedisi">  </b>
           </div>
         </div>
+        <div class="row">
+          <div class="col-md-2">
+            <b style="font-size: 100%">No. Resi:</b> 
+          </div>
+          <div class="col-md-10">
+            <b id="no_resi">  </b>
+          </div>
+        </div>
         <div class="modal-body">
             
           <div class="container">
@@ -420,6 +428,7 @@ ul.timeline > li:before {
          $("#address").html(cut[4]);
          $("#ekspedisi").html(cut[5]);
          $("#weight").html(cut[6] + "Gr");
+         $("#no_resi").html(cut[7]);
 
          $(".timeline_field").html("");
         history.forEach(timeline => {
