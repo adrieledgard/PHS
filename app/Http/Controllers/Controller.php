@@ -1141,6 +1141,9 @@ class Controller extends BaseController
 					DB::insert('insert into affiliate_member (Total_diklik, Id_member, Id_product) values (?, ?, ?)', [$total_diklik, $member_aff->Id_member, $id]);
 				}
 			}
+
+
+			
 		}
 
 
