@@ -155,19 +155,19 @@
                                                         <td>
                                                             @php
                                                             $totaldiklik=0;
-                                                            if($data_aff->Total_diklik=='')
+                                                            if(empty($data_aff->embed_aff))
                                                             {
                                                                 $totaldiklik=0;
                                                             }
-                                                            else  if($data_aff->Id_member==session()->get('userlogin')->Id_member)
+                                                            else
                                                             {
-                                                                $totaldiklik = $data_aff->Total_diklik;
+                                                                $totaldiklik = $data_aff->embed_aff->Total_diklik;
                                                             }
                                                         @endphp
                                                         {{$totaldiklik}}
                                                         <br>
                                                         @if ($totaldiklik > 0)
-                                                        {{ Form::button('Detail Checkout', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-checkout'=>$data_aff->checkout_detail,'data-toggle'=>'modal','data-target'=>'#checkout_detail']) }}
+                                                        {{ Form::button('Detail Checkout', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-checkout'=>$data_aff->embed_aff->submitted,'data-toggle'=>'modal','data-target'=>'#checkout_detail']) }}
                                                         @endif
                                                         </td>
 
@@ -413,11 +413,11 @@ $.widget.bridge('uibutton', $.ui.button)
        }
        var button = $(event.relatedTarget);
        var checkout_detail = button.data('checkout');
-
+       console.log(checkout_detail);
        $(".table-body-checkout-detail").html("");
        checkout_detail.forEach(detail => {
 
-            if(detail.Address == null)  // blm beli
+            if(detail.Id_order == null)  // blm beli
             {
                 $(".table-body-checkout-detail").append(`
                <tr>
@@ -446,7 +446,7 @@ $.widget.bridge('uibutton', $.ui.button)
                </tr>
                 `)
             }
-            else if (detail.Tracking_code.match(/EMBED.*/))//allready buy
+            else
             {
                 $(".table-body-checkout-detail").append(`
                <tr>
