@@ -2035,22 +2035,26 @@ class Controller extends BaseController
 
 		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
 		->join('product','affiliate.Id_product','product.Id_product')
-		->leftJoin('embed_member', 'embed_member.Id_product', 'affiliate.Id_product')
-		->select('affiliate.*', 'product.*', 'embed_member.Total_diklik', 'embed_member.Id_member')
+		->select('affiliate.*', 'product.*')
 		->get();
-
+		
 
 		//cayang2
-		$Random_code = session()->get('userlogin')->Random_code;
 		foreach ($param['affiliate'] as $aff) {
-			$aff->checkout_detail = embed_checkout::where('submitted_embed_checkout.Id_product', $aff->Id_product)
-			->join('product','product.Id_product','submitted_embed_checkout.Id_product')
-			->join('variation_product','variation_product.Id_variation','submitted_embed_checkout.Id_variation')
-			->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_embed_checkout.id')
-			->where('submitted_embed_checkout.User_token', $Random_code)
-			->Select('cust_order_header.*','submitted_embed_checkout.*', 'product.Name as namaproduk', 'variation_product.Option_name as variasi')
-			
-			->get();
+			$embed_aff = DB::table("embed_member")
+				->where("Id_product", $aff->Id_product)
+				->where('Id_member', session()->get('userlogin')->Id_member)
+				->first();
+
+			$aff->embed_aff = $embed_aff;
+
+			if(!empty($embed_aff)){
+				$aff->embed_aff->submitted = embed_checkout::join('product', 'product.Id_product', 'submitted_embed_checkout.Id_product')->join('variation_product', 'submitted_embed_checkout.Id_variation', 'variation_product.Id_variation')
+					->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_embed_checkout.id')
+					->where('submitted_embed_checkout.Id_product', $embed_aff->Id_product)->where("User_token", session()->get('userlogin')->Random_code)
+					->select("submitted_embed_checkout.*", 'product.name as namaproduk', 'variation_product.Option_name as variasi', 'cust_order_header.Id_order as Id_order')
+					->get();
+			}
 		}
 
 
