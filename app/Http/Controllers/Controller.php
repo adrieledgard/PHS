@@ -3584,44 +3584,46 @@ class Controller extends BaseController
 
 			$temp=$temp."<tr>";
 				
-				$temp=$temp."<td>";
-					$temp=$temp.$detailorder[$i]['Name'];
-				$temp=$temp."</td>";
-				$temp=$temp."<td>";
-					$temp=$temp.$detailorder[$i]['Option_name'];
-				$temp=$temp."</td>";
-				$temp=$temp."<td>";
-					$temp=$temp.number_format($detailorder[$i]['Normal_price']);
-				$temp=$temp."</td>";
-				$temp=$temp."<td>";
-					$temp=$temp."Rp. ".number_format($detailorder[$i]['Discount_promo']);
-				$temp=$temp."</td>";
-				$temp=$temp."<td>";
-					$temp=$temp."Rp. ".number_format($detailorder[$i]['Fix_price']);
-				$temp=$temp."</td>";
-				$temp=$temp."<td>";
-					$temp=$temp.number_format($detailorder[$i]['Qty']);
-				$temp=$temp."</td>";
-				$temp=$temp."<td>";
-					$temp=$temp."Rp. ".number_format(($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']));
-				$temp=$temp."</td>";
+			$temp=$temp."<td>";
+				$temp=$temp.$detailorder[$i]['Name'];
+			$temp=$temp."</td>";
+			$temp=$temp."<td>";
+				$temp=$temp.$detailorder[$i]['Option_name'];
+			$temp=$temp."</td>";
+			$temp=$temp."<td>";
+				$temp=$temp.number_format($detailorder[$i]['Normal_price']);
+			$temp=$temp."</td>";
+			$temp=$temp."<td>";
+				$temp=$temp."Rp. ".number_format($detailorder[$i]['Discount_promo']);
+			$temp=$temp."</td>";
+			$temp=$temp."<td>";
+				$temp=$temp."Rp. ".number_format($detailorder[$i]['Fix_price']);
+			$temp=$temp."</td>";
+			$temp=$temp."<td>";
+				$temp=$temp.number_format($detailorder[$i]['Qty']);
+			$temp=$temp."</td>";
+			$temp=$temp."<td>";
+				$temp=$temp."Rp. ".number_format(($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']));
+			$temp=$temp."</td>";
 
 
-				$total=$total+ ($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']);
+			$total=$total+ ($detailorder[$i]['Qty']*$detailorder[$i]['Fix_price']);
 				
-		$temp=$temp."</tr>";
+			$temp=$temp."</tr>";
 
-		
-		$stockcard = stock_card::where('No_reference','=',$detailorder[$i]['Id_detail_order'])
-        ->get();
+			
+			$stockcard = stock_card::where('No_reference','=',$detailorder[$i]['Id_detail_order'])
+			->where('Type_card','like','%Cust_order%')
+			->get();
 
 
 
-		$temp2 = $temp2 . "<b>". $detailorder[$i]['Name'] ." - " . $detailorder[$i]['Option_name']. "</b> <br>";
-		foreach ($stockcard as $datasc) {
-			$temp2 = $temp2 . "@" . $datasc->Credit . "->" . $datasc->Expire_date ."<br>";
+			$temp2 = $temp2 . "<b>". $detailorder[$i]['Name'] ." - " . $detailorder[$i]['Option_name']. "</b> <br>";
+			foreach ($stockcard as $datasc) {
+				$temp2 = $temp2 . "@" . $datasc->Credit . "->" . date("d-m-Y", strtotime($datasc->Expire_date)) ."<br>";
+			}
 		}
-		}
+
 		$temp=$temp."<tr>";
 		$temp=$temp."<td></td>";
 		$temp=$temp."<td></td>";
