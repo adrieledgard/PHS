@@ -188,6 +188,7 @@
       {Id_variation: Id_variation, date_period: date_range},
       function(result){
         
+        alert(result);
         $('#stock_card').html(result);
         $('#table_id').DataTable();
         

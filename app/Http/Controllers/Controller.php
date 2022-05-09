@@ -3096,12 +3096,24 @@ class Controller extends BaseController
 		// jika ada pembelian member(login) maka di cek dlu di database apakah ada referral, jika tidak ada maka cek cookie
 
 		
-		// $header = new cust_order_header();
-		// $hasil = 
+		$header = cust_order_header::where('Id_order','=',$request->Id_order)
+		->get();
+
+		$cust_order_email = cust_order_header::where('Email', $header[0]->Email)
+		->get();
+
+		$cust_order_phone = cust_order_header::where('Phone', $header[0]->Phone)
+		->get();
+
+		$member_email = member::where('Email', $header[0]->Email)
+		->get();
+
+		$member_phone = member::where('Phone', $header[0]->Phone)
+		->get();
 
 		$Receive_point_random_code ="";
 
-		if((Cookie::has('Affiliate')) && (!Cookie::has('username_login'))){
+		if((Cookie::has('Affiliate')) && (!Cookie::has('username_login')) && count($cust_order_email) <= 1 && count($cust_order_phone) <=1 && count($member_email) == 0 && count($member_phone) == 0){
 			$Receive_point_random_code = Cookie::get('Affiliate');
 		}
 
