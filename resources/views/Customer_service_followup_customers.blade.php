@@ -58,17 +58,41 @@
             <div class="card">
                 <div class="card-body">
                     {{Form::open(array('url'=>'list_available_customer/','method'=>'get','class'=>'row g-3'))}}
-                    {{ Form::label('Jumlah Transaksi :','') }}
-                    {{ Form::number('jum_transaksi', app('request')->input('jum_transaksi'), ['class'=>'form-control','id'=>'jumlah_transaksi', 'placeholder' => "0", 'required' => 'required']) }}
-                    {{ Form::label('Operasi Jumlah Transaksi:','') }}
-                    {{ Form::select('operasi_jumlah_transaksi', ['=' => '=', '>' => '>', '<' => '<' ], app('request')->input('operasi_jumlah_transaksi'),['class'=>'form-control','id'=>'title','required' => 'required']) }}
-                    <br>
-                    {{ Form::label('Lama Tidak Transaksi (dalam hari):','') }}
-                    {{ Form::number('lama_tidak_transaksi', app('request')->input('lama_tidak_transaksi'), ['class'=>'form-control','id'=>'lama_tidak_transaksi', 'placeholder' => "0", 'required' => 'required']) }}
-                    {{ Form::label('Operasi Lama Tidak Transaksi:','') }}
-                    {{ Form::select('operasi_lama_tidak_transaksi', ['=' => '=', '>' => '>', '<' => '<' ], app('request')->input('operasi_lama_tidak_transaksi'), ['class'=>'form-control','id'=>'title','required' => 'required']) }}
-                    <br>
-                    {{ Form::submit('Search', ['class'=>'btn btn-primary']) }}
+                    
+                
+                    {{-- <div class="row"> --}}
+                   
+                      
+                      <div class="row">
+
+                        <div class="col-md-12">
+                          {{ Form::label('Jumlah Transaksi :','') }}
+                          
+                        </div>
+                        <div class="col-md-1">
+                          {{ Form::select('operasi_jumlah_transaksi', ['=' => '=', '>' => '>', '<' => '<' ], app('request')->input('operasi_jumlah_transaksi'),['class'=>'form-control','id'=>'title','required' => 'required']) }}
+                        </div>
+                        <div class="col-md-11">
+                          {{ Form::number('jum_transaksi', app('request')->input('jum_transaksi'), ['class'=>'form-control','id'=>'jumlah_transaksi', 'placeholder' => "0", 'required' => 'required']) }}
+                        </div>
+
+                        <div class="col-md-12">
+                          {{ Form::label('Lama Tidak Transaksi (dalam hari):','') }}
+                        </div>
+                        <div class="col-md-1">
+                          {{ Form::select('operasi_lama_tidak_transaksi', ['=' => '=', '>' => '>', '<' => '<' ], app('request')->input('operasi_lama_tidak_transaksi'), ['class'=>'form-control','id'=>'title','required' => 'required']) }}
+                        </div>
+
+                        <div class="col-md-11">
+                          {{ Form::number('lama_tidak_transaksi', app('request')->input('lama_tidak_transaksi'), ['class'=>'form-control','id'=>'lama_tidak_transaksi', 'placeholder' => "0", 'required' => 'required']) }}
+                        </div>
+                        <br><br><br><br>
+                        <div class="col-md-12">
+                          {{ Form::submit('Search', ['class'=>'btn btn-primary']) }}
+                        </div>
+                      </div>
+                       
+                  
                     {{Form::close()}}
                 </div>
             </div>

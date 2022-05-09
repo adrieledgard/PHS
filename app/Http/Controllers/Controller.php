@@ -40,6 +40,7 @@ use App\cust_order_detail;
 use App\cust_order_history;
 use App\ebook;
 use App\email_ebook;
+use App\embed_checkout;
 use App\followup;
 use App\Mail\BroadcastMail;
 use App\Mail\RequestOTP;
@@ -2030,11 +2031,32 @@ class Controller extends BaseController
 
 	public function Affiliate_embed_code(Request $request)
 	{
+
 		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
 		->join('product','affiliate.Id_product','product.Id_product')
 		->leftJoin('embed_member', 'embed_member.Id_product', 'affiliate.Id_product')
 		->select('affiliate.*', 'product.*', 'embed_member.Total_diklik', 'embed_member.Id_member')
 		->get();
+
+
+		//cayang2
+		$Random_code = session()->get('userlogin')->Random_code;
+		foreach ($param['affiliate'] as $aff) {
+			$aff->checkout_detail = embed_checkout::where('submitted_embed_checkout.Id_product', $aff->Id_product)
+			->join('product','product.Id_product','submitted_embed_checkout.Id_product')
+			->join('variation_product','variation_product.Id_variation','submitted_embed_checkout.Id_variation')
+			->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_embed_checkout.id')
+			->where('submitted_embed_checkout.User_token', $Random_code)
+			->Select('cust_order_header.*','submitted_embed_checkout.*', 'product.Name as namaproduk', 'variation_product.Option_name as variasi')
+			
+			->get();
+		}
+
+
+
+
+
+
 
 		$param['dtproduct'] = product::where('product.Status','=', '1')
 		->join('brand','product.Id_brand','brand.Id_brand')
@@ -2916,11 +2938,14 @@ class Controller extends BaseController
 			$cust_header = new cust_order_header();
 			$last_id = $cust_header->getlastinvoice();
 			$order = cust_order_header::find($last_id);
-			$order_detail = cust_order_detail::where("Id_order", $last_id)->get();
+			$order_detail = cust_order_detail::where("Id_order", $last_id)
+			->join('product','product.Id_product','cust_order_detail.Id_product')
+			->join('variation_product','variation_product.Id_variation','cust_order_detail.Id_variation')
+			->get();
 			$midtrans = new CreateSnapTokenService($order, $order_detail);
 			$snapToken = $midtrans->getSnapToken(); 
 			
-			$email_content = "Silahkan melakukan dengan mengklik link di bawah ini <br> <a href='https://app.sandbox.veritrans.co.id/snap/v2/vtweb/$snapToken' target='_blank'>Click link untuk melakukan pembayaran</a> <br><br><br> <b>Hiraukan email ini jika anda sudah melakukan pembayaran</b>";
+			$email_content = "Silahkan melakukan dengan mengklik link di bawah ini <br> <a href='https://localhost/PusatHerbalStore/public/guess_pay_email/$last_id' target='_blank'>Click link untuk melakukan pembayaran</a> <br><br><br> <b>Hiraukan email ini jika anda sudah melakukan pembayaran</b>";
 			Mail::to($order->Email)->send(new SendEmail("Konfirmasi Pembayaran", $email_content));
 
 			return $snapToken;   
@@ -3033,8 +3058,147 @@ class Controller extends BaseController
 		 echo $last_id;
 	}
 
-	public function Send_tracking_order(Request $request)
+	public function pay_email_guest(Request $request)
 	{
+		$order = cust_order_header::find($request->Id_order);
+		$order_detail = cust_order_detail::where("Id_order", $request->Id_order)
+		->join('product','product.Id_product','cust_order_detail.Id_product')
+		->join('variation_product','variation_product.Id_variation','cust_order_detail.Id_variation')
+		->get();
+		$midtrans = new CreateSnapTokenService($order, $order_detail);
+		$snapToken = $midtrans->getSnapToken(); 
+		
+	
+		return $snapToken;   
+	}
+
+	public function Send_tracking_order(Request $request) //pesanan status nya payment receive
+	{
+
+		$data = cust_order_header::find($request->Id_order); 
+		$data->Status = 2; 
+		$data->save(); 
+
+		$order_history = new cust_order_history();
+		$order_history->Order_status = 2;
+		$order_history->Record = "Pembayaran telah diterima";
+		$order_history->Id_order = $request->Id_order;
+		$order_history->save();
+
+		// checker FU tidak ada karena guess
+
+		// $this->checkerFollowup($data->Id_member, $data->Date_time, $row->Id_order);
+
+
+
+
+		// (HANDLING POINT SYSTEM)
+		// jika ada pembelian member(login) maka di cek dlu di database apakah ada referral, jika tidak ada maka cek cookie
+
+		
+		// $header = new cust_order_header();
+		// $hasil = 
+
+		$Receive_point_random_code ="";
+
+		if((Cookie::has('Affiliate')) && (!Cookie::has('username_login'))){
+			$Receive_point_random_code = Cookie::get('Affiliate');
+		}
+
+		if($Receive_point_random_code!="")
+		{
+			
+			$penambahanpoin=0;
+			$receive_point_member = member::where('Random_code', $Receive_point_random_code)->first(); //member yang menerima
+			$point = $receive_point_member->Point;
+			
+			
+			//cayang3
+			if(!Cookie::has('First_transaction')){
+				$order = cust_order_header::where('cust_order_header.Id_order',$request->Id_order)
+						->join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+						->get();
+						
+				foreach ($order as $detail) {
+					$affiliate = affiliate::where('Id_product', $detail->Id_product)
+								->where('Id_variation', $detail->Id_variation)
+								->where('Status', 1)
+								->get();
+
+					if(count($affiliate) > 0){
+						foreach ($affiliate as $aff) {
+							$point += $aff->Poin;
+							$penambahanpoin += $aff->Poin;
+						}
+					}else {
+						// $point += 100;
+					}
+				}
+				
+				$me = new member();
+				$hasil = $me->edit_point($receive_point_member->Id_member, $point);
+				// (new member)->edit_point($receive_point_member->Id_member, $point);
+
+
+				$First_point = 0;
+				$fp= member::where('Id_member','=',$receive_point_member->Id_member)
+				->get();
+
+				$First_point = $fp[0]->Point;
+				
+
+				try {
+					//code...
+					$pc = point_card::where('Id_member','=',$receive_point_member->Id_member)
+					->orderBy('Id_point_card')
+					->get();
+
+					
+					foreach ($pc as $datapc) {
+						# code...
+						$First_point = $datapc->Last_point;
+					}
+				} catch (\Throwable $th) {
+					//throw $th;
+				}
+				
+
+				$Last_point = $point;
+
+
+
+				$tgl= date('d/m/Y');
+				$tglfix = $tgl[6].$tgl[7].$tgl[8].$tgl[9]."/".$tgl[3].$tgl[4]."/".$tgl[0].$tgl[1];
+				
+				$pointcard = new point_card;
+				$hasil = $pointcard->add_point_card($receive_point_member->Id_member,$tglfix,$First_point,$penambahanpoin,0,$Last_point,"Affiliate Success",$request->Id_order);
+
+
+				Cookie::queue(Cookie::make("First_transaction", "1", 1500000));
+
+				
+				// Handling ubah Cust_order_header (Affiliate & tracking code)
+
+				// $session_member = session()->get('userlogin');
+				// $member = member::find($session_member->Id_member); 
+
+
+				$Id_prospect=0;
+				if(Cookie::has('Id_prospect'))
+				{
+					$Id_prospect=Cookie::get('Id_prospect');
+				}
+
+				$ss = new cust_order_header();
+				$hasil = $ss->update_affiliate_trackingcode($request->Id_order,  Cookie::get('Affiliate') , Cookie::get('Tracking_code'), $Id_prospect);
+				
+				
+			}
+			
+		}
+
+		
+
 		$order = cust_order_header::find($request->Id_order);
 		$email_content = "Silahkan melacak pesanan anda dengan mengklik link di bawah ini <br> <a href='https://localhost/PusatHerbalStore/public/Tracking/$request->Id_order' target='_blank'>Click link untuk melacak pesanan</a>";
 		Mail::to($order->Email)->send(new SendEmail("Pesanan $request->Id_order", $email_content));
@@ -3045,6 +3209,11 @@ class Controller extends BaseController
 	public function Tracking($id_order)
 	{
 		return view('Cust_guest_tracking_order', compact('id_order'));
+	}
+
+	public function guess_pay_email($id_order)
+	{
+		return view('Cust_guest_pay_email', compact('id_order'));
 	}
 
 	public function atc_from_wishlist(Request $request)
@@ -4093,27 +4262,42 @@ class Controller extends BaseController
 				Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
 				Cookie::queue(Cookie::make("Tracking_code", "EMBED-".$Variasi->Id_product, 1500000));
 			
-
+				
 				$member_aff = member::where('Random_code', $Random_code)->first();
 				$embed = DB::table('embed_member')
 				->where('Id_product', $Variasi->Id_product)
 				->where('Id_member', $member_aff->Id_member)
 				->first();
 
+				$ec = new embed_checkout();
+					$hasil = $ec->add_embed_checkout($Random_code, $param['Name'], $param['Phone'], $param['Email'], $Variasi->Id_product, $Id_variation, $Qty);
 				
-				if(!empty($member_aff)){
+				$ec2 = new embed_checkout();
+				Cookie::queue(Cookie::make("Id_prospect", $ec2->getlastid(), 1500000));
+				
+					if(!empty($member_aff)){
 					$total_diklik = 0;
 					if(!empty($embed))
 					{
 						$total_diklik = $embed->Total_diklik + 1;	
-						DB::update("update embed_member set Total_diklik = $Total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
+						DB::update("update embed_member set Total_diklik = $total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
 					}
 					else 
 					{
 						$total_diklik = 1;
 						DB::insert('insert into embed_member (Id_member, Id_product, Total_diklik) values (?, ?, ?)', [$member_aff->Id_member, $Variasi->Id_product, $total_diklik]);
 					}
-				}
+
+					
+			}
+
+				//cayang
+
+
+				
+		
+				// return "sukses";
+
 			}
 
 
@@ -4161,12 +4345,15 @@ class Controller extends BaseController
 					'Id_variation' => $Id_variation, 
 					'Qty' => $Qty
 					);
-				 array_push($arr, $baru); 
-				 session()->put('cart', json_encode($arr));
-				 $param['cart'] = json_decode(session()->get('cart'));
+				array_push($arr, $baru); 
+				session()->put('cart', json_encode($arr));
+				$param['cart'] = json_decode(session()->get('cart'));
 			}
 			
 		}
+
+
+		
 		$param['product'] = product::where('Status','=',1)
 		->get();
 
@@ -4207,7 +4394,7 @@ class Controller extends BaseController
 		$arr= [];  // array 
 		$arr2= [];  // array 
 		foreach($db as $row) {
-            $arr[0] = "";
+			$arr[0] = "";
 			$arr2[0] = "";
 			$arr[$row->Id_province] = $row->Province_name; 
 			$arr2[$row->Id_city] = $row->City_name; 
@@ -4218,7 +4405,7 @@ class Controller extends BaseController
 		$param['arr_city']  = $arr2; 
 		return view('Cust_checkout',$param);
 
-		}
+	}
 
 	public function order_confirmation(Request $request)
 	{

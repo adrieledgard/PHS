@@ -128,7 +128,10 @@ Route::get('Pay_cust', ["uses"=>"Controller@Pay_cust"]);
 Route::get('atc_from_wishlist', ["uses"=>"Controller@atc_from_wishlist"]);
 Route::get('Send_tracking_order', ['uses' => "Controller@Send_tracking_order"]);
 Route::get('Tracking/{id_order}', ['uses' => "Controller@Tracking"]);
+Route::get('guess_pay_email/{id_order}', ['uses' => "Controller@guess_pay_email"]);
 Route::get('Status_transaksi/{number}' , ['uses' => 'Controller@cekStatusTransaksi']);
+Route::get('pay_email_guest', ['uses' => "Controller@pay_email_guest"]);
+
 
 
 Route::get('master_product', ["uses"=>"ControllerMaster@master_product"])->middleware('CheckLogin','CheckRoleAdmin');
