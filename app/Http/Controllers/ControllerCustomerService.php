@@ -142,7 +142,7 @@ class ControllerCustomerService extends Controller
                 if(empty($followup)){
                     $jum_transaksi = cust_order_header::where("Id_member", $member->Id_member)->count();
                     if($request->get('operasi_jumlah_transaksi') == "="){
-                        if($jum_transaksi == (int)$request->get('jum_transaksi')){
+                        if($jum_transaksi != (int)$request->get('jum_transaksi')){
                             continue;
                         }
                     }else if($request->get('operasi_jumlah_transaksi') == ">"){

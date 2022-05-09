@@ -337,7 +337,7 @@ $.widget.bridge('uibutton', $.ui.button)
        }
        var button = $(event.relatedTarget);
        var download_detail = button.data('download');
-
+       console.log(download_detail);
        $(".table-body-download-detail").html("");
        download_detail.forEach(detail => {
 
@@ -364,7 +364,7 @@ $.widget.bridge('uibutton', $.ui.button)
                </tr>
                 `)
             }
-            else / (detail.Tracking_code.match(/EBOOK.*/))/allready buy
+            else if(detail.Tracking_code.match(/EBOOK.*/))
             {
                 $(".table-body-download-detail").append(`
                <tr>
