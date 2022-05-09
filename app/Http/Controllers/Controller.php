@@ -3055,7 +3055,7 @@ class Controller extends BaseController
 		 echo $last_id;
 	}
 
-	public function Send_tracking_order(Request $request)
+	public function Send_tracking_order(Request $request) //pesanan status nya payment receive
 	{
 		$order = cust_order_header::find($request->Id_order);
 		$email_content = "Silahkan melacak pesanan anda dengan mengklik link di bawah ini <br> <a href='https://localhost/PusatHerbalStore/public/Tracking/$request->Id_order' target='_blank'>Click link untuk melacak pesanan</a>";

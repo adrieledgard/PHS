@@ -1147,14 +1147,14 @@
             ,Discount:Discount,Grand_total:Grand_total},
         function(result){
 
-            if($('#guess').val()=="yes")
+            if($('#guess').val()=="yes") //guess
             {
                 snap.pay(result, {
                     // Optional
                     onSuccess: function(result) {
                         /* You may add your own js here, this is just example */
                         // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                        console.log('ngentot');
+                        
                     },
                     // Optional
                     onPending: function(result) {
