@@ -1174,7 +1174,9 @@
                         /* You may add your own js here, this is just example */
                         // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
                         console.log("masuk mode onError"); 
-                        console.log(result)
+                        console.log(result);
+
+                        alert('error pembayaran, atau pembayaran sudah selesai');
                     }
                 }); 
 
