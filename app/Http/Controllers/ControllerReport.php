@@ -58,7 +58,9 @@ class ControllerReport extends Controller
 
         $period = explode(" - ", $request->date_period);
 
-
+        $period[0] = date("Y-m-d", strtotime($period[0]));
+        $period[1] = date("Y-m-d", strtotime($period[1]));
+        
         $stockcard = stock_card::where('stock_card.Id_variation','=',$Id_variation)
         ->join('Product','stock_card.Id_product','Product.Id_product')
          ->join('variation_product','stock_card.Id_variation','variation_product.Id_variation')
