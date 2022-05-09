@@ -1909,11 +1909,12 @@ class Controller extends BaseController
 
 		foreach ($param['ebooks'] as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
-			$book->downloaded_detail = email_ebook::where('submitted_email_ebook.Ebook_id', $book->Id_ebook)
-			->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_email_ebook.id')
+			$book->downloaded_detail = email_ebook::leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_email_ebook.id')
 			->Select('cust_order_header.*','submitted_email_ebook.*')
+			->where('submitted_email_ebook.Ebook_id', $book->Id_ebook)
 			->where('submitted_email_ebook.User_token', $Random_code)
 			->get();
+
 		}
 
 
@@ -3311,7 +3312,7 @@ class Controller extends BaseController
 									if($Receive_point_random_code!="")
 									{
 										if($session_member->Random_code != $Receive_point_random_code){ //untuk menghindari cookie sama dgn random code user
-											
+											$point = 0;
 											try {
 												$member = member::find($session_member->Id_member); //member pemberi
 												$penambahanpoin=0;
