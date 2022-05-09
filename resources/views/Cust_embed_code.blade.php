@@ -167,7 +167,7 @@
                                                         {{$totaldiklik}}
                                                         <br>
                                                         @if ($totaldiklik > 0)
-                                                        {{ Form::button('Detail Checkout', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-checkout'=>$affiliate->checkout_detail,'data-toggle'=>'modal','data-target'=>'#checkout_detail']) }}
+                                                        {{ Form::button('Detail Checkout', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-checkout'=>$data_aff->checkout_detail,'data-toggle'=>'modal','data-target'=>'#checkout_detail']) }}
                                                         @endif
                                                         </td>
 
@@ -226,7 +226,7 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body" style="overflow-y: scroll">
-            <table class="table-download-detail" >
+            <table class="table-checkout-detail" >
                 <thead>
                     <tr>
                         <th>Nama</th>
@@ -234,10 +234,11 @@
                         <th>Phone</th>
                         <th>Produk</th>
                         <th>Qty</th>
+                        <th>Date checkout</th>
                         <th>Already buy</th>
                     </tr>
                 </thead>
-                <tbody class="table-body-download-detail">
+                <tbody class="table-body-checkout-detail">
                     
                 </tbody>
             </table>
@@ -404,6 +405,83 @@ $.widget.bridge('uibutton', $.ui.button)
             location.reload();
         });
     }
+   
+    
+    $("#checkout_detail").on('show.bs.modal', function(event){
+        if ( $.fn.DataTable.isDataTable('.table-checkout-detail') ) {
+         $('.table-checkout-detail').DataTable().destroy();
+       }
+       var button = $(event.relatedTarget);
+       var checkout_detail = button.data('checkout');
+
+       $(".table-body-checkout-detail").html("");
+       checkout_detail.forEach(detail => {
+
+            if(detail.Address == null)  // blm beli
+            {
+                $(".table-body-checkout-detail").append(`
+               <tr>
+                    <td>
+                        `+detail.Name+`
+                    </td>
+                    <td>
+                        `+detail.Email +`
+                    </td>
+                    <td>
+                        `+detail.Phone+`
+                    </td>
+                    <td>
+                        `+detail.namaproduk+` (`+detail.variasi+`)
+                    </td>
+                    <td>
+                        `+detail.Qty+`
+                    </td>
+                    <td>
+                        `+detail.created_at+`
+                    </td>
+                    <td>
+                        No
+                    </td>
+                   
+               </tr>
+                `)
+            }
+            else if (detail.Tracking_code.match(/EMBED.*/))//allready buy
+            {
+                $(".table-body-checkout-detail").append(`
+               <tr>
+                    <td>
+                        `+detail.Name+`
+                    </td>
+                    <td>
+                        `+detail.Email +`
+                    </td>
+                    <td>
+                        `+detail.Phone+`
+                    </td>
+                    <td>
+                        `+detail.namaproduk+` (`+detail.variasi+`)
+                    </td>
+                    <td>
+                        `+detail.Qty+`
+                    </td>
+                    <td>
+                        `+detail.created_at+`
+                    </td>
+                    <td>
+                        Yes
+                        <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order' data-order='`+detail.Id_order+`'>Rincian</button>
+                        
+                    </td>
+                   
+               </tr>
+                `)
+            }
+           
+       });
+       $(".table-checkout-detail").DataTable();
+    });
+
     $("#rincian_order").on('show.bs.modal', function(event){
        var button = $(event.relatedTarget);
        var orders = button.data('order')

@@ -2031,11 +2031,32 @@ class Controller extends BaseController
 
 	public function Affiliate_embed_code(Request $request)
 	{
+
 		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
 		->join('product','affiliate.Id_product','product.Id_product')
 		->leftJoin('embed_member', 'embed_member.Id_product', 'affiliate.Id_product')
 		->select('affiliate.*', 'product.*', 'embed_member.Total_diklik', 'embed_member.Id_member')
 		->get();
+
+
+		//cayang2
+		$Random_code = session()->get('userlogin')->Random_code;
+		foreach ($param['affiliate'] as $aff) {
+			$aff->checkout_detail = embed_checkout::where('submitted_embed_checkout.Id_product', $aff->Id_product)
+			->join('product','product.Id_product','submitted_embed_checkout.Id_product')
+			->join('variation_product','variation_product.Id_variation','submitted_embed_checkout.Id_variation')
+			->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_embed_checkout.id')
+			->where('submitted_embed_checkout.User_token', $Random_code)
+			->Select('cust_order_header.*','submitted_embed_checkout.*', 'product.Name as namaproduk', 'variation_product.Option_name as variasi')
+			
+			->get();
+		}
+
+
+
+
+
+
 
 		$param['dtproduct'] = product::where('product.Status','=', '1')
 		->join('brand','product.Id_brand','brand.Id_brand')
@@ -4094,7 +4115,7 @@ class Controller extends BaseController
 				Cookie::queue(Cookie::make("Affiliate", $Random_code, 1500000));
 				Cookie::queue(Cookie::make("Tracking_code", "EMBED-".$Variasi->Id_product, 1500000));
 			
-
+				
 				$member_aff = member::where('Random_code', $Random_code)->first();
 				$embed = DB::table('embed_member')
 				->where('Id_product', $Variasi->Id_product)
@@ -4103,7 +4124,11 @@ class Controller extends BaseController
 
 				$ec = new embed_checkout();
 					$hasil = $ec->add_embed_checkout($Random_code, $param['Name'], $param['Phone'], $param['Email'], $Variasi->Id_product, $Id_variation, $Qty);
-				if(!empty($member_aff)){
+				
+				$ec2 = new embed_checkout();
+				Cookie::queue(Cookie::make("Id_prospect", $ec2->getlastid(), 1500000));
+				
+					if(!empty($member_aff)){
 					$total_diklik = 0;
 					if(!empty($embed))
 					{
@@ -4117,7 +4142,7 @@ class Controller extends BaseController
 					}
 
 					
-				}
+			}
 
 				//cayang
 

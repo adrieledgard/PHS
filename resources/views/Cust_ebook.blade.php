@@ -364,7 +364,7 @@ $.widget.bridge('uibutton', $.ui.button)
                </tr>
                 `)
             }
-            else //allready buy
+            else / (detail.Tracking_code.match(/EBOOK.*/))/allready buy
             {
                 $(".table-body-download-detail").append(`
                <tr>
