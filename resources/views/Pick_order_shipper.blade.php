@@ -394,7 +394,7 @@
             })
             .then((print) => {
               if (print) {
-                
+                // alert(kumpulan_id_order);
                 multiple_print_shipping_label(kumpulan_id_order);
 
               } else {
@@ -412,7 +412,8 @@
       if(kumpulan_id_order.length == 0){
         let semua_cb_centang =$(".cb_child:checked")
 
-        $.each(semua_cb_centang,function(index,elm){
+        $.each(semua_cb_centang,function(index,elm)
+        {
 
           if(index==semua_cb_centang.length-1)
           {
@@ -424,6 +425,10 @@
           }
         
         });
+      }
+      else
+      {
+        kump_id_order =kumpulan_id_order;
       }
       window.open(myurl + '/Print_shipping_label?kumpulan_id_order=' + kump_id_order, '_blank',  'noreferrer');
 

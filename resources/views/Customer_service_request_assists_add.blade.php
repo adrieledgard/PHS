@@ -89,7 +89,7 @@
         </div>
         <div class="col-md-12">
           {{ Form::label('Description :','') }}
-          {{ Form::textarea('description', '', ['class'=>'form-control','id'=>'description', 'placeholder' => "Copy dan paste bukti chat", 'required' => 'required']) }}
+          {{ Form::textarea('description', '', ['class'=>'form-control','id'=>'description', 'placeholder' => "DESKRIPSI", 'required' => 'required']) }}
         </div>
         <div class="col-md-12">
           {{ Form::label('Bukti Chat :','') }}

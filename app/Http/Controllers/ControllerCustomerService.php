@@ -26,7 +26,9 @@ class ControllerCustomerService extends Controller
 
     public function index_request_assist()
     {
-        $tickets = Ticket::all();
+        $tickets = Ticket::join('member','member.Id_member','table_ticket.Cs_id')
+        ->select('member.Username as namacs','table_ticket.*')
+        ->get();
         return view('Customer_service_list_request_assists', compact('tickets'));
     }
 
@@ -61,10 +63,25 @@ class ControllerCustomerService extends Controller
 
     public function closed( Request $request)
     {
-        $ticket = new Ticket();
-        $ticket->closed($request->id);
-        
-        return redirect()->route('list_request_assist');
+        //cayang4
+        $role = session()->get('userlogin')->Role;
+
+        $tkt = Ticket::find($request->id);
+
+        if(($role == 'ADMIN') || ($tkt->Cs_id == session()->get('userlogin')->Id_member))
+        {
+            $ticket = new Ticket();
+            $ticket->closed($request->id);
+
+            return redirect()->route('list_request_assist');
+        }
+        else
+        {
+            //error, tidak bisa close karena buka admin/bukan cs yg open tiket
+
+            return redirect()->route('list_request_assist')->with('error','Error, only admin or ticket maker can close ticket');
+        }
+
     }
 
     public function get_ticket_chat(Request $request)
