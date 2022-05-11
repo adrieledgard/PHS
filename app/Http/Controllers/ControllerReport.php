@@ -200,6 +200,7 @@ class ControllerReport extends Controller
         $products = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
             ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
             ->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')
+            ->where('cust_order_header.Status', '>=', 2)
             ->groupBy('product.Id_product', 'product.Name', 'variation_product.Id_variation', 'variation_product.Option_name')
             ->orderBy('qty', 'desc')
             ->selectRaw("sum(cust_order_detail.Qty) as qty, product.Name, variation_product.Option_name")->get();
@@ -216,7 +217,8 @@ class ControllerReport extends Controller
         $products = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
             ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
             ->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')
-            ->where("cust_order_header.Affiliate" ,'<>', "");
+            ->where("cust_order_header.Affiliate" ,'<>', "")
+            ->where('cust_order_header.Status', '>=', 2);
 
         if(isset($request->type_affiliate) && $request->type_affiliate != "all"){
             $type_affiliate = $request->type_affiliate;
