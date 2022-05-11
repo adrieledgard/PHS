@@ -45,179 +45,183 @@
         </div>
         {{-- <script type='text/javascript' charset='utf-8'>                                                                     var iframe = document.createElement('iframe');                                                                       document.body.appendChild(iframe);                                                                iframe.src = 'https://localhost/PusatHerbalStore/public/embed_code/39/8dppa1aa94atv';                                                                       iframe.width = '100%';                                                                iframe.height = 600;                                                                </script>; --}}
         {{-- <script type='text/javascript' charset='utf-8'>                                                                     var iframe = document.createElement('iframe');                                                                       document.body.appendChild(iframe);                                                                iframe.src = 'https://localhost/PusatHerbalStore/public/embed_code/38/8dppa1aa94atv';                                                                       iframe.width = '100%';                                                                iframe.height = 600;                                                                </script>; --}}
-        <script type='text/javascript' charset='utf-8'>                                                                     var iframe = document.createElement('iframe');                                                                       document.body.appendChild(iframe);                                                                iframe.src = 'https://localhost/PusatHerbalStore/public/embed_code/40/8dppa1aa94atv';                                                                       iframe.width = '100%';                                                                iframe.height = 600;                                                                </script>;
+        <script type='text/javascript' charset='utf-8'>                                                                     var iframe = document.createElement('iframe');                                                                       document.body.appendChild(iframe);                                                                iframe.src = 'https://localhost/PusatHerbalStore/public/embed_code/40/8dppa1aa94atv';                                                                       iframe.width = '100%';                                                                iframe.height = 600;                                                                </script>
         <div class="product-style">
             <div class="popular-product-active owl-carousel" style="z-index: 100">
 
             
-
-                @foreach ($dtproduct as $product)
-                    <?php
-                        if($product->status == 1)
-                        {
-                            ?>
-                                <div class="product-wrapper">
-                                    <div class="product-img">
-                                        @php
-                                            $sale=0;
-                                            $upto= "";
-                                            $maxrupiah=0;
-                                            $mahal=0;
-                                            $tes=0;
-                                            foreach ($dtpromoheader as $promoheader ) {
-                                                if($promoheader->Id_product == $product->Id_product)
-                                                {
-                                                    $sale=1;
-                                                    $model= $promoheader->Model;
-                                                    $Id_variation = $promoheader->Id_variation;
-                                                    $sellprice=0;
-            
-                                                    foreach ($dtvariasi as $vari) {
-                                                        if($vari->Id_variation==$Id_variation)
+                @foreach ($dtpopulerproduct as $populerproduct)
+                    @foreach ($dtproduct as $product)
+                        <?php
+                            if($product->Id_product == $populerproduct->Id_product){
+                                if($product->status == 1 )
+                                {
+                                    ?>
+                                        <div class="product-wrapper">
+                                            <div class="product-img">
+                                                @php
+                                                    $sale=0;
+                                                    $upto= "";
+                                                    $maxrupiah=0;
+                                                    $mahal=0;
+                                                    $tes=0;
+                                                    foreach ($dtpromoheader as $promoheader ) {
+                                                        if($promoheader->Id_product == $product->Id_product)
                                                         {
-                                                            $sellprice=$vari->Sell_price;
-                                                        }
-                                                    }
-            
-                                                    foreach ($dtpromodetail as $promodetail) {
-                                                        if($promoheader->Id_promo == $promodetail->Id_promo )
-                                                        {
-                                                            if($model=='%')
-                                                            {
-                                                                if(($sellprice * ($promodetail->Discount / 100)) > $mahal)
+                                                            $sale=1;
+                                                            $model= $promoheader->Model;
+                                                            $Id_variation = $promoheader->Id_variation;
+                                                            $sellprice=0;
+                    
+                                                            foreach ($dtvariasi as $vari) {
+                                                                if($vari->Id_variation==$Id_variation)
                                                                 {
-                                                                    $mahal= $sellprice * ($promodetail->Discount / 100);
-                                                                    $upto=$promodetail->Discount." %";
-                                                                    $tes = $mahal;
+                                                                    $sellprice=$vari->Sell_price;
                                                                 }
                                                             }
-                                                            else if($model=='RP') {
-                                                                if(($promodetail->Discount) > $mahal)
+                    
+                                                            foreach ($dtpromodetail as $promodetail) {
+                                                                if($promoheader->Id_promo == $promodetail->Id_promo )
                                                                 {
-                                                                    $mahal= $promodetail->Discount;
-                                                                    $upto= "Rp. ". number_format($promodetail->Discount);
+                                                                    if($model=='%')
+                                                                    {
+                                                                        if(($sellprice * ($promodetail->Discount / 100)) > $mahal)
+                                                                        {
+                                                                            $mahal= $sellprice * ($promodetail->Discount / 100);
+                                                                            $upto=$promodetail->Discount." %";
+                                                                            $tes = $mahal;
+                                                                        }
+                                                                    }
+                                                                    else if($model=='RP') {
+                                                                        if(($promodetail->Discount) > $mahal)
+                                                                        {
+                                                                            $mahal= $promodetail->Discount;
+                                                                            $upto= "Rp. ". number_format($promodetail->Discount);
+                                                                        }
+                                                                    }
+                                                                    
                                                                 }
                                                             }
                                                             
                                                         }
                                                     }
-                                                    
-                                                }
-                                            }
-            
-                                            if($sale==1)
-                                            {
+                    
+                                                    if($sale==1)
+                                                    {
+                                                        @endphp
+                                                        <span class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem;align-content: center; font-size:70%">
+                                                            Sale
+                                                        </span>
+                                                        @php
+                                                    }
+                    
                                                 @endphp
-                                                <span class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem;align-content: center; font-size:70%">
-                                                    Sale
-                                                </span>
+                                                <!-- Product image-->
                                                 @php
-                                            }
-            
-                                        @endphp
-                                        <!-- Product image-->
-                                        @php
-                                            $gambardata = "";
-            
-                                            foreach ($dtproductimage as $gambar ) {
-                                            if(($gambar->Id_product == $product->Id_product )&& ($gambar->Image_order == 1))
-                                            {
-                                                    $gambardata = $gambar->Image_name;
-                                            }
-                                            }
-            
-                                            if($gambardata=="")
-                                            {
-                                                $gambardata="default.jpg";
-                                            }
-                                        @endphp
-            
-                                        <a href="{!! url('Cust_show_product/'.$product->Id_product); !!}">
-                                            <img src="{{asset('Uploads/Product/'.$gambardata)}}" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="funiture-product-content text-center">
-                                        <h4><a href="{!! url('Cust_show_product/'.$product->Id_product); !!}">{{$product->Name}}</a></h4>
-                                        {{-- <div class="rating-number" style="align-content: center;align-text:center"> --}}
-                                            <div class="quick-view-rating">
+                                                    $gambardata = "";
+                    
+                                                    foreach ($dtproductimage as $gambar ) {
+                                                    if(($gambar->Id_product == $product->Id_product )&& ($gambar->Image_order == 1))
+                                                    {
+                                                            $gambardata = $gambar->Image_name;
+                                                    }
+                                                    }
+                    
+                                                    if($gambardata=="")
+                                                    {
+                                                        $gambardata="default.jpg";
+                                                    }
+                                                @endphp
+                    
+                                                <a href="{!! url('Cust_show_product/'.$product->Id_product); !!}">
+                                                    <img src="{{asset('Uploads/Product/'.$gambardata)}}" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="funiture-product-content text-center">
+                                                <h4><a href="{!! url('Cust_show_product/'.$product->Id_product); !!}">{{$product->Name}}</a></h4>
+                                                {{-- <div class="rating-number" style="align-content: center;align-text:center"> --}}
+                                                    <div class="quick-view-rating">
+                                                        @php
+                                                            for($i = 1; $i <= 5; $i++){
+                                                                if($i <= ceil($product->Rating)){
+                                                                    echo '<i class="fas fa-star"></i>';
+                                                                }else {
+                                                                    echo '<i class="far fa-star"></i>';
+                                                                }
+                                                            }
+                                                        @endphp
+                                                    </div>
+                                                    <div class="quick-view-number">
+                                                        <span>{{$product->Rating}} Rating (S)</span>
+                                                        <span>Terjual {{$populerproduct->qty}} kali</span>
+                                                    </div>
+                                                {{-- </div> --}}
+                                                <!-- Product price-->
                                                 @php
-                                                    for($i = 1; $i <= 5; $i++){
-                                                        if($i <= ceil($product->Rating)){
-                                                            echo '<i class="fas fa-star"></i>';
-                                                        }else {
-                                                            echo '<i class="far fa-star"></i>';
+                                                    $Id_product=$product->Id_product;
+                                                    $fixharga="";
+                                                    $murah=999999999999;
+                                                    $mahal=0;
+                                                    $ctr=0;
+                                                    foreach ($dtvariasi as $datavariasi) {
+                                                        if($Id_product == $datavariasi->Id_product && $datavariasi->Status == 1)
+                                                        {
+                                                            $ctr++;
+                                                            if($datavariasi->Sell_price < $murah)
+                                                            {
+                                                                $murah= $datavariasi->Sell_price;
+                                                            }
+                    
+                    
+                                                            if($datavariasi->Sell_price > $mahal)
+                                                            {
+                                                                $mahal= $datavariasi->Sell_price;
+                                                            }
                                                         }
                                                     }
+                    
+                                                    if($ctr==1)
+                                                    {
+                                                        $fixharga = 'Rp. '. number_format($mahal);
+                                                    }
+                                                    else {
+                                                        $fixharga = 'Rp. '.number_format($murah).' - '.number_format($mahal);
+                                                    }
                                                 @endphp
-                                            </div>
-                                            <div class="quick-view-number">
-                                                <span>{{$product->Rating}} Rating (S)</span>
-                                            </div>
-                                        {{-- </div> --}}
-                                        <!-- Product price-->
-                                        @php
-                                            $Id_product=$product->Id_product;
-                                            $fixharga="";
-                                            $murah=999999999999;
-                                            $mahal=0;
-                                            $ctr=0;
-                                            foreach ($dtvariasi as $datavariasi) {
-                                                if($Id_product == $datavariasi->Id_product && $datavariasi->Status == 1)
-                                                {
-                                                    $ctr++;
-                                                    if($datavariasi->Sell_price < $murah)
-                                                    {
-                                                        $murah= $datavariasi->Sell_price;
-                                                    }
-            
-            
-                                                    if($datavariasi->Sell_price > $mahal)
-                                                    {
-                                                        $mahal= $datavariasi->Sell_price;
-                                                    }
-                                                }
-                                            }
-            
-                                            if($ctr==1)
-                                            {
-                                                $fixharga = 'Rp. '. number_format($mahal);
-                                            }
-                                            else {
-                                                $fixharga = 'Rp. '.number_format($murah).' - '.number_format($mahal);
-                                            }
-                                        @endphp
-                                
-                                
-                                    <span> 
-                                        @php
-                                            echo $fixharga;
-                                        @endphp
-                                    </span>
-                                    <br>
-                                <?php
-                                    if($sale==1)
-                                    {
-                                        ?>
-                                        <span style="color: red">
-                                            Discount up to 
-                                            @php
-                                                echo $upto;
-                                            @endphp
-                                        </span>
+                                        
+                                        
+                                            <span> 
+                                                @php
+                                                    echo $fixharga;
+                                                @endphp
+                                            </span>
+                                            <br>
                                         <?php
-            
-                                    }
-                                    ?>
-                                    
-                                    </div>
-                                </div>
-                            <?php
-                        }
-                    ?>
+                                            if($sale==1)
+                                            {
+                                                ?>
+                                                <span style="color: red">
+                                                    Discount up to 
+                                                    @php
+                                                        echo $upto;
+                                                    @endphp
+                                                </span>
+                                                <?php
                     
+                                            }
+                                            ?>
+                                            
+                                            </div>
+                                        </div>
+                                    <?php
+                                }
+                            }
+                        ?>
+                        
+                        
+                        
                     
-                    
-                
+                    @endforeach
                 @endforeach
 
                

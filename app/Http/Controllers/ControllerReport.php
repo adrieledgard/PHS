@@ -197,7 +197,6 @@ class ControllerReport extends Controller
 
     public function populer_product($option)
 	{
-        $temp = "";
         $products = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
             ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
             ->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')

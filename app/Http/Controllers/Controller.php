@@ -86,6 +86,7 @@ class Controller extends BaseController
 		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status", "product.Rating")
 			->get();
 
+		$param['dtpopulerproduct'] = $this->getPopulerProduct();
 
 		$param['dtcust_order_header'] = cust_order_header::where('Status','>',1)
 		->get();
@@ -4677,5 +4678,16 @@ class Controller extends BaseController
 		otp::where('Kode', $request->kode_otp)->update(['Status' => "Used"]);
 
 		return view('forgot_password')->with(['success' => "Password berhasil diganti"]);
+	}
+
+	public function getPopulerProduct()
+	{
+		$products = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+            ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
+            ->groupBy('product.Id_product', 'product.Name')
+            ->orderBy('qty', 'desc')
+            ->selectRaw("sum(cust_order_detail.Qty) as qty, product.Id_product, product.Name")->get();
+
+			return $products;
 	}
 }
