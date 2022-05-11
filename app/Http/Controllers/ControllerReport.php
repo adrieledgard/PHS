@@ -194,4 +194,44 @@ class ControllerReport extends Controller
 
 		return([$temp, $summary]);
 	}
+
+    public function populer_product($option)
+	{
+        $products = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+            ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
+            ->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')
+            ->groupBy('product.Id_product', 'product.Name', 'variation_product.Id_variation', 'variation_product.Option_name')
+            ->orderBy('qty', 'desc')
+            ->selectRaw("sum(cust_order_detail.Qty) as qty, product.Name, variation_product.Option_name")->get();
+
+        if($option == 'print'){
+            return view('Report_populer_product_print', compact('products'));
+        }
+        return view('Report_populer_product', compact('products'));
+	}
+
+    public function populer_affiliate_product(Request $request, $option)
+	{
+        $type_affiliate = "all";
+        $products = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+            ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
+            ->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')
+            ->where("cust_order_header.Affiliate" ,'<>', "");
+
+        if(isset($request->type_affiliate) && $request->type_affiliate != "all"){
+            $type_affiliate = $request->type_affiliate;
+            $products = $products->where("cust_order_header.Tracking_code", 'like', "%$request->type_affiliate%");   
+        }else {
+            $products = $products->where("cust_order_header.Tracking_code", "<>", '0');
+        }
+
+        $products = $products->groupBy('product.Id_product', 'product.Name', 'variation_product.Id_variation', 'variation_product.Option_name')
+            ->orderBy('qty', 'desc')
+            ->selectRaw("sum(cust_order_detail.Qty) as qty, product.Name, variation_product.Option_name")->get();
+
+        if($option == 'print'){
+            return view('Report_populer_affiliate_product_print', compact('products'));
+        }
+        return view('Report_populer_affiliate_product', compact('products', 'type_affiliate'));
+	}
 }

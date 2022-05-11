@@ -461,6 +461,24 @@ if(session()->get('userlogin')->Role =="ADMIN")
         </li>
         
       </ul>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('populer_product' . "/show"); !!}" class="nav-link  @yield('populer_product_report_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Populer Product</p>
+          </a>
+        </li>
+        
+      </ul>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('populer_affiliate_product' . "/show"); !!}" class="nav-link  @yield('populer_affilite_product_report_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Populer Affiliate Product</p>
+          </a>
+        </li>
+        
+      </ul>
     </li>
     
       <?php 
