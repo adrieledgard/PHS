@@ -472,9 +472,9 @@ if(session()->get('userlogin')->Role =="ADMIN")
       </ul>
       <ul class="nav nav-treeview">
         <li class="nav-item">
-          <a href="{!! url('followup_report'); !!}" class="nav-link  @yield('followup_report_atv')">
+          <a href="{!! url('populer_affiliate_product' . "/show"); !!}" class="nav-link  @yield('populer_affilite_product_report_atv')">
             <i class="far fa-circle nav-icon"></i>
-            <p>Follow Up</p>
+            <p>Populer Affiliate Product</p>
           </a>
         </li>
         

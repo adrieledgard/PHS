@@ -15,11 +15,10 @@
 <body onload="window.print()">
   <div class="row">
     <div class="col-md-12"> 
-        <h3>Populer Product Report</h3>
+        <h3>Populer Affiliate Product Report</h3>
       </div>
       
   </div>
-<br>
   <div class="row">
     <div class="col-md-12">
       <table id="table_populer_product" class='table table-striped display'>
