@@ -133,13 +133,20 @@ class ControllerCustomerService extends Controller
     {
         $available_customers = [];
         if($request->exists('lama_tidak_transaksi')){
+
             $date = date('Y-m-d', strtotime( "-" .$request->get('lama_tidak_transaksi') . " day" , strtotime (date("Y-m-d H:i:s"))));
             $periode = [$date . " 00:00:00", $date . " 23:59:59"];
             
             $members = member::where('Role', 'CUST')->get();
-            foreach ($members as $member) {
-                $followup = followup::where("Id_member", $member->Id_member)->where("End_followup_date", ">", date("Y-m-d H:i:s"))->first();
-                if(empty($followup)){
+
+            foreach ($members as $member) 
+            {
+                $followup = followup::where("Id_member", $member->Id_member)
+                ->where("End_followup_date", ">", date("Y-m-d H:i:s"))
+                ->first();
+
+                if(empty($followup))
+                {
                     $jum_transaksi = cust_order_header::where("Id_member", $member->Id_member)->count();
                     if($request->get('operasi_jumlah_transaksi') == "="){
                         if($jum_transaksi != (int)$request->get('jum_transaksi')){

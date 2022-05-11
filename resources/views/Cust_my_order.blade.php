@@ -141,7 +141,7 @@ ul.timeline > li:before {
      
                                               <hr size="10px"  style="margin-top: 2%">
                                               <h6>Please finish transaction before : </h6>
-                                              <input type='text' id='txtsnaptoken{{ $no }}' value='{{ $cr->snap_token }}'>
+                                              <input type='hidden' id='txtsnaptoken{{ $no }}' value='{{ $cr->snap_token }}'>
                                               <input type='hidden' id='txtnomernota{{ $no }}' value='{{ $cr->Id_order }}'>
                                               <input type='hidden' id='txtdatetime{{ $no }}' value='{{ $cr->jatuhtempo }}'>
                                               <input type='text' id='txtselisih{{ $no }}' value='0'>

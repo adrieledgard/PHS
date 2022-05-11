@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/pe-icon-7-stroke.css')}}">
         <link rel="stylesheet" href="{{ asset('assets/css/icofont.css')}}">
         <link rel="stylesheet" href="{{ asset('assets/css/meanmenu.min.css')}}">
-        <link rel="stylesheet" href="{{ asset('assets/css/easyzoom.css')}}">
+        {{-- <link rel="stylesheet" href="{{ asset('assets/css/easyzoom.css')}}"> --}}
         <link rel="stylesheet" href="{{ asset('assets/css/bundle.css')}}">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css')}}">
         <link rel="stylesheet" href="{{ asset('assets/css/responsive.css')}}">
@@ -64,12 +64,12 @@
                                 @endphp
 
                                 <div class="tab-pane {{$act}} show fade" id="pro-details{{$ctr}}" role="tabpanel">
-                                    <div class="easyzoom easyzoom--overlay">
+                                    {{-- <div class="easyzoom easyzoom--overlay"> --}}
                                         <a href="{{asset('Uploads/Product/'.$img->Image_name)}}">
                                             <img src="{{asset('Uploads/Product/'.$img->Image_name)}}" alt="" width="600px" height="656px">
                                             {{-- <img src="{{ asset('assets/img/product-details/l1.jpg')}}" alt=""> --}}
                                         </a>
-                                    </div>
+                                    {{-- </div> --}}
                                 </div>
 
                                 {{-- <a class="{{$act}} mr-12" href="#pro-details{{$ctr}}" data-bs-toggle="tab" role="tab" aria-selected="true">
@@ -88,12 +88,12 @@
                                     ?>
 
                                         <div class="tab-pane active show fade"  role="tabpanel">
-                                            <div class="easyzoom easyzoom--overlay">
+                                            {{-- <div class="easyzoom easyzoom--overlay"> --}}
                                                 <a href="{{asset('Uploads/Product/default.jpg')}}">
                                                     <img src="{{asset('Uploads/Product/default.jpg')}}" alt="" width="600px" height="656px">
                                                     {{-- <img src="{{ asset('assets/img/product-details/l1.jpg')}}" alt=""> --}}
                                                 </a>
-                                            </div>
+                                            {{-- </div> --}}
                                         </div>
 
                                     <?php

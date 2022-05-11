@@ -87,6 +87,24 @@ class Controller extends BaseController
 			->get();
 
 
+		$param['dtcust_order_header'] = cust_order_header::where('Status','>',1)
+		->get();
+
+		$param['dtcust_order_detail'] = cust_order_header::all()
+		->get();
+		
+		// $param['dtproduct_popular'] = product::where('product.Id_product','>', -1)
+		// ->join('brand','product.Id_brand','brand.Id_brand')
+		// ->join('type','product.Id_type','type.Id_type')
+		// ->join('cust_order_detail','cust_order_detail.Id_product','product.Id_product')
+		// // ->where('product.Status','=',1)
+		// ->where('cust_order_detail.Qty','>',0)
+		// ->distinct()
+		// ->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
+		// "product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status", "product.Rating")
+		// 	->get();
+		
+
 		$param['dtproductimage'] = product_image::all();
 
 		$param['dtvariasi'] = variation::all();
@@ -3309,6 +3327,7 @@ class Controller extends BaseController
 									$order_history->Record = "Pembayaran telah diterima";
 									$order_history->Id_order = $row->Id_order;
 									$order_history->save();
+
 
 									$this->checkerFollowup($data->Id_member, $data->Date_time, $row->Id_order);
 									// (HANDLING POINT SYSTEM)

@@ -224,7 +224,7 @@
               <div class="row">
                 <div class="col-md-6">
                   {{ Form::label('Purchase price :','') }}
-                  {{ Form::number('txt_purchase_price', $dtvariasi[0]->Purchase_price, ['class'=>'form-control','id'=>'txt_purchase_price','disabled'=>'true']) }}
+                  {{ Form::number('txt_purchase_price', $dtvariasi[0]->Purchase_price, ['class'=>'form-control','id'=>'txt_purchase_price','readonly'=>'true']) }}
                 </div>
                 <div class="col-md-6">
                   {{ Form::label('Sell Price :','') }}
@@ -248,7 +248,7 @@
                 </div>
                 <div class="col-md-6">
                   {{ Form::label('Stock :','') }}
-                  {{ Form::number('txt_stock', ($dtvariasi[0]->Stock*1 - $dtvariasi[0]->Stock_atc*1 - $dtvariasi[0]->Stock_pay*1), ['class'=>'form-control','id'=>'txt_stock','disabled'=>'true']) }}
+                  {{ Form::number('txt_stock', ($dtvariasi[0]->Stock*1 - $dtvariasi[0]->Stock_atc*1 - $dtvariasi[0]->Stock_pay*1), ['class'=>'form-control','id'=>'txt_stock','readonly'=>'true']) }}
                 </div>
               </div>
             </div>
@@ -408,7 +408,7 @@
               </div>
               <div class="col-md-12">
                 {{ Form::label('Purchase price :','') }}
-                {{ Form::number('txt_purchase_price_edit_detail', '', ['class'=>'form-control','id'=>'txt_purchase_price_edit_detail','disabled'=>'yes']) }}
+                {{ Form::number('txt_purchase_price_edit_detail', '', ['class'=>'form-control','id'=>'txt_purchase_price_edit_detail','readonly'=>'true']) }}
               </div>
               <div class="col-md-12">
                 {{ Form::label('Sell Price :','') }}
@@ -432,7 +432,7 @@
               </div>
               <div class="col-md-12">
                 {{ Form::label('Stock :','') }}
-                {{ Form::number('txt_stock_edit_detail', '', ['class'=>'form-control','id'=>'txt_stock_edit_detail','disabled'=>'yes']) }}
+                {{ Form::number('txt_stock_edit_detail', '', ['class'=>'form-control','id'=>'txt_stock_edit_detail','readonly'=>'true']) }}
               </div>
           </div>
           

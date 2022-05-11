@@ -233,7 +233,7 @@
                                     <td> </td>
                                     <td> <b style="font-size: 200%">TOTAL :</b> </td>
                                     <td> 
-                                      <b style="font-size: 200%">  Rp. {{number_format($totalcart)}}
+                                      <b style="font-size: 200%" id="grandtotalcart">  Rp. {{number_format($totalcart)}}
                                        
                                     </td>
                                 </tr>
@@ -282,9 +282,36 @@
     function updateqtycart(id_var,id_cart)
     {
         $("#subtotal"+id_var).html('Rp. '+ ($("#qtycart"+id_var).val() * $("#harga"+id_var).val()).toString().number_format());
+        
+        var grandtotal=0;
+        for (let index = 0; index < 999999; index++) {
+
+            if(($("#qtycart"+index).val() ==null) ||($("#harga"+index).val() ==null))
+            {
+
+            }
+            else
+            {
+                try {
+                grandtotal = grandtotal + ($("#qtycart"+index).val() * $("#harga"+index).val());
+                } catch (error) {
+                    
+                }
+            }
+            
+           
+            
+        }
+        
+// alert(grandtotal);
+        $("#grandtotalcart").html('  Rp. '+grandtotal.toString().number_format());
+
+
+
         $.get(myurl + '/updateqtycart',
         {Id_cart: id_cart,Qty:$("#qtycart"+id_var).val()},
         function(result){
+            // $("#grantotalcart").html('  Rp. '+result.toString().number_format());
         });
     }
 

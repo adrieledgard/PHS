@@ -120,8 +120,8 @@
                 <td>{{$ticket->Title}}</td>
                 <td>{{$ticket->Description}}</td>
                 <td>
-                  
-                  <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button>
+                  {{-- kalau mau close ticket --}}
+                  <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button> 
                   @php
                     if($ticket->Status != "CLOSED"){
                         echo '<button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button> <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#chat" data-id-ticket="' . $ticket->id . '">Chat</button>';
@@ -322,7 +322,7 @@ function openModal(id){
   $("#closedAssist").modal();
 }
 
-function delete_attachment(){
+function delete_attachment(){ // untuk delete file yg telah di pilih
   $("#attachment_file").val("");
   $('.attachment_name').css('display', 'none');
   console.log($("#attachment_file")[0].files[0]);
@@ -408,6 +408,7 @@ function renderChat(list_chat){
   });
 }
 
+// edit ticket akan terarah ke view request assis update
 function onEdit(id){
   window.location.href= `{!! url('request_assist_update/${id}') !!}`
 }
