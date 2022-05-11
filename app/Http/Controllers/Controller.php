@@ -3356,8 +3356,9 @@ class Controller extends BaseController
 												//throw $th;
 											}
 											
-											
-											if($member->First_transaction == 0){
+											// Cookie::queue(Cookie::make("First_transaction", "1", 1500000));
+											if(($member->First_transaction == 0) && (!Cookie::has('First_transaction') )) //cek first transaction
+											{
 												$order = cust_order_header::where('cust_order_header.Id_order',$row->Id_order)
 														->join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
 														->get();
@@ -3432,6 +3433,7 @@ class Controller extends BaseController
 												$ss = new cust_order_header();
 												$hasil = $ss->update_affiliate_trackingcode($row->Id_order, $member->Referral, $member->Tracking_code, $member->Id_prospect);
 												
+												Cookie::queue(Cookie::make("First_transaction", "1", 1500000));
 												
 											}
 										}
@@ -4541,7 +4543,9 @@ class Controller extends BaseController
 
 	public function checkerFollowup($Id_member, $transaction_date, $Id_order)
 	{
-		$followup = followup::where("Id_member", $Id_member)->orderBy('Id_followup', 'desc')->first();
+		$followup = followup::where("Id_member", $Id_member)
+		->orderBy('Id_followup', 'desc')
+		->first();
 
 		if(empty($followup))
 		{
@@ -4549,7 +4553,8 @@ class Controller extends BaseController
 		} 
 		else
 		{
-			if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date))){
+			if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date)))
+			{
 				(new followup())->followup_successful($followup->Id_followup, $Id_member, $Id_order);
 			}
 		}
@@ -4561,12 +4566,20 @@ class Controller extends BaseController
 	{
 		$member = member::where('Role', 'CUST')->get();
 		foreach ($member as $customer) {
-			$customer->total_order = cust_order_header::where("Id_member", $customer->Id_member)->count();
-			$customer->last_order_date = cust_order_header::where("Id_member", $customer->Id_member)->orderBy('Date_time', 'desc')->select('Date_time as tanggal')->first();
+			$customer->total_order = cust_order_header::where("Id_member", $customer->Id_member)
+			->count();
+			
+			$customer->last_order_date = cust_order_header::where("Id_member", $customer->Id_member)->orderBy('Date_time', 'desc')
+			->select('Date_time as tanggal')
+			->first();
+
 			$customer->last_order_date = $customer->last_order_date == null ? "" : $customer->last_order_date->tanggal;
 			//GET CUSTOMER TOTAL ITEM HAS BEEN ORDERED
 			$items = [];
-			$orders = cust_order_header::where('cust_order_header.Id_member', $customer->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->get();
+
+			$orders = cust_order_header::where('cust_order_header.Id_member', $customer->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')
+			->get();
+
 			foreach ($orders as $order) {
 				$detail_order = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $order->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get()->toArray();
 				$order->detail_order = $detail_order;

@@ -14,7 +14,7 @@
 @section('title2')
     Master Voucher
     <br>
-    <span style="font-size: 50%">Voucher(s) that have been claimed by customer cannot be deleted</span>
+    {{-- <span style="font-size: 50%">Voucher(s) that have been claimed by customer cannot be deleted</span> --}}
     
 @endsection
 

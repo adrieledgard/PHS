@@ -11,7 +11,7 @@ class ebook extends Model
     public $table = 'ebook';
     public $primaryKey = 'Id_ebook';
     public $timestamps = false;
-    public $fillable = ['Id_ebook', 'Id_sub_category','Id_template','Title','Content','Image','Pdf_file','Call_to_action','Status', 'Total_didownload'];
+    public $fillable = ['Id_ebook', 'Id_sub_category','Id_template','Title','Content','Image','Pdf_file','Call_to_action','Status'];
     public $incrementing = true;
 
     public function add_ebook($Id_template, $id_sub_category,$Title,$Content, $Image, $pdf, $Call_to_action)
@@ -27,7 +27,6 @@ class ebook extends Model
             'Pdf_file' => $pdf,
             'Call_to_action' => $Call_to_action,
             'Status'=>1,
-            'Total_didownload' => 1
         ]
         );
         return "sukses";

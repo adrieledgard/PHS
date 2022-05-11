@@ -65,6 +65,10 @@
 <div class="alert alert-success">
     {{ session()->get('success') }}
 </div>
+@elseif(session()->has('error'))
+      <div class="alert alert-danger">
+          {{ session()->get('error') }}
+      </div>
 @endif
 <input type="hidden" class="csrf_token" value="{{csrf_token()}}">
   <div class="container-fluid" style="height:100%;">
@@ -94,6 +98,7 @@
           <thead>
             <tr>
               <td>Nomor Ticket</td>
+              <td>Nama CS</td>
               <td>Email</td>
               <td>Phone</td>
               <td>Status</td>
@@ -107,6 +112,7 @@
               <tr>
                 
                 <td>{{$ticket->Nomor_ticket}}</td>
+                <td>{{$ticket->namacs}}</td>
                 <td>{{$ticket->Email}}</td>
                 <td>{{$ticket->Phone}}</td>
                 @php
@@ -289,6 +295,10 @@ $.widget.bridge('uibutton', $.ui.button)
 $(document).ready( function () {
 $('#table_id').DataTable();
 $('#summernote').summernote();
+
+
+
+
 
 } );
 </script>
