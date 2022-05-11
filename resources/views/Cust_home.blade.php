@@ -53,7 +53,7 @@
 
                 @foreach ($dtproduct as $product)
                     <?php
-                        if($dtproduct->status == 1)
+                        if($product->status == 1)
                         {
                             ?>
                                 <div class="product-wrapper">

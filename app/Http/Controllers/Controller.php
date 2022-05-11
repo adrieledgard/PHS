@@ -90,8 +90,7 @@ class Controller extends BaseController
 		$param['dtcust_order_header'] = cust_order_header::where('Status','>',1)
 		->get();
 
-		$param['dtcust_order_detail'] = cust_order_header::all()
-		->get();
+		$param['dtcust_order_detail'] = cust_order_header::all();
 		
 		// $param['dtproduct_popular'] = product::where('product.Id_product','>', -1)
 		// ->join('brand','product.Id_brand','brand.Id_brand')
