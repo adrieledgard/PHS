@@ -194,4 +194,20 @@ class ControllerReport extends Controller
 
 		return([$temp, $summary]);
 	}
+
+    public function populer_product($option)
+	{
+        $temp = "";
+        $products = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+            ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
+            ->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')
+            ->groupBy('product.Id_product', 'product.Name', 'variation_product.Id_variation', 'variation_product.Option_name')
+            ->orderBy('qty', 'desc')
+            ->selectRaw("sum(cust_order_detail.Qty) as qty, product.Name, variation_product.Option_name")->get();
+
+        if($option == 'print'){
+            return view('Report_populer_product_print', compact('products'));
+        }
+        return view('Report_populer_product', compact('products'));
+	}
 }

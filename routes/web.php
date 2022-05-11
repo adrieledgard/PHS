@@ -395,7 +395,7 @@ Route::get('print_followup_report', ["uses"=>"ControllerReport@print_followup_re
 Route::get('show_table_followup_cs', ["uses"=>"ControllerReport@show_table_followup_cs"]);
 Route::get('get_variation_product', ["uses"=>"ControllerReport@get_variation_product"]);
 Route::get('show_table_stock_card', ["uses"=>"ControllerReport@show_table_stock_card"]);
-
+Route::get('populer_product/{option}', ['uses' => "ControllerReport@populer_product"]);
 
 
 
