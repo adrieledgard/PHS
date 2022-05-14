@@ -1161,9 +1161,14 @@
                         var check_status = setInterval(() => {
                             $.get(myurl + "/Status_transaksi/" + result.order_id, function(result){
                                 var json_res = JSON.parse(result);
+                                console.log(json_res);
                                 if(json_res.transaction_status == 'settlement'){
                                     clearInterval(check_status);
                                     payment_success(json_res.order_id);
+                                }
+                                if(json_res.transaction_status == 'expire'){
+                                    clearInterval(check_status);
+                                    payment_expired(json_res.order_id);
                                 }
 
                             })
@@ -1209,6 +1214,11 @@
         })
     }
     
+    function payment_expired(id_order){
+        $.get(myurl + "/Cancel_order", {'Id_order' : id_order}, function(result){
+            toastr["error"]("Pesanan anda dibatalkan karena pembayaran melewati batas waktu", "Gagal");
+        })
+    }
 </script>
  
 @endpush

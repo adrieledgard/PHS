@@ -451,7 +451,10 @@ ul.timeline > li:before {
                                     clearInterval(check_status);
                                     payment_success(json_res.order_id);
                                 }
-
+                                if(json_res.transaction_status == 'expire'){
+                                    clearInterval(check_status);
+                                    payment_expired(json_res.order_id);
+                                }
                             })
                         }, 1500);
                     },
@@ -479,6 +482,12 @@ ul.timeline > li:before {
         })
     }
 
+    
+    function payment_expired(id_order){
+        $.get(myurl + "/Cancel_order", {'Id_order' : id_order}, function(result){
+            toastr["error"]("Pesanan anda dibatalkan karena pembayaran melewati batas waktu", "Gagal");
+        })
+    }
     function filter()
     {
       // alert();

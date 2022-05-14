@@ -3004,7 +3004,7 @@ class Controller extends BaseController
 			->join('product','product.Id_product','cust_order_detail.Id_product')
 			->join('variation_product','variation_product.Id_variation','cust_order_detail.Id_variation')
 			->get();
-			$midtrans = new CreateSnapTokenService($order, $order_detail);
+			$midtrans = new CreateSnapTokenService($order, $order_detail, 1);
 			$snapToken = $midtrans->getSnapToken(); 
 			
 			$email_content = "Silahkan melakukan dengan mengklik link di bawah ini <br> <a href='https://localhost/PusatHerbalStore/public/guess_pay_email/$last_id' target='_blank'>Click link untuk melakukan pembayaran</a> <br><br><br> <b>Hiraukan email ini jika anda sudah melakukan pembayaran</b>";
@@ -3278,6 +3278,12 @@ class Controller extends BaseController
 		Mail::to($order->Email)->send(new SendEmail("Pesanan $request->Id_order", $email_content));
 
 		return true;
+	}
+
+	public function cancel_order(Request $request)
+	{
+		$cust_order = new cust_order_header();
+		$cust_order->ganti_status($request->Id_order, 0);
 	}
 
 	public function Tracking($id_order)
