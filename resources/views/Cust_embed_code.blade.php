@@ -448,34 +448,70 @@ $.widget.bridge('uibutton', $.ui.button)
             }
             else
             {
-                $(".table-body-checkout-detail").append(`
-               <tr>
-                    <td>
-                        `+detail.Name+`
-                    </td>
-                    <td>
-                        `+detail.Email +`
-                    </td>
-                    <td>
-                        `+detail.Phone+`
-                    </td>
-                    <td>
-                        `+detail.namaproduk+` (`+detail.variasi+`)
-                    </td>
-                    <td>
-                        `+detail.Qty+`
-                    </td>
-                    <td>
-                        `+detail.created_at+`
-                    </td>
-                    <td>
-                        Yes
-                        <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order' data-order='`+detail.Id_order+`'>Rincian</button>
+                var potong = detail.Tracking_code.split("-"); //Pastikan embed
+                // alert(potong);
+                if(potong[0]=='EMBED')//Pastikan embed
+                {
+                    $(".table-body-checkout-detail").append(`
+                    <tr>
+                            <td>
+                                `+detail.Name+`
+                            </td>
+                            <td>
+                                `+detail.Email +`
+                            </td>
+                            <td>
+                                `+detail.Phone+`
+                            </td>
+                            <td>
+                                `+detail.namaproduk+` (`+detail.variasi+`)
+                            </td>
+                            <td>
+                                `+detail.Qty+`
+                            </td>
+                            <td>
+                                `+detail.created_at+`
+                            </td>
+                            <td>
+                                Yes
+                                <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order' data-order='`+detail.Id_order+`'>Rincian</button>
+                                
+                            </td>
                         
-                    </td>
-                   
-               </tr>
-                `)
+                    </tr>
+                    `)
+
+                }
+                else
+                {
+                    $(".table-body-checkout-detail").append(`
+                    <tr>
+                            <td>
+                                `+detail.Name+`
+                            </td>
+                            <td>
+                                `+detail.Email +`
+                            </td>
+                            <td>
+                                `+detail.Phone+`
+                            </td>
+                            <td>
+                                `+detail.namaproduk+` (`+detail.variasi+`)
+                            </td>
+                            <td>
+                                `+detail.Qty+`
+                            </td>
+                            <td>
+                                `+detail.created_at+`
+                            </td>
+                            <td>
+                                No
+                            </td>
+                        
+                    </tr>
+                        `)
+                }
+                
             }
            
        });

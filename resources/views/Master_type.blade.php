@@ -14,8 +14,8 @@
 @section('title2')
     Master Type
     <br>
-    tidak bisa delete jika<br>
-    1. sdh di pake di produk
+    {{-- tidak bisa delete jika<br>
+    1. sdh di pake di produk --}}
 @endsection
 
 @section('breadcrumb')

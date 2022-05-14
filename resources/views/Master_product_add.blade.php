@@ -189,8 +189,8 @@
                   <div class="card-body">
                     <div class="row">
                       <div class="col-md-6">
-                        {{ Form::label('Purchase price :','') }}
-                        {{ Form::number('txt_purchase_price', '', ['class'=>'form-control','id'=>'txt_purchase_price']) }}
+                        {{-- {{ Form::label('Purchase price :','') }} --}}
+                        {{ Form::hidden('txt_purchase_price', 0, ['class'=>'form-control','id'=>'txt_purchase_price','readonly'=>'true']) }}
                       </div>
                       <div class="col-md-6">
                         {{ Form::label('Sell Price :','') }}
@@ -213,8 +213,8 @@
                         {{ Form::number('txt_height', '', ['class'=>'form-control','id'=>'txt_height']) }}
                       </div>
                       <div class="col-md-6">
-                        {{ Form::label('Stock :','') }}
-                        {{ Form::number('txt_stock', '', ['class'=>'form-control','id'=>'txt_stock']) }}
+                        {{-- {{ Form::label('Stock :','') }} --}}
+                        {{ Form::hidden('txt_stock', 0, ['class'=>'form-control','id'=>'txt_stock','readonly'=>'true']) }}
                       </div>
                     </div>
                   </div>
@@ -314,32 +314,32 @@
                 {{ Form::text('txt_option_name_2', 'ada', ['class'=>'form-control','id'=>'txt_option_name_2']) }}
                 </div>
                 <div class="col-md-12">
-                  {{ Form::label('Purchase price :','') }}
-                  {{ Form::number('txt_purchase_price_2', '1', ['class'=>'form-control','id'=>'txt_purchase_price_2']) }}
+                  {{-- {{ Form::label('Purchase price :','') }} --}}
+                  {{ Form::hidden('txt_purchase_price_2', 0, ['class'=>'form-control','id'=>'txt_purchase_price_2','readonly'=>'true']) }}
                 </div>
                 <div class="col-md-12">
                   {{ Form::label('Sell Price :','') }}
-                  {{ Form::number('txt_sell_price_2', '1', ['class'=>'form-control','id'=>'txt_sell_price_2']) }}
+                  {{ Form::number('txt_sell_price_2', 0, ['class'=>'form-control','id'=>'txt_sell_price_2']) }}
                 </div>
                 <div class="col-md-12">
                   {{ Form::label('Weight :','') }}
-                  {{ Form::number('txt_weight_2', '1', ['class'=>'form-control','id'=>'txt_weight_2']) }}
+                  {{ Form::number('txt_weight_2', 0, ['class'=>'form-control','id'=>'txt_weight_2']) }}
                 </div>
                 <div class="col-md-4">
                   {{ Form::label('Length :','') }}
-                  {{ Form::number('txt_length_2', '1', ['class'=>'form-control','id'=>'txt_length_2']) }}
+                  {{ Form::number('txt_length_2', 0, ['class'=>'form-control','id'=>'txt_length_2']) }}
                 </div>
                 <div class="col-md-4">
                   {{ Form::label('Width :','') }} 
-                  {{ Form::number('txt_width_2', '1', ['class'=>'form-control','id'=>'txt_width_2']) }} 
+                  {{ Form::number('txt_width_2', 0, ['class'=>'form-control','id'=>'txt_width_2']) }} 
                 </div>
                 <div class="col-md-4">
                   {{ Form::label('Height :','') }}
-                  {{ Form::number('txt_height_2', '1', ['class'=>'form-control','id'=>'txt_height_2']) }}
+                  {{ Form::number('txt_height_2', 0, ['class'=>'form-control','id'=>'txt_height_2']) }}
                 </div>
                 <div class="col-md-12">
-                  {{ Form::label('Stock :','') }}
-                  {{ Form::number('txt_stock_2', '1', ['class'=>'form-control','id'=>'txt_stock_2']) }}
+                  {{-- {{ Form::label('Stock :','') }} --}}
+                  {{ Form::hidden('txt_stock_2', 0, ['class'=>'form-control','id'=>'txt_stock_2','readonly'=>'true']) }}
                 </div>
             </div>
             
@@ -377,8 +377,8 @@
               {{ Form::text('txt_option_name_2', '', ['class'=>'form-control','id'=>'txt_option_name_edit','readonly'=>'true']) }}
               </div>
               <div class="col-md-12">
-                {{ Form::label('Purchase price :','') }}
-                {{ Form::number('txt_purchase_price_2', '', ['class'=>'form-control','id'=>'txt_purchase_price_edit']) }}
+                {{-- {{ Form::label('Purchase price :','') }} --}}
+                {{ Form::hidden('txt_purchase_price_2', '', ['class'=>'form-control','id'=>'txt_purchase_price_edit','readonly'=>'true']) }}
               </div>
               <div class="col-md-12">
                 {{ Form::label('Sell Price :','') }}
@@ -401,8 +401,8 @@
                 {{ Form::number('txt_height_2', '', ['class'=>'form-control','id'=>'txt_height_edit']) }}
               </div>
               <div class="col-md-12">
-                {{ Form::label('Stock :','') }}
-                {{ Form::number('txt_stock_2', '', ['class'=>'form-control','id'=>'txt_stock_edit']) }}
+                {{-- {{ Form::label('Stock :','') }} --}}
+                {{ Form::hidden('txt_stock_2', '', ['class'=>'form-control','id'=>'txt_stock_edit']) }}
               </div>
           </div>
           

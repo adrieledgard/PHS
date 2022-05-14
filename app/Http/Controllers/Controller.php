@@ -1912,13 +1912,39 @@ class Controller extends BaseController
 
 	public function Ebook_marketing()
 	{
-		// $ebooks = ebook::leftJoin('ebook_member_downloaded', 'ebook.Id_ebook', 'ebook_member_downloaded.Id_ebook')->where('status', 1)->get();
 		
+		// $param['ebooks'] = ebook::where('ebook.Status','=',1)
+		// ->select('ebook.Id_ebook','ebook.Title','ebook.Image','ebook.Pdf_file','ebook.Status','ebook_member_downloaded.Total_didownload','ebook_member_downloaded.Id_member')
+		// ->leftjoin('ebook_member_downloaded','ebook.Id_ebook','ebook_member_downloaded.Id_ebook')
+		// ->get();
+		
+		// $Random_code = session()->get('userlogin')->Random_code;
+
+		// $param['cust_order'] = cust_order_header::where('Affiliate','=',$Random_code)
+		// ->where('Status','>=',2)
+		// ->get();
+
+		// foreach ($param['ebooks'] as $book) {
+		// 	$book->sub_category = sub_category::find($book->Id_sub_category);
+		// 	$book->downloaded_detail = email_ebook::leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 
+		// 	'submitted_email_ebook.id')
+		// 	->Select('cust_order_header.*','submitted_email_ebook.*')
+		// 	->where('submitted_email_ebook.Ebook_id', $book->Id_ebook)
+		// 	->where('submitted_email_ebook.User_token', $Random_code)
+		// 	->get();
+
+		// }
+
+
+
+
+		//-------------------------------------------
+
+
 		$param['ebooks'] = ebook::where('ebook.Status','=',1)
-		->select('ebook.Id_ebook','ebook.Title','ebook.Image','ebook.Pdf_file','ebook.Status','ebook_member_downloaded.Total_didownload','ebook_member_downloaded.Id_member')
-		->leftjoin('ebook_member_downloaded','ebook.Id_ebook','ebook_member_downloaded.Id_ebook')
+		->select('ebook.Id_ebook','ebook.Title','ebook.Image','ebook.Pdf_file','ebook.Status')
 		->get();
-		
+
 		$Random_code = session()->get('userlogin')->Random_code;
 
 		$param['cust_order'] = cust_order_header::where('Affiliate','=',$Random_code)
@@ -1926,6 +1952,19 @@ class Controller extends BaseController
 		->get();
 
 		foreach ($param['ebooks'] as $book) {
+			$ebook_download_member = DB::table('ebook_member_downloaded')->select('ebook_member_downloaded.Total_didownload','ebook_member_downloaded.Id_member')
+				->where("Id_ebook", $book->Id_ebook)
+				->where("Id_member", session()->get('userlogin')->Id_member)
+				->first();
+
+			if(!empty($ebook_download_member)){
+				$book->Total_didownload = $ebook_download_member->Total_didownload;
+				$book->Id_member = $ebook_download_member->Id_member;
+			}else {
+				$book->Total_download = 0;
+				$book->Id_member = 0;
+			}
+
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 			$book->downloaded_detail = email_ebook::leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_email_ebook.id')
 			->Select('cust_order_header.*','submitted_email_ebook.*')
@@ -1934,7 +1973,6 @@ class Controller extends BaseController
 			->get();
 
 		}
-
 
 		return view('Cust_ebook', $param);
 	}
@@ -2070,10 +2108,11 @@ class Controller extends BaseController
 				$aff->embed_aff->submitted = embed_checkout::join('product', 'product.Id_product', 'submitted_embed_checkout.Id_product')->join('variation_product', 'submitted_embed_checkout.Id_variation', 'variation_product.Id_variation')
 					->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_embed_checkout.id')
 					->where('submitted_embed_checkout.Id_product', $embed_aff->Id_product)->where("User_token", session()->get('userlogin')->Random_code)
-					->select("submitted_embed_checkout.*", 'product.name as namaproduk', 'variation_product.Option_name as variasi', 'cust_order_header.Id_order as Id_order')
+					->select("submitted_embed_checkout.*", 'product.name as namaproduk', 'variation_product.Option_name as variasi', 'cust_order_header.Id_order as Id_order', 'cust_order_header.Tracking_code as Tracking_code')
 					->get();
 			}
 		}
+		// , 'cust_order_header.Tracking_code as Tracking_code'
 
 
 

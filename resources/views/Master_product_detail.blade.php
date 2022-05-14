@@ -344,8 +344,8 @@
                 {{ Form::text('txt_option_name_add_detail', 'ada', ['class'=>'form-control','id'=>'txt_option_name_add_detail']) }}
                 </div>
                 <div class="col-md-12">
-                  {{ Form::label('Purchase price :','') }}
-                  {{ Form::number('txt_purchase_price_add_detail', '1', ['class'=>'form-control','id'=>'txt_purchase_price_add_detail']) }}
+                  {{-- {{ Form::label('Purchase price :','') }} --}}
+                  {{ Form::hidden('txt_purchase_price_add_detail', 0, ['class'=>'form-control','id'=>'txt_purchase_price_add_detail']) }}
                 </div>
                 <div class="col-md-12">
                   {{ Form::label('Sell Price :','') }}
@@ -368,8 +368,8 @@
                   {{ Form::number('txt_height_add_detail', '1', ['class'=>'form-control','id'=>'txt_height_add_detail']) }}
                 </div>
                 <div class="col-md-12">
-                  {{ Form::label('Stock :','') }}
-                  {{ Form::number('txt_stock_add_detail', '1', ['class'=>'form-control','id'=>'txt_stock_add_detail']) }}
+                  {{-- {{ Form::label('Stock :','') }} --}}
+                  {{ Form::hidden('txt_stock_add_detail', 0, ['class'=>'form-control','id'=>'txt_stock_add_detail']) }}
                 </div>
             </div>
             

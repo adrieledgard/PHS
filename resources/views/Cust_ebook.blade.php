@@ -364,7 +364,7 @@ $.widget.bridge('uibutton', $.ui.button)
                </tr>
                 `)
             }
-            else if(detail.Tracking_code.match(/EBOOK.*/))
+            else if(detail.Tracking_code.match(/EBOOK.*/)) //pastikan ebbok
             {
                 $(".table-body-download-detail").append(`
                <tr>
@@ -384,6 +384,29 @@ $.widget.bridge('uibutton', $.ui.button)
                         Yes
                         <button class='btn btn-sm btn-info' data-toggle='modal' data-target='#rincian_order' data-order='`+detail.Id_order+`'>Rincian</button>
                         
+                    </td>
+                   
+               </tr>
+                `)
+            }
+            else
+            {
+                $(".table-body-download-detail").append(`
+               <tr>
+                    <td>
+                        `+detail.Name+`
+                    </td>
+                    <td>
+                        `+detail.Email +`
+                    </td>
+                    <td>
+                        `+detail.Phone+`
+                    </td>
+                    <td>
+                        `+detail.Date_request+`
+                    </td>
+                    <td>
+                        No
                     </td>
                    
                </tr>
