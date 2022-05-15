@@ -99,6 +99,7 @@
   
 <script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="{{asset('assets/js/complete_order_automation.js')}}"></script>
+<script src="{{asset('assets/js/cancel_order_automation.js')}}"></script>
 {{-- <!--Start of Tawk.to Script-->
 <script type="text/javascript">
   var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();

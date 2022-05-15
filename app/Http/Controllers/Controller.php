@@ -3004,7 +3004,7 @@ class Controller extends BaseController
 			->join('product','product.Id_product','cust_order_detail.Id_product')
 			->join('variation_product','variation_product.Id_variation','cust_order_detail.Id_variation')
 			->get();
-			$midtrans = new CreateSnapTokenService($order, $order_detail, 1);
+			$midtrans = new CreateSnapTokenService($order, $order_detail, 2);
 			$snapToken = $midtrans->getSnapToken(); 
 			
 			$email_content = "Silahkan melakukan dengan mengklik link di bawah ini <br> <a href='https://localhost/PusatHerbalStore/public/guess_pay_email/$last_id' target='_blank'>Click link untuk melakukan pembayaran</a> <br><br><br> <b>Hiraukan email ini jika anda sudah melakukan pembayaran</b>";
@@ -4584,6 +4584,16 @@ class Controller extends BaseController
 			$order_history->Record = "Order sudah selesai";
 			$order_history->Id_order = $order->Id_order;
 			$order_history->save();
+		}
+	}
+
+	public function cancel_order_automation()
+	{
+		$two_days_ago = date('Y-m-d H:i:s', strtotime( '-2 day' , strtotime (date("Y-m-d H:i:s"))));
+		$old_orders = cust_order_header::where('Status', '1')->where('Date_time', '<=', $two_days_ago)->get();
+		foreach ($old_orders as $order) {
+			$update_old_order = new cust_order_header();
+			$update_old_order->ganti_status($order->Id_order, 0);
 		}
 	}
 

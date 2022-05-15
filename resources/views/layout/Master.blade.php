@@ -93,5 +93,6 @@
 <!-- Sweet Alert -->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="{{asset('assets/js/complete_order_automation.js')}}"></script>
+<script src="{{asset('assets/js/cancel_order_automation.js')}}"></script>
 </body>
 </html>

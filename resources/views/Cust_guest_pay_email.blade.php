@@ -167,7 +167,7 @@ ul.timeline > li:before {
             </div>
            
             <div class="row mt-3" style="width: 100% !important;">
-              <button class="btn btn-primary btn-sm" onclick="pay()"><b>Pay Now</b></button>
+              <button class="btn btn-primary btn-sm button_pay" onclick="pay()"><b>Pay Now</b></button>
              <br><br><br>
             </div>
           </div>
@@ -291,6 +291,9 @@ ul.timeline > li:before {
 
          if(cut[9] == "4"){
            $(".button_konfirmasi_order").css('display', 'block');
+         }
+         if(cut[9] == '0'){
+           $(".button_pay").css('display', 'none');
          }
 
          $(".timeline_field").html("");

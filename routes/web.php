@@ -127,7 +127,7 @@ Route::get('Use_voucher', ["uses"=>"Controller@Use_voucher"]);
 Route::get('Pay_cust', ["uses"=>"Controller@Pay_cust"]);
 Route::get('atc_from_wishlist', ["uses"=>"Controller@atc_from_wishlist"]);
 Route::get('Send_tracking_order', ['uses' => "Controller@Send_tracking_order"]);
-Route::get('Cancel_order', ['uses' => "Controller@cancel_order"]);
+
 Route::get('Tracking/{id_order}', ['uses' => "Controller@Tracking"]);
 Route::get('guess_pay_email/{id_order}', ['uses' => "Controller@guess_pay_email"]);
 Route::get('Status_transaksi/{number}' , ['uses' => 'Controller@cekStatusTransaksi']);
@@ -308,6 +308,7 @@ Route::post('hapus_rating_product', ["uses"=>"Controller@hapus_rating_product"])
 Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]);
 Route::get('update_status', ["uses"=>"Controller@update_status"]);
 Route::get('complete_order_automation', ["uses"=>"Controller@complete_order_automation"]);
+Route::get('cancel_order_automation', ['uses' => "Controller@cancel_order"]);
 
 //TEMPORARY ROUTE
 Route::get('pay_now', ['uses' => 'Controller@pay_now']);

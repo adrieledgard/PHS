@@ -76,7 +76,7 @@ class CreateSnapTokenService extends Midtrans
         if($this->durasi_expired != null){
             $arr_expired = [
                 'start_time' => date("Y-m-d H:i:s O", strtotime($this->order->Date_time)),
-                'unit' => 'minute',
+                'unit' => 'day',
                 'duration' => $this->durasi_expired
             ];
 
