@@ -479,6 +479,15 @@ if(session()->get('userlogin')->Role =="ADMIN")
         </li>
         
       </ul>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('laba_rugi'); !!}" class="nav-link  @yield('laba_rugi_report_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Laba Rugi</p>
+          </a>
+        </li>
+        
+      </ul>
     </li>
     
       <?php 

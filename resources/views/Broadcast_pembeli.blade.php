@@ -102,7 +102,7 @@
             </div>
         </div>
     </div>  
-    <div class="card"}>
+    <div class="card">
         <div class="card-body">
             <div class="col-md-6">
                 {{ Form::label('Subject :','') }}

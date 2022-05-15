@@ -399,6 +399,8 @@ Route::get('get_variation_product', ["uses"=>"ControllerReport@get_variation_pro
 Route::get('show_table_stock_card', ["uses"=>"ControllerReport@show_table_stock_card"]);
 Route::get('populer_product/{option}', ['uses' => "ControllerReport@populer_product"]);
 Route::get('populer_affiliate_product/{option}', ['uses' => "ControllerReport@populer_affiliate_product"]);
+Route::get('laba_rugi', ['uses' => "ControllerReport@laba_rugi"]);
+Route::get('laba_rugi_print', ['uses' => "ControllerReport@print_laba_rugi_report"]);
 
 
 

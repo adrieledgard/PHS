@@ -236,4 +236,113 @@ class ControllerReport extends Controller
         }
         return view('Report_populer_affiliate_product', compact('products', 'type_affiliate'));
 	}
+
+    public function laba_rugi(Request $request)
+    {
+        $prepare_data = $this->prepareLabaRugiData($request);
+        $total_keuntungan = $prepare_data[0];
+        $cust_orders = $prepare_data[1];
+
+        $filter_tahun = $this->generate_tahun();
+        $filter_bulan = $this->generate_bulan();
+        return view('Report_laba_rugi', compact('total_keuntungan', 'cust_orders', 'filter_tahun', 'filter_bulan'));
+    }
+
+    public function print_laba_rugi_report(Request $request)
+    {
+        $prepare_data = $this->prepareLabaRugiData($request);
+        $total_keuntungan = $prepare_data[0];
+        $cust_orders = $prepare_data[1];
+        return view('Report_laba_rugi_print', compact('total_keuntungan', 'cust_orders'));
+    }
+
+    public function prepareLabaRugiData($request)
+    {
+        $total_keuntungan = 0;
+        $cust_orders = cust_order_header::where('status', '>=', 2);
+        if($request->has('filter')){
+            $period_format = $this->format_date($request);
+            $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
+        }
+        $cust_orders = $cust_orders->get();
+
+        //HAPUS CODING DIBAWAH INI
+        $temp_orders = $cust_orders;
+        //BATAS HAPUS
+        foreach ($cust_orders as $index => $order) {
+            $order_profit = 0;
+            $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
+            foreach ($order_detail as $detail) {
+                $order_detail_stock_card = stock_card::where("No_reference", $detail->Id_detail_order)->first();
+                //HAPUS CODING DIBAWAH INI
+                if(empty($order_detail_stock_card)){
+                    continue;
+                }
+                //BATAS HAPUS
+                $id_product_stock_card = explode("Cust_order - ", $order_detail_stock_card->Type_card);
+                $item_stock_card = stock_card::find($id_product_stock_card[1]);
+                $profit_product_sale = ($detail->Fix_price - $item_stock_card->Capital) * $detail->Qty;
+
+                $detail->harga_modal = $item_stock_card->Capital;
+                $detail->keuntungan_per_item = ($detail->Fix_price - $item_stock_card->Capital);
+                $detail->keuntungan_item = $profit_product_sale;
+                $order_profit += $profit_product_sale;
+                
+                
+            }
+            $order->detail = $order_detail;
+            $order->order_profit = $order_profit;
+            $total_keuntungan += $order_profit;
+
+            //HAPUS CODING DIBAWAH INI
+            if($order_profit == 0){
+                unset($temp_orders[$index]);
+            }
+            //BATAS HAPUS
+        }
+
+        return [$total_keuntungan, $cust_orders];
+    }
+
+    public function generate_tahun()
+    {
+        $tahun = [];
+        $date = date("Y", strtotime(date("Y-m-d")));
+        for($i = 0; $i <= 10; $i++){
+            $tahun[$date-$i] = $date-$i;
+        }
+
+        return $tahun;
+    }
+
+    public function generate_bulan()
+    {
+        $bulan = [];
+        
+        for ($i = 1; $i <= 12; $i++) {
+            $timestamp = mktime(0, 0, 0, $i);
+            $label = date("F", $timestamp);
+            $bulan[$i] = $label;
+        }
+
+        return $bulan;
+    }
+
+    public function format_date($request)
+    {
+        $period = [];
+        if($request->filter == "bulan"){
+            $period[0] = date("Y-$request->filter_bulan-01") . " 00:00:00";
+            $period[1] = date("Y-$request->filter_bulan-t") . " 23:59:59";
+        }else if($request->filter == "tahun"){
+            $period[0] = date("$request->filter_tahun-m-01") . " 00:00:00";
+            $period[1] = date("$request->filter_tahun-m-t") . " 23:59:59";
+        }else {
+            $date_range = explode(" - ", $request->filter_date_range);
+            $period[0] = $date_range[0] . " 00:00:00";
+            $period[1] = $date_range[1] . " 23:59:59";
+        }
+
+        return $period;
+    }
 }
