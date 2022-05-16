@@ -196,8 +196,6 @@ Laba Rugi
                     <th>Nama Produk</th>
                     <th>Variant</th>
                     <th>Harga Modal</th>
-                    <th>Normal Price</th>
-                    <th>Discount</th>
                     <th>Fix Price</th>
                     <th>Total dipesan</th>
                     <th>Subtotal</th>
@@ -319,12 +317,6 @@ $("#order_detail").on('show.bs.modal', function(event){
                 </td>
                 <td>
                     `+formatter.format(detail.harga_modal)+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Normal_price)+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Discount_promo)+`
                 </td>
                 <td>
                     `+formatter.format(detail.Fix_price)+`
