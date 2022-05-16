@@ -336,26 +336,26 @@ class ControllerReport extends Controller
     public function penjualan(Request $request)
     {
         $prepare_data = $this->preparePenjualanData($request);
-        $total_penjualan = $prepare_data[0];
+        $total_omzet = $prepare_data[0];
         $cust_orders = $prepare_data[1];
 
         $filter_tahun = $this->generate_tahun();
         $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
-        return view('Report_penjualan', compact('total_penjualan', 'cust_orders', 'filter_tahun', 'filter_bulan'));
+        return view('Report_penjualan', compact('total_omzet', 'cust_orders', 'filter_tahun', 'filter_bulan'));
     }
 
     public function print_penjualan_report(Request $request)
     {
         $prepare_data = $this->preparePenjualanData($request);
-        $total_penjualan = $prepare_data[0];
+        $total_omzet = $prepare_data[0];
         $cust_orders = $prepare_data[1];
 
-        return view('Report_penjualan_print', compact('total_penjualan', 'cust_orders'));
+        return view('Report_penjualan_print', compact('total_omzet', 'cust_orders'));
     }
 
     public function preparePenjualanData($request)
     {
-        $total_nominal_penjualan = 0;
+        $total_omzet = 0;
         $cust_orders = cust_order_header::where('status', '>=', 2);
         if($request->has('filter')){
             $period_format = $this->format_date($request);
@@ -367,9 +367,51 @@ class ControllerReport extends Controller
             $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
             
             $order->detail = $order_detail;
-            $total_nominal_penjualan += $order->Grand_total;
+            $total_omzet += $order->Grand_total;
         }
 
-        return [$total_nominal_penjualan, $cust_orders];
+        return [$total_omzet, $cust_orders];
+    }
+
+    public function transaksi_affiliate(Request $request)
+    {
+        $prepare_data = $this->prepareTransaksiAffiliateData($request);
+        $total_omzet = $prepare_data[0];
+        $cust_orders = $prepare_data[1];
+
+        $filter_tahun = $this->generate_tahun();
+        $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
+        return view('Report_transaksi_affiliate', compact('total_omzet', 'cust_orders', 'filter_tahun', 'filter_bulan'));
+    }
+
+    public function print_transaksi_affiliate_report(Request $request)
+    {
+        $prepare_data = $this->prepareTransaksiAffiliateData($request);
+        $total_omzet = $prepare_data[0];
+        $cust_orders = $prepare_data[1];
+
+        return view('Report_transaksi_affiliate_print', compact('total_omzet', 'cust_orders'));
+    }
+
+    public function prepareTransaksiAffiliateData($request)
+    {
+        $total_omzet = 0;
+        $cust_orders = cust_order_header::where('status', '>=', 2)->where('Affiliate', "<>", "")->where('Tracking_code', '<>', '');
+        if($request->has('filter')){
+            $period_format = $this->format_date($request);
+            $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
+        }
+        $cust_orders = $cust_orders->get();
+
+        foreach ($cust_orders as $order) {
+            $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
+            
+            $order->affiliator = member::where('Random_code', $order->Affiliate)->first();
+            $order->jenis_affiliate = (explode("-", $order->Tracking_code))[0];
+            $order->detail = $order_detail;
+            $total_omzet += $order->Grand_total;
+        }
+
+        return [$total_omzet, $cust_orders];
     }
 }

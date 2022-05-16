@@ -403,6 +403,8 @@ Route::get('laba_rugi', ['uses' => "ControllerReport@laba_rugi"]);
 Route::get('laba_rugi_print', ['uses' => "ControllerReport@print_laba_rugi_report"]);
 Route::get('penjualan', ['uses' => "ControllerReport@penjualan"]);
 Route::get('penjualan_print', ['uses' => "ControllerReport@print_penjualan_report"]);
+Route::get('transaksi_affiliate', ['uses' => "ControllerReport@transaksi_affiliate"]);
+Route::get('transaksi_affiliate_print', ['uses' => "ControllerReport@print_transaksi_affiliate_report"]);
 
 
 

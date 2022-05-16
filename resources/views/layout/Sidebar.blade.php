@@ -497,6 +497,15 @@ if(session()->get('userlogin')->Role =="ADMIN")
         </li>
         
       </ul>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('transaksi_affiliate'); !!}" class="nav-link  @yield('transaksi_affiliate_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Transaksi Affiliate</p>
+          </a>
+        </li>
+        
+      </ul>
     </li>
     
       <?php 

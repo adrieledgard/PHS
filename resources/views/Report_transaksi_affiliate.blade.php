@@ -2,7 +2,7 @@
 
 
 {{-- UNTUK SIDEBAR --}}
-@section('penjualan_report_atv')
+@section('transaksi_affiliate_report_atv')
   active
 @endsection
 
@@ -12,17 +12,17 @@
 {{-- ------------- --}}
 
 @section('title2')
-    Penjualan
+    Transaksi Affiliate
 @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item">Report</li>
-    <li class="breadcrumb-item active">Penjualan</li>
+    <li class="breadcrumb-item active">Transaksi Affiliate</li>
 @endsection
 
 
 @section('title')
-Penjualan
+Transaksi Affiliate
 @endsection
 
 
@@ -56,7 +56,7 @@ Penjualan
     <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          {{Form::open(array('url'=>'penjualan','method'=>'get','class'=>''))}}
+          {{Form::open(array('url'=>'transaksi_affiliate','method'=>'get','class'=>''))}}
           <div class="row ">
             <div class="form-check">
                 @if (request()->input('filter') == "bulan" || !request()->has('filter'))
@@ -126,9 +126,9 @@ Penjualan
           {{Form::close()}}
 
           @if (request()->has('filter'))
-          <a href="{{url('penjualan_print?filter=' . request()->input('filter') . "&filter_".request()->input('filter'). "=" . request()->input("filter_". request()->input('filter')))}}" class="btn btn-warning btn-sm"  style="margin-left:10px;" target="_blank">Print</a>    
+          <a href="{{url('transaksi_affiliate_print?filter=' . request()->input('filter') . "&filter_".request()->input('filter'). "=" . request()->input("filter_". request()->input('filter')))}}" class="btn btn-warning btn-sm"  style="margin-left:10px;" target="_blank">Print</a>    
           @else
-          <a href="{{url('penjualan_print')}}" class="btn btn-warning btn-sm" style="margin-left:10px;"  target="_blank">Print</a>
+          <a href="{{url('transaksi_affiliate_print')}}" class="btn btn-warning btn-sm" style="margin-left:10px;"  target="_blank">Print</a>
           @endif
           
         </div>
@@ -154,6 +154,8 @@ Penjualan
         <tr>
           <th>No. Order</th>
           <th>Date</th>
+          <th>Affiliator</th>
+          <th>Jenis Affiliate</th>
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
@@ -168,6 +170,8 @@ Penjualan
             <tr>
               <td><a data-toggle="modal" data-order-detail="{{$order->detail}}" href="#order_detail" >{{ $order->Id_order}}</a></td>
               <td>{{ $order->Date_time}}</td>
+              <td>{{ $order->affiliator->Username}}</td>
+              <td>{{ $order->jenis_affiliate}}</td>
               <td>{{ $order->Name}}</td>
               <td>{{ $order->Email}}</td>
               <td>{{ $order->Phone}}</td>
@@ -303,7 +307,6 @@ $("#order_detail").on('show.bs.modal', function(event){
     }
     var button = $(event.relatedTarget);
     var detail_order = button.data('order-detail');
-    console.log(detail_order);
     $(".table-body-rincian-item-order").html("");
     detail_order.forEach(detail => {
         $(".table-body-rincian-item-order").append(`

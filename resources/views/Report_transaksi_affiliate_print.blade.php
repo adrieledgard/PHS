@@ -15,9 +15,9 @@
 <body onload="window.print()">
   <div class="row">
     <div class="col-md-6"> 
-        <h3>Penjualan Report</h3>
+        <h3>Transaksi Affiliate Report</h3>
     </div>
-    <div class="col-md-6">
+    <div class="card-body">
       Total Order : {{count($cust_orders)}}
       <br>
       Total Omzet : Rp. {{number_format($total_omzet)}}
@@ -30,13 +30,15 @@
         <thead>
           <tr>
             <th>No. Order</th>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Subtotal</th>
-          <th>Shipping Cost</th>
-          <th>Grand Total</th>
+            <th>Date</th>
+            <th>Affiliator</th>
+            <th>Jenis Affiliate</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Subtotal</th>
+            <th>Shipping Cost</th>
+            <th>Grand Total</th>
           </tr>
         </thead>
     
@@ -45,6 +47,8 @@
           <tr>
             <td>{{ $order->Id_order}}</td>
             <td>{{ $order->Date_time}}</td>
+            <td>{{ $order->affiliator->Username}}</td>
+            <td>{{ $order->jenis_affiliate}}</td>
             <td>{{ $order->Name}}</td>
             <td>{{ $order->Email}}</td>
             <td>{{ $order->Phone}}</td>
