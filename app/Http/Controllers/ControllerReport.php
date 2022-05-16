@@ -244,7 +244,7 @@ class ControllerReport extends Controller
         $cust_orders = $prepare_data[1];
 
         $filter_tahun = $this->generate_tahun();
-        $filter_bulan = $this->generate_bulan();
+        $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
         return view('Report_laba_rugi', compact('total_keuntungan', 'cust_orders', 'filter_tahun', 'filter_bulan'));
     }
 
@@ -315,25 +315,12 @@ class ControllerReport extends Controller
         return $tahun;
     }
 
-    public function generate_bulan()
-    {
-        $bulan = [];
-        
-        for ($i = 1; $i <= 12; $i++) {
-            $timestamp = mktime(0, 0, 0, $i);
-            $label = date("F", $timestamp);
-            $bulan[$i] = $label;
-        }
-
-        return $bulan;
-    }
-
     public function format_date($request)
     {
         $period = [];
         if($request->filter == "bulan"){
-            $period[0] = date("Y-$request->filter_bulan-01") . " 00:00:00";
-            $period[1] = date("Y-$request->filter_bulan-t") . " 23:59:59";
+            $period[0] = date("Y-m-01", strtotime("-$request->filter_bulan month")) . " 00:00:00";
+            $period[1] = date("Y-m-t", strtotime("-$request->filter_bulan month")) . " 23:59:59";
         }else if($request->filter == "tahun"){
             $period[0] = date("$request->filter_tahun-m-01") . " 00:00:00";
             $period[1] = date("$request->filter_tahun-m-t") . " 23:59:59";
