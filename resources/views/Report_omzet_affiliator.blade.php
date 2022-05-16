@@ -158,7 +158,7 @@ Omzet Affiliator
       </thead>
   
       <tbody id="">
-        @foreach ($affiliators as $affiliator)
+        @foreach ($affiliators->sortByDesc('total_omzet') as $affiliator)
             <tr>
               <td>{{ $affiliator->Username}}</td>
               <td>{{ $affiliator->Email}}</td>

@@ -463,7 +463,6 @@ class ControllerReport extends Controller
             $affiliator->total_omzet = $total_omzet_affiliator;
         }
         
-
         return [$total_omzet, $affiliators];
     }
     
