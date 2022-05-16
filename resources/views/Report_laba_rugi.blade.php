@@ -266,7 +266,6 @@ $.widget.bridge('uibutton', $.ui.button)
     });
 
     if(filter == 'tahun'){
-      console.log('gentot');
       $("#filter_tahun").trigger('click');
     }else if(filter == 'date_range'){
       $("#filter_date_range").trigger('click');

@@ -2,7 +2,7 @@
 
 
 {{-- UNTUK SIDEBAR --}}
-@section('penjualan_report_atv')
+@section('omzet_affiliator_atv')
   active
 @endsection
 
@@ -12,17 +12,17 @@
 {{-- ------------- --}}
 
 @section('title2')
-    Penjualan
+    Omzet Affiliator
 @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item">Report</li>
-    <li class="breadcrumb-item active">Penjualan</li>
+    <li class="breadcrumb-item active">Omzet Affiliator</li>
 @endsection
 
 
 @section('title')
-Penjualan
+Omzet Affiliator
 @endsection
 
 
@@ -56,7 +56,7 @@ Penjualan
     <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          {{Form::open(array('url'=>'penjualan','method'=>'get','class'=>''))}}
+          {{Form::open(array('url'=>'omzet_affiliator','method'=>'get','class'=>''))}}
           <div class="row ">
             <div class="form-check">
                 @if (request()->input('filter') == "bulan" || !request()->has('filter'))
@@ -126,9 +126,9 @@ Penjualan
           {{Form::close()}}
 
           @if (request()->has('filter'))
-          <a href="{{url('penjualan_print?filter=' . request()->input('filter') . "&filter_".request()->input('filter'). "=" . request()->input("filter_". request()->input('filter')))}}" class="btn btn-warning btn-sm"  style="margin-left:10px;" target="_blank">Print</a>    
+          <a href="{{url('omzet_affiliator_print?filter=' . request()->input('filter') . "&filter_".request()->input('filter'). "=" . request()->input("filter_". request()->input('filter')))}}" class="btn btn-warning btn-sm"  style="margin-left:10px;" target="_blank">Print</a>    
           @else
-          <a href="{{url('penjualan_print')}}" class="btn btn-warning btn-sm" style="margin-left:10px;"  target="_blank">Print</a>
+          <a href="{{url('omzet_affiliator_print')}}" class="btn btn-warning btn-sm" style="margin-left:10px;"  target="_blank">Print</a>
           @endif
           
         </div>
@@ -137,8 +137,6 @@ Penjualan
     <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          Total Order : {{count($cust_orders)}}
-          <br>
           Total Omzet : Rp. {{number_format($total_omzet)}}
         </div>
       </div>
@@ -152,34 +150,63 @@ Penjualan
     <table id="table_populer_product" class='table table-striped display'>
       <thead>
         <tr>
-          <th>No. Order</th>
-          <th>Date</th>
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
-          <th>Subtotal</th>
-          <th>Shipping Cost</th>
-          <th>Grand Total</th>
+          <th>Omzet</th>
         </tr>
       </thead>
   
       <tbody id="">
-        @foreach ($cust_orders as $order)
+        @foreach ($affiliators as $affiliator)
             <tr>
-              <td><a data-toggle="modal" data-order-detail="{{$order->detail}}" href="#order_detail" >{{ $order->Id_order}}</a></td>
-              <td>{{ $order->Date_time}}</td>
-              <td>{{ $order->Name}}</td>
-              <td>{{ $order->Email}}</td>
-              <td>{{ $order->Phone}}</td>
-              <td>Rp. {{ number_format($order->Gross_total) }}</td>
-              <td>Rp. {{ number_format($order->Shipping_cost)}}</td>
-              <td>Rp. {{ number_format($order->Grand_total)}}</td>
+              <td>{{ $affiliator->Username}}</td>
+              <td>{{ $affiliator->Email}}</td>
+              <td>{{ $affiliator->Phone}}</td>
+              <td><a href="#order" data-toggle="modal" data-orders = "{{$affiliator->orders}}">Rp. {{ number_format($affiliator->total_omzet) }}</a></td>
+              
             </tr>
         @endforeach
       </tbody>
     </table>
   </div>
 </div>
+<div id="order" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Daftar Order </h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+          <table class="table-daftar-order">
+              <thead>
+                  <tr>
+                    <th>No. Order</th>
+                    <th>Date</th>
+                    <th>Jenis Affiliate</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Gross Total</th>
+                    <th>Shipping Cost</th>
+                    <th>Grand Total</th>
+                  </tr>
+              </thead>
+              <tbody class="table-body-daftar-order">
+                  
+              </tbody>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="order_detail" class="modal fade" role="dialog">
   <div class="modal-dialog modal-dialog-scrollable modal-xl">
 
@@ -295,6 +322,49 @@ $.widget.bridge('uibutton', $.ui.button)
       $(".filter_date_range").attr("disabled", false);
   });
 
+$("#order").on('show.bs.modal', function(event){
+    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+    if ( $.fn.DataTable.isDataTable('.table-daftar-order') ) {
+      $('.table-daftar-order').DataTable().destroy();
+    }
+    var button = $(event.relatedTarget);
+    var daftar_order = button.data('orders');
+    $(".table-body-daftar-order").html("");
+    daftar_order.forEach(order => {
+        $(".table-body-daftar-order").append(`
+            <tr>
+              <td>
+                    <a href="#order_detail" data-toggle="modal" data-order-detail='`+ order.detail +`'>`+order.Id_order+`</a>
+                </td> 
+                <td>
+                    `+order.Date_time+`
+                </td>
+                <td>
+                    `+order.jenis_affiliate+`
+                </td>
+                <td>
+                    `+order.Name+`
+                </td>
+                <td>
+                    `+order.Email+`
+                </td>
+                <td>
+                    `+order.Phone+`
+                </td>
+                <td>
+                    `+formatter.format(order.Gross_total)+`
+                </td>
+                <td>
+                    `+formatter.format(order.Shipping_cost)+`
+                </td>
+                <td>
+                    `+formatter.format(order.Grand_total)+`
+                </td>
+            </tr>
+        `)
+    });
+    $(".table-daftar-order").DataTable();
+ });
 $("#order_detail").on('show.bs.modal', function(event){
     var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
     if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
@@ -302,7 +372,7 @@ $("#order_detail").on('show.bs.modal', function(event){
     }
     var button = $(event.relatedTarget);
     var detail_order = button.data('order-detail');
-    console.log(detail_order);
+
     $(".table-body-rincian-item-order").html("");
     detail_order.forEach(detail => {
         $(".table-body-rincian-item-order").append(`

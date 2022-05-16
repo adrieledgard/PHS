@@ -414,4 +414,57 @@ class ControllerReport extends Controller
 
         return [$total_omzet, $cust_orders];
     }
+
+    
+    public function omzet_affiliator(Request $request)
+    {
+        $prepare_data = $this->prepareOmzetAffiliatorData($request);
+        $total_omzet = $prepare_data[0];
+        $affiliators = $prepare_data[1];
+
+        $filter_tahun = $this->generate_tahun();
+        $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
+        return view('Report_omzet_affiliator', compact('total_omzet', 'affiliators', 'filter_tahun', 'filter_bulan'));
+    }
+
+    public function print_omzet_affiliator_report(Request $request)
+    {
+        $prepare_data = $this->prepareOmzetAffiliatorData($request);
+        $total_omzet = $prepare_data[0];
+        $affiliators = $prepare_data[1];
+
+        return view('Report_omzet_affiliator_print', compact('total_omzet', 'affiliators'));
+    }
+
+    public function prepareOmzetAffiliatorData($request)
+    {
+        $total_omzet = 0;
+        $affiliators = member::where("Role", 'CUST')->get();
+        foreach ($affiliators as $affiliator) {
+            $total_omzet_affiliator = 0;
+
+            $cust_orders = cust_order_header::where('status', '>=', 2)->where('Affiliate', $affiliator->Random_code)->where('Tracking_code', '<>', '');
+            if($request->has('filter')){
+                $period_format = $this->format_date($request);
+                $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
+            }
+            $cust_orders = $cust_orders->get();
+
+            foreach ($cust_orders as $order) {
+                $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
+                
+                $order->jenis_affiliate = (explode('-', $order->Tracking_code))[0];
+                $order->detail = json_encode($order_detail);
+                $total_omzet_affiliator += $order->Grand_total;
+            }
+            $total_omzet += $total_omzet_affiliator;
+            $affiliator->orders = $cust_orders;
+            $affiliator->total_omzet = $total_omzet_affiliator;
+        }
+        
+
+        return [$total_omzet, $affiliators];
+    }
+
+    
 }
