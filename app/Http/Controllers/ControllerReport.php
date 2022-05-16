@@ -332,4 +332,44 @@ class ControllerReport extends Controller
 
         return $period;
     }
+
+    public function penjualan(Request $request)
+    {
+        $prepare_data = $this->preparePenjualanData($request);
+        $total_penjualan = $prepare_data[0];
+        $cust_orders = $prepare_data[1];
+
+        $filter_tahun = $this->generate_tahun();
+        $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
+        return view('Report_penjualan', compact('total_penjualan', 'cust_orders', 'filter_tahun', 'filter_bulan'));
+    }
+
+    public function print_penjualan_report(Request $request)
+    {
+        $prepare_data = $this->preparePenjualanData($request);
+        $total_penjualan = $prepare_data[0];
+        $cust_orders = $prepare_data[1];
+
+        return view('Report_penjualan_print', compact('total_penjualan', 'cust_orders'));
+    }
+
+    public function preparePenjualanData($request)
+    {
+        $total_nominal_penjualan = 0;
+        $cust_orders = cust_order_header::where('status', '>=', 2);
+        if($request->has('filter')){
+            $period_format = $this->format_date($request);
+            $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
+        }
+        $cust_orders = $cust_orders->get();
+
+        foreach ($cust_orders as $order) {
+            $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
+            
+            $order->detail = $order_detail;
+            $total_nominal_penjualan += $order->Grand_total;
+        }
+
+        return [$total_nominal_penjualan, $cust_orders];
+    }
 }
