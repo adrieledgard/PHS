@@ -283,7 +283,7 @@ $.widget.bridge('uibutton', $.ui.button)
       $(".filter_date_range").attr("disabled", 'disabled');
   });
   $("#filter_tahun").click(function(){
-    console.log('gentot');
+    
       $('.filter_bulan').attr("disabled", 'disabled');
       // $(".filter_bulan").prop('disabled', true);
       $(".filter_tahun").attr('disabled', false);

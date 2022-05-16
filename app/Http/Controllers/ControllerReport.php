@@ -9,7 +9,8 @@ use App\member;
 use App\product;
 use App\variation;
 use App\stock_card;
-
+use App\voucher;
+use App\voucher_member;
 use Illuminate\Http\Request;
 
 class ControllerReport extends Controller
@@ -464,6 +465,37 @@ class ControllerReport extends Controller
         
 
         return [$total_omzet, $affiliators];
+    }
+    
+    public function penukaran_point_member(Request $request)
+    {
+        $members = $this->preparePenukaranPointMemberData($request);
+
+        return view('Report_penukaran_point_member', compact('members'));
+    }
+
+    public function print_penukaran_point_member_report(Request $request)
+    {
+        $members = $this->preparePenukaranPointMemberData($request);
+
+        return view('Report_penukaran_point_member_print', compact('members'));
+    }
+
+    public function preparePenukaranPointMemberData($request)
+    {
+        $members = member::all();
+
+        foreach ($members as $member) {
+            $total_point_ditukar = 0;
+            $member->rincian_penukaran = voucher::join('point_card', 'point_card.No_reference', 'voucher.Id_voucher')->where('point_card.Id_member', $member->Id_member)->where('point_card.Type', 'Claim voucher')->orderBy("Date_card", 'desc')->get();
+
+            foreach ($member->rincian_penukaran as $penukaran) {
+                $total_point_ditukar += $penukaran->Point;
+            }
+            $member->total_point_ditukar = $total_point_ditukar;
+        }
+
+        return $members;
     }
 
     

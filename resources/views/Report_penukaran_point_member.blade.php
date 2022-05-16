@@ -2,7 +2,7 @@
 
 
 {{-- UNTUK SIDEBAR --}}
-@section('omzet_affiliator_report_atv')
+@section('penukaran_point_report_atv')
   active
 @endsection
 
@@ -12,17 +12,17 @@
 {{-- ------------- --}}
 
 @section('title2')
-    Omzet Affiliator
+    Penukaran Point Member
 @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item">Report</li>
-    <li class="breadcrumb-item active">Omzet Affiliator</li>
+    <li class="breadcrumb-item active">Penukaran Point Member</li>
 @endsection
 
 
 @section('title')
-Omzet Affiliator
+Penukaran Point Member
 @endsection
 
 
@@ -53,7 +53,7 @@ Omzet Affiliator
 @section('Content')
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-6">
+    {{-- <div class="col-md-6">
       <div class="card">
         <div class="card-body">
           {{Form::open(array('url'=>'omzet_affiliator','method'=>'get','class'=>''))}}
@@ -140,7 +140,8 @@ Omzet Affiliator
           Total Omzet : Rp. {{number_format($total_omzet)}}
         </div>
       </div>
-    </div>
+    </div> --}}
+    <a href="{{url('penukaran_point_member_print')}}" class="btn btn-warning btn-sm" style="margin-left:10px;"  target="_blank">Print</a>
   </div>
   
 </div>
@@ -153,17 +154,19 @@ Omzet Affiliator
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
-          <th>Omzet</th>
+          <th>Total Point Sisa</th>
+          <th>Total Point Ditukar</th>
         </tr>
       </thead>
   
       <tbody id="">
-        @foreach ($affiliators as $affiliator)
+        @foreach ($members as $member)
             <tr>
-              <td>{{ $affiliator->Username}}</td>
-              <td>{{ $affiliator->Email}}</td>
-              <td>{{ $affiliator->Phone}}</td>
-              <td><a href="#order" data-toggle="modal" data-orders = "{{$affiliator->orders}}">Rp. {{ number_format($affiliator->total_omzet) }}</a></td>
+              <td>{{ $member->Username}}</td>
+              <td>{{ $member->Email}}</td>
+              <td>{{ $member->Phone}}</td>
+              <td>{{ $member->Point}}</td>
+              <td><a href="#rincian_penukaran_point" data-toggle="modal" data-rincian-penukaran = "{{$member->rincian_penukaran}}">{{$member->total_point_ditukar}}</a></td>
               
             </tr>
         @endforeach
@@ -171,65 +174,26 @@ Omzet Affiliator
     </table>
   </div>
 </div>
-<div id="order" class="modal fade" role="dialog">
+<div id="rincian_penukaran_point" class="modal fade" role="dialog">
   <div class="modal-dialog modal-dialog-scrollable modal-xl">
 
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Daftar Order </h4>
+        <h4 class="modal-title">Rincian Penukaran Point </h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-          <table class="table-daftar-order">
+          <table class="table-rincian-penukaran-point">
               <thead>
                   <tr>
-                    <th>No. Order</th>
-                    <th>Date</th>
-                    <th>Jenis Affiliate</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Gross Total</th>
-                    <th>Shipping Cost</th>
-                    <th>Grand Total</th>
+                    <th>Tanggal</th>
+                    <th>Voucher</th>
+                    <th>Point</th>
+                    
                   </tr>
               </thead>
-              <tbody class="table-body-daftar-order">
-                  
-              </tbody>
-          </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="order_detail" class="modal fade" role="dialog">
-  <div class="modal-dialog modal-dialog-scrollable modal-xl">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Rincian Order </h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-          <table class="table-rincian-item-order">
-              <thead>
-                  <tr>
-                    <th>Nama Produk</th>
-                    <th>Variant</th>
-                    <th>Normal Price</th>
-                    <th>Discount</th>
-                    <th>Fix Price</th>
-                    <th>Total dipesan</th>
-                    <th>Subtotal</th>
-                  </tr>
-              </thead>
-              <tbody class="table-body-rincian-item-order">
+              <tbody class="table-body-rincian-penukaran-point">
                   
               </tbody>
           </table>
@@ -291,117 +255,61 @@ $.widget.bridge('uibutton', $.ui.button)
         }
     });
 
-    if(filter == 'tahun'){
-      $("#filter_tahun").trigger('click');
-    }else if(filter == 'date_range'){
-      $("#filter_date_range").trigger('click');
-    }else {
-      $(".filter_bulan").attr('disabled', false);
-      $(".filter_tahun").attr('disabled', 'disabled');
-      $(".filter_date_range").attr("disabled", 'disabled');
-    }
+    // if(filter == 'tahun'){
+    //   $("#filter_tahun").trigger('click');
+    // }else if(filter == 'date_range'){
+    //   $("#filter_date_range").trigger('click');
+    // }else {
+    //   $(".filter_bulan").attr('disabled', false);
+    //   $(".filter_tahun").attr('disabled', 'disabled');
+    //   $(".filter_date_range").attr("disabled", 'disabled');
+    // }
 
     
   })
   
-  $("#filter_bulan").click(function(){
-      $('.filter_bulan').attr('disabled', false);
-      $(".filter_tahun").attr('disabled', 'disabled');
-      $(".filter_date_range").attr("disabled", 'disabled');
-  });
-  $("#filter_tahun").click(function(){
+  // $("#filter_bulan").click(function(){
+  //     $('.filter_bulan').attr('disabled', false);
+  //     $(".filter_tahun").attr('disabled', 'disabled');
+  //     $(".filter_date_range").attr("disabled", 'disabled');
+  // });
+  // $("#filter_tahun").click(function(){
     
-      $('.filter_bulan').attr("disabled", 'disabled');
-      // $(".filter_bulan").prop('disabled', true);
-      $(".filter_tahun").attr('disabled', false);
-      $(".filter_date_range").attr("disabled", 'disabled');
-  });
-  $("#filter_date_range").click(function(){
-      $('.filter_bulan').attr("disabled", 'disabled');
-      $(".filter_tahun").attr('disabled', 'disabled');
-      $(".filter_date_range").attr("disabled", false);
-  });
+  //     $('.filter_bulan').attr("disabled", 'disabled');
+  //     // $(".filter_bulan").prop('disabled', true);
+  //     $(".filter_tahun").attr('disabled', false);
+  //     $(".filter_date_range").attr("disabled", 'disabled');
+  // });
+  // $("#filter_date_range").click(function(){
+  //     $('.filter_bulan').attr("disabled", 'disabled');
+  //     $(".filter_tahun").attr('disabled', 'disabled');
+  //     $(".filter_date_range").attr("disabled", false);
+  // });
 
-$("#order").on('show.bs.modal', function(event){
-    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
-    if ( $.fn.DataTable.isDataTable('.table-daftar-order') ) {
-      $('.table-daftar-order').DataTable().destroy();
+$("#rincian_penukaran_point").on('show.bs.modal', function(event){
+    // var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
+    if ( $.fn.DataTable.isDataTable('.table-rincian-penukaran-point') ) {
+      $('.table-rincian-penukaran-point').DataTable().destroy();
     }
     var button = $(event.relatedTarget);
-    var daftar_order = button.data('orders');
-    $(".table-body-daftar-order").html("");
-    daftar_order.forEach(order => {
-        $(".table-body-daftar-order").append(`
+    var rincian_penukaran = button.data('rincian-penukaran');
+    $(".table-body-rincian-penukaran-point").html("");
+    rincian_penukaran.forEach(voucher => {
+        $(".table-body-rincian-penukaran-point").append(`
             <tr>
-              <td>
-                    <a href="#order_detail" data-toggle="modal" data-order-detail='`+ order.detail +`'>`+order.Id_order+`</a>
-                </td> 
                 <td>
-                    `+order.Date_time+`
+                    `+voucher.Date_card+`
                 </td>
                 <td>
-                    `+order.jenis_affiliate+`
+                    `+voucher.Voucher_name+`
                 </td>
                 <td>
-                    `+order.Name+`
-                </td>
-                <td>
-                    `+order.Email+`
-                </td>
-                <td>
-                    `+order.Phone+`
-                </td>
-                <td>
-                    `+formatter.format(order.Gross_total)+`
-                </td>
-                <td>
-                    `+formatter.format(order.Shipping_cost)+`
-                </td>
-                <td>
-                    `+formatter.format(order.Grand_total)+`
+                    `+voucher.Point+`
                 </td>
             </tr>
         `)
     });
-    $(".table-daftar-order").DataTable();
- });
-$("#order_detail").on('show.bs.modal', function(event){
-    var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
-    if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
-      $('.table-rincian-item-order').DataTable().destroy();
-    }
-    var button = $(event.relatedTarget);
-    var detail_order = button.data('order-detail');
-
-    $(".table-body-rincian-item-order").html("");
-    detail_order.forEach(detail => {
-        $(".table-body-rincian-item-order").append(`
-            <tr>
-              <td>
-                    `+detail.Name+`
-                </td>
-                <td>
-                    `+detail.Variation_name + `(`+ detail.Option_name+`)
-                </td>
-                <td>
-                    `+formatter.format(detail.Normal_price)+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Discount)+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Fix_price)+`
-                </td>
-                <td>
-                    `+detail.Qty+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Qty * detail.Fix_price)+`
-                </td>
-            </tr>
-        `)
-    });
-    $(".table-rincian-item-order").DataTable();
+    $(".table-rincian-penukaran-point").DataTable({ 'order' : [ ]});
  });
 
 </script>

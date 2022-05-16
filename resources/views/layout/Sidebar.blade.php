@@ -508,9 +508,18 @@ if(session()->get('userlogin')->Role =="ADMIN")
       </ul>
       <ul class="nav nav-treeview">
         <li class="nav-item">
-          <a href="{!! url('omzet_affiliator'); !!}" class="nav-link  @yield('omzet_affiliator_atv')">
+          <a href="{!! url('omzet_affiliator'); !!}" class="nav-link  @yield('omzet_affiliator_report_atv')">
             <i class="far fa-circle nav-icon"></i>
             <p>Omzet Affiliator</p>
+          </a>
+        </li>
+        
+      </ul>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
+          <a href="{!! url('penukaran_point_member'); !!}" class="nav-link  @yield('penukaran_point_report_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Penukaran Point Member</p>
           </a>
         </li>
         

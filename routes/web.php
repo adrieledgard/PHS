@@ -407,6 +407,8 @@ Route::get('transaksi_affiliate', ['uses' => "ControllerReport@transaksi_affilia
 Route::get('transaksi_affiliate_print', ['uses' => "ControllerReport@print_transaksi_affiliate_report"]);
 Route::get('omzet_affiliator', ['uses' => "ControllerReport@omzet_affiliator"]);
 Route::get('omzet_affiliator_print', ['uses' => "ControllerReport@print_omzet_affiliator_report"]);
+Route::get('penukaran_point_member', ['uses' => "ControllerReport@penukaran_point_member"]);
+Route::get('penukaran_point_member_print', ['uses' => "ControllerReport@print_penukaran_point_member_report"]);
 
 
 
