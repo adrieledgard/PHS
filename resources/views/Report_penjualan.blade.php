@@ -159,9 +159,9 @@ Penjualan
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
-          <th>Voucher</th>
           <th>Subtotal</th>
           <th>Shipping Cost</th>
+          <th>Voucher</th>
           <th>Grand Total</th>
         </tr>
       </thead>
@@ -174,13 +174,13 @@ Penjualan
               <td>{{ $order->Name}}</td>
               <td>{{ $order->Email}}</td>
               <td>{{ $order->Phone}}</td>
+              <td>Rp. {{ number_format($order->Gross_total) }}</td>
+              <td>Rp. {{ number_format($order->Shipping_cost)}}</td>
               @if ($order->Id_voucher != 0)
-                  <td>{{$order->voucher->Voucher_name}}</td>
+              <td>Rp. {{number_format($order->voucher->Discount)}} ( {{$order->voucher->Voucher_name}} ) </td>
               @else
               <td>-</td>
               @endif
-              <td>Rp. {{ number_format($order->Gross_total) }}</td>
-              <td>Rp. {{ number_format($order->Shipping_cost)}}</td>
               <td>Rp. {{ number_format($order->Grand_total)}}</td>
             </tr>
         @endforeach
