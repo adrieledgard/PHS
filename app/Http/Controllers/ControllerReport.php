@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\affiliate;
 use App\cust_order_detail;
 use App\cust_order_header;
 use App\followup;
@@ -339,10 +340,11 @@ class ControllerReport extends Controller
         $prepare_data = $this->preparePenjualanData($request);
         $total_omzet = $prepare_data[0];
         $cust_orders = $prepare_data[1];
+        $total_voucher = $prepare_data[2];
 
         $filter_tahun = $this->generate_tahun();
         $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
-        return view('Report_penjualan', compact('total_omzet', 'cust_orders', 'filter_tahun', 'filter_bulan'));
+        return view('Report_penjualan', compact('total_omzet', 'cust_orders', 'filter_tahun', 'filter_bulan', 'total_voucher'));
     }
 
     public function print_penjualan_report(Request $request)
@@ -350,13 +352,15 @@ class ControllerReport extends Controller
         $prepare_data = $this->preparePenjualanData($request);
         $total_omzet = $prepare_data[0];
         $cust_orders = $prepare_data[1];
+        $total_voucher = $prepare_data[2];
 
-        return view('Report_penjualan_print', compact('total_omzet', 'cust_orders'));
+        return view('Report_penjualan_print', compact('total_omzet', 'cust_orders', 'total_voucher'));
     }
 
     public function preparePenjualanData($request)
     {
         $total_omzet = 0;
+        $total_voucher = 0;
         $cust_orders = cust_order_header::where('status', '>=', 2);
         if($request->has('filter')){
             $period_format = $this->format_date($request);
@@ -365,13 +369,19 @@ class ControllerReport extends Controller
         $cust_orders = $cust_orders->get();
 
         foreach ($cust_orders as $order) {
+            
             $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
             
+            $voucher = voucher::find($order->Id_voucher);
+            if(!empty($voucher)){
+                $total_voucher += $voucher->Discount;
+                $order->voucher = $voucher;
+            }
             $order->detail = $order_detail;
             $total_omzet += $order->Grand_total;
         }
 
-        return [$total_omzet, $cust_orders];
+        return [$total_omzet, $cust_orders, $total_voucher];
     }
 
     public function transaksi_affiliate(Request $request)
@@ -443,7 +453,7 @@ class ControllerReport extends Controller
         $affiliators = member::where("Role", 'CUST')->get();
         foreach ($affiliators as $affiliator) {
             $total_omzet_affiliator = 0;
-
+            $total_point = 0;
             $cust_orders = cust_order_header::where('status', '>=', 2)->where('Affiliate', $affiliator->Random_code)->where('Tracking_code', '<>', '');
             if($request->has('filter')){
                 $period_format = $this->format_date($request);
@@ -454,6 +464,12 @@ class ControllerReport extends Controller
             foreach ($cust_orders as $order) {
                 $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
                 
+                foreach ($order_detail as $detail) {
+                    $affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->first();
+                    if(!empty($affiliate)){
+                        $total_point += $affiliate->Poin;
+                    }
+                }
                 $order->jenis_affiliate = (explode('-', $order->Tracking_code))[0];
                 $order->detail = json_encode($order_detail);
                 $total_omzet_affiliator += $order->Grand_total;
@@ -461,6 +477,7 @@ class ControllerReport extends Controller
             $total_omzet += $total_omzet_affiliator;
             $affiliator->orders = $cust_orders;
             $affiliator->total_omzet = $total_omzet_affiliator;
+            $affiliator->total_point = $total_point;
         }
         
         return [$total_omzet, $affiliators];

@@ -30,6 +30,7 @@
             <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>Point Didapat</th>
           <th>Omzet</th>
           </tr>
         </thead>
@@ -40,6 +41,7 @@
             <td>{{ $affiliator->Username}}</td>
               <td>{{ $affiliator->Email}}</td>
               <td>{{ $affiliator->Phone}}</td>
+              <td>{{ $affiliator->total_point}}</td>
               <td>Rp. {{ number_format($affiliator->total_omzet) }}</td>
           </tr>
       @endforeach

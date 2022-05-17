@@ -153,6 +153,7 @@ Omzet Affiliator
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>Point Didapat</th>
           <th>Omzet</th>
         </tr>
       </thead>
@@ -163,6 +164,7 @@ Omzet Affiliator
               <td>{{ $affiliator->Username}}</td>
               <td>{{ $affiliator->Email}}</td>
               <td>{{ $affiliator->Phone}}</td>
+              <td>{{ $affiliator->total_point}}</td>
               <td><a href="#order" data-toggle="modal" data-orders = "{{$affiliator->orders}}">Rp. {{ number_format($affiliator->total_omzet) }}</a></td>
               
             </tr>
@@ -387,7 +389,7 @@ $("#order_detail").on('show.bs.modal', function(event){
                     `+formatter.format(detail.Normal_price)+`
                 </td>
                 <td>
-                    `+formatter.format(detail.Discount)+`
+                    `+formatter.format(detail.Discount_promo)+`
                 </td>
                 <td>
                     `+formatter.format(detail.Fix_price)+`

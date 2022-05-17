@@ -140,6 +140,8 @@ Penjualan
           Total Order : {{count($cust_orders)}}
           <br>
           Total Omzet : Rp. {{number_format($total_omzet)}}
+          <br>
+          Total Voucher Terpakai : Rp. {{number_format($total_voucher)}}
         </div>
       </div>
     </div>
@@ -157,6 +159,7 @@ Penjualan
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>Voucher</th>
           <th>Subtotal</th>
           <th>Shipping Cost</th>
           <th>Grand Total</th>
@@ -171,6 +174,11 @@ Penjualan
               <td>{{ $order->Name}}</td>
               <td>{{ $order->Email}}</td>
               <td>{{ $order->Phone}}</td>
+              @if ($order->Id_voucher != 0)
+                  <td>{{$order->voucher->Voucher_name}}</td>
+              @else
+              <td>-</td>
+              @endif
               <td>Rp. {{ number_format($order->Gross_total) }}</td>
               <td>Rp. {{ number_format($order->Shipping_cost)}}</td>
               <td>Rp. {{ number_format($order->Grand_total)}}</td>
@@ -317,7 +325,7 @@ $("#order_detail").on('show.bs.modal', function(event){
                     `+formatter.format(detail.Normal_price)+`
                 </td>
                 <td>
-                    `+formatter.format(detail.Discount)+`
+                    `+formatter.format(detail.Discount_promo)+`
                 </td>
                 <td>
                     `+formatter.format(detail.Fix_price)+`

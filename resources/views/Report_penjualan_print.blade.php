@@ -21,6 +21,8 @@
       Total Order : {{count($cust_orders)}}
       <br>
       Total Omzet : Rp. {{number_format($total_omzet)}}
+      <br>
+      Total Voucher Terpakai : Rp. {{number_format($total_voucher)}}
     </div>
   </div>
 <br>
@@ -34,6 +36,7 @@
           <th>Name</th>
           <th>Email</th>
           <th>Phone</th>
+          <th>Voucher</th>
           <th>Subtotal</th>
           <th>Shipping Cost</th>
           <th>Grand Total</th>
@@ -48,6 +51,11 @@
             <td>{{ $order->Name}}</td>
             <td>{{ $order->Email}}</td>
             <td>{{ $order->Phone}}</td>
+            @if ($order->Id_voucher != 0)
+            <td>{{$order->voucher->Voucher_name}}</td>
+            @else
+            <td>-</td>
+            @endif
             <td>Rp. {{ number_format($order->Gross_total) }}</td>
             <td>Rp. {{ number_format($order->Shipping_cost)}}</td>
             <td>Rp. {{ number_format($order->Grand_total)}}</td>
