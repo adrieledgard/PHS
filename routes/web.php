@@ -392,6 +392,7 @@ Route::post('Insert_purchase_payment', ["uses"=>"ControllerTransaction@Insert_pu
 
 
 Route::get('stock_card', ["uses"=>"ControllerReport@stock_card"]);
+Route::get('stock_card_print', ["uses"=>"ControllerReport@print_stock_card"]);
 Route::get('followup_report', ["uses"=>"ControllerReport@followup_report"]);
 Route::get('print_followup_report', ["uses"=>"ControllerReport@print_followup_report"]);
 Route::get('show_table_followup_cs', ["uses"=>"ControllerReport@show_table_followup_cs"]);
@@ -401,6 +402,8 @@ Route::get('populer_product/{option}', ['uses' => "ControllerReport@populer_prod
 Route::get('populer_affiliate_product/{option}', ['uses' => "ControllerReport@populer_affiliate_product"]);
 Route::get('laba_rugi', ['uses' => "ControllerReport@laba_rugi"]);
 Route::get('laba_rugi_print', ['uses' => "ControllerReport@print_laba_rugi_report"]);
+Route::get('pembelian', ['uses' => "ControllerReport@pembelian"]);
+Route::get('pembelian_print', ['uses' => "ControllerReport@print_pembelian_report"]);
 Route::get('penjualan', ['uses' => "ControllerReport@penjualan"]);
 Route::get('penjualan_print', ['uses' => "ControllerReport@print_penjualan_report"]);
 Route::get('transaksi_affiliate', ['uses' => "ControllerReport@transaksi_affiliate"]);

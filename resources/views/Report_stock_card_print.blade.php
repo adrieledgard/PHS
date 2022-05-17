@@ -14,42 +14,36 @@
 </head>
 <body onload="window.print()">
   <div class="row">
-    <div class="col-md-6"> 
-        <h3>Transaksi Affiliate Report</h3>
-    </div>
-    <div class="card-body">
-      Total Omzet : Rp. {{number_format($total_omzet)}}
+    <div class="col-md-6">
+      <h3>Stock Card Report</h3>
     </div>
   </div>
-<br>
   <div class="row">
     <div class="col-md-12">
-      <table id="table_populer_product" class='table table-striped display'>
+      <table id="table_id" class='table table-striped display'>
         <thead>
           <tr>
-            <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Point Didapat</th>
-          <th>Omzet</th>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Product</th>
+            <th>Variation</th>
+            <th>Expire Date</th>
+            <th>First Stock</th>
+            <th>Debet</th>
+            <th>Credit</th>
+            <th>Last Stock</th>
+            <th>Fifo Stock</th>
+            <th>Transaction price</th>
+            <th>Capital</th>
           </tr>
         </thead>
     
-        <tbody id="">
-          @foreach ($affiliators->sortByDesc('total_omzet') as $affiliator)
-          <tr>
-            <td>{{ $affiliator->Username}}</td>
-              <td>{{ $affiliator->Email}}</td>
-              <td>{{ $affiliator->Phone}}</td>
-              <td>{{ $affiliator->total_point}}</td>
-              <td>Rp. {{ number_format($affiliator->total_omzet) }}</td>
-          </tr>
-      @endforeach
+        <tbody id="stock_card">
+          {!! $data_stock_card !!}
         </tbody>
       </table>
     </div>
   </div>
 </body>
-
-
 </html>

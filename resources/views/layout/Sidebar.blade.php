@@ -490,6 +490,15 @@ if(session()->get('userlogin')->Role =="ADMIN")
       </ul>
       <ul class="nav nav-treeview">
         <li class="nav-item">
+          <a href="{!! url('pembelian'); !!}" class="nav-link  @yield('pembelian_report_atv')">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Pembelian</p>
+          </a>
+        </li>
+        
+      </ul>
+      <ul class="nav nav-treeview">
+        <li class="nav-item">
           <a href="{!! url('penjualan'); !!}" class="nav-link  @yield('penjualan_report_atv')">
             <i class="far fa-circle nav-icon"></i>
             <p>Penjualan</p>

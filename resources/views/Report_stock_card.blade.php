@@ -68,6 +68,7 @@
   <br>
   
   {{ Form::button('Process', ['name'=>'process','id'=>'process', 'class'=>'btn btn-primary', 'onclick' => 'process()']) }}
+  {{ Form::button('Print', ['name'=>'print','id'=>'process', 'class'=>'btn btn-primary', 'onclick' => 'print()']) }}
 
 
   
@@ -194,11 +195,23 @@
         
       });
     }
+  }
+  function print(){
+      var myurl = "<?php echo URL::to('/'); ?>";
 
+      var Id_variation = $("#cb_variation").val();
 
+      if(Id_variation=="" || Id_variation==null)
+      {
+        toastr["error"]("Please Choose Variation", "Error");
+      }
+      else
+      {
+        var date_range = $(".date_range_picker").val();
 
-    // 
-   
+        window.open(myurl + '/stock_card_print?Id_variation=' + Id_variation + "&date_period=" + date_range, '_blank')
+        
+    }
   }
 
 </script>

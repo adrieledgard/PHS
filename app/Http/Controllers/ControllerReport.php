@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\affiliate;
 use App\cust_order_detail;
 use App\cust_order_header;
 use App\followup;
 use App\member;
 use App\product;
+use App\purchase_detail;
+use App\purchase_header;
+use App\receive_detail;
+use App\receive_header;
 use App\variation;
 use App\stock_card;
 use App\voucher;
@@ -41,6 +46,13 @@ class ControllerReport extends Controller
 		$param['arr_product']  = $arr; 
 
          return view('Report_stock_card',$param);
+    }
+
+    public function print_stock_card(Request $request)
+    {
+        $data_stock_card = $this->show_table_stock_card($request);
+
+        return view('Report_stock_card_print', compact('data_stock_card'));
     }
 
     public function get_variation_product(Request $request)
@@ -339,10 +351,11 @@ class ControllerReport extends Controller
         $prepare_data = $this->preparePenjualanData($request);
         $total_omzet = $prepare_data[0];
         $cust_orders = $prepare_data[1];
+        $total_voucher = $prepare_data[2];
 
         $filter_tahun = $this->generate_tahun();
         $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
-        return view('Report_penjualan', compact('total_omzet', 'cust_orders', 'filter_tahun', 'filter_bulan'));
+        return view('Report_penjualan', compact('total_omzet', 'cust_orders', 'filter_tahun', 'filter_bulan', 'total_voucher'));
     }
 
     public function print_penjualan_report(Request $request)
@@ -350,13 +363,15 @@ class ControllerReport extends Controller
         $prepare_data = $this->preparePenjualanData($request);
         $total_omzet = $prepare_data[0];
         $cust_orders = $prepare_data[1];
+        $total_voucher = $prepare_data[2];
 
-        return view('Report_penjualan_print', compact('total_omzet', 'cust_orders'));
+        return view('Report_penjualan_print', compact('total_omzet', 'cust_orders', 'total_voucher'));
     }
 
     public function preparePenjualanData($request)
     {
         $total_omzet = 0;
+        $total_voucher = 0;
         $cust_orders = cust_order_header::where('status', '>=', 2);
         if($request->has('filter')){
             $period_format = $this->format_date($request);
@@ -365,13 +380,19 @@ class ControllerReport extends Controller
         $cust_orders = $cust_orders->get();
 
         foreach ($cust_orders as $order) {
+            
             $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
             
+            $voucher = voucher::find($order->Id_voucher);
+            if(!empty($voucher)){
+                $total_voucher += $voucher->Discount;
+                $order->voucher = $voucher;
+            }
             $order->detail = $order_detail;
             $total_omzet += $order->Grand_total;
         }
 
-        return [$total_omzet, $cust_orders];
+        return [$total_omzet, $cust_orders, $total_voucher];
     }
 
     public function transaksi_affiliate(Request $request)
@@ -443,7 +464,7 @@ class ControllerReport extends Controller
         $affiliators = member::where("Role", 'CUST')->get();
         foreach ($affiliators as $affiliator) {
             $total_omzet_affiliator = 0;
-
+            $total_point = 0;
             $cust_orders = cust_order_header::where('status', '>=', 2)->where('Affiliate', $affiliator->Random_code)->where('Tracking_code', '<>', '');
             if($request->has('filter')){
                 $period_format = $this->format_date($request);
@@ -454,6 +475,12 @@ class ControllerReport extends Controller
             foreach ($cust_orders as $order) {
                 $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
                 
+                foreach ($order_detail as $detail) {
+                    $affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->first();
+                    if(!empty($affiliate)){
+                        $total_point += $affiliate->Poin;
+                    }
+                }
                 $order->jenis_affiliate = (explode('-', $order->Tracking_code))[0];
                 $order->detail = json_encode($order_detail);
                 $total_omzet_affiliator += $order->Grand_total;
@@ -461,6 +488,7 @@ class ControllerReport extends Controller
             $total_omzet += $total_omzet_affiliator;
             $affiliator->orders = $cust_orders;
             $affiliator->total_omzet = $total_omzet_affiliator;
+            $affiliator->total_point = $total_point;
         }
         
         return [$total_omzet, $affiliators];
@@ -498,4 +526,49 @@ class ControllerReport extends Controller
     }
 
     
+    public function pembelian(Request $request)
+    {
+        $prepare_data = $this->preparePembelianData($request);
+        $total_pengeluaran = $prepare_data[0];
+        $purchases = $prepare_data[1];
+        // $total_voucher = $prepare_data[2];
+
+        $filter_tahun = $this->generate_tahun();
+        $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
+        return view('Report_pembelian', compact('total_pengeluaran', 'purchases', 'filter_tahun', 'filter_bulan'));
+    }
+
+    public function print_pembelian_report(Request $request)
+    {
+        $prepare_data = $this->preparePembelianData($request);
+        $total_pengeluaran = $prepare_data[0];
+        $purchases = $prepare_data[1];
+        // $total_voucher = $prepare_data[2];
+
+        return view('Report_pembelian_print', compact('total_pengeluaran', 'purchases'));
+    }
+
+    public function preparePembelianData($request)
+    {
+        $total_pengeluaran = 0;
+        $purchases = purchase_header::join('supplier', 'supplier.Id_supplier', 'purchase_header.Id_supplier')->where('purchase_header.Status', '>=', 2);
+        if($request->has('filter')){
+            $period_format = $this->format_date($request);
+            $purchases = $purchases->whereBetween('Purchase_date', $period_format);
+        }
+        $purchases = $purchases->get();
+
+        foreach ($purchases as $purchase) {
+            $purchase_detail = purchase_detail::join('product', 'product.Id_product', 'purchase_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'purchase_detail.Id_variation')->where("No_invoice", $purchase->No_invoice)->get();
+            
+            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)->first();
+            $receive_purchase->receive_detail = receive_detail::join('product', 'product.Id_product', 'receive_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'receive_detail.Id_variation')->where('No_receive', $receive_purchase->No_receive)->get();
+
+            $purchase->receive = $receive_purchase;
+            $purchase->detail = $purchase_detail;
+            $total_pengeluaran += $purchase->Grand_total;
+        }
+
+        return [$total_pengeluaran, $purchases];
+    }
 }

@@ -2,7 +2,7 @@
 
 
 {{-- UNTUK SIDEBAR --}}
-@section('penjualan_report_atv')
+@section('pembelian_report_atv')
   active
 @endsection
 
@@ -12,17 +12,17 @@
 {{-- ------------- --}}
 
 @section('title2')
-    Penjualan
+    Pembelian
 @endsection
 
 @section('breadcrumb')
     <li class="breadcrumb-item">Report</li>
-    <li class="breadcrumb-item active">Penjualan</li>
+    <li class="breadcrumb-item active">Pembelian</li>
 @endsection
 
 
 @section('title')
-Penjualan
+Pembelian
 @endsection
 
 
@@ -56,7 +56,7 @@ Penjualan
     <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          {{Form::open(array('url'=>'penjualan','method'=>'get','class'=>''))}}
+          {{Form::open(array('url'=>'pembelian','method'=>'get','class'=>''))}}
           <div class="row ">
             <div class="form-check">
                 @if (request()->input('filter') == "bulan" || !request()->has('filter'))
@@ -126,9 +126,9 @@ Penjualan
           {{Form::close()}}
 
           @if (request()->has('filter'))
-          <a href="{{url('penjualan_print?filter=' . request()->input('filter') . "&filter_".request()->input('filter'). "=" . request()->input("filter_". request()->input('filter')))}}" class="btn btn-warning btn-sm"  style="margin-left:10px;" target="_blank">Print</a>    
+          <a href="{{url('pembelian_print?filter=' . request()->input('filter') . "&filter_".request()->input('filter'). "=" . request()->input("filter_". request()->input('filter')))}}" class="btn btn-warning btn-sm"  style="margin-left:10px;" target="_blank">Print</a>    
           @else
-          <a href="{{url('penjualan_print')}}" class="btn btn-warning btn-sm" style="margin-left:10px;"  target="_blank">Print</a>
+          <a href="{{url('pembelian_print')}}" class="btn btn-warning btn-sm" style="margin-left:10px;"  target="_blank">Print</a>
           @endif
           
         </div>
@@ -137,11 +137,9 @@ Penjualan
     <div class="col-md-6">
       <div class="card">
         <div class="card-body">
-          Total Order : {{count($cust_orders)}}
+          Total Order : {{count($purchases)}}
           <br>
-          Total Omzet : Rp. {{number_format($total_omzet)}}
-          <br>
-          Total Voucher Terpakai : Rp. {{number_format($total_voucher)}}
+          Total Pengeluaran : Rp. {{number_format($total_pengeluaran)}}
         </div>
       </div>
     </div>
@@ -156,61 +154,90 @@ Penjualan
         <tr>
           <th>No. Order</th>
           <th>Date</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Voucher</th>
-          <th>Subtotal</th>
-          <th>Shipping Cost</th>
+          <th>No. Receive</th>
+          <th>Date Receive</th>
+          <th>Payment</th>
+          <th>Supplier Name</th>
+          <th>Supplier Email</th>
+          <th>Supplier Phone</th>
           <th>Grand Total</th>
         </tr>
       </thead>
   
       <tbody id="">
-        @foreach ($cust_orders as $order)
+        @foreach ($purchases as $purchase)
             <tr>
-              <td><a data-toggle="modal" data-order-detail="{{$order->detail}}" href="#order_detail" >{{ $order->Id_order}}</a></td>
-              <td>{{ $order->Date_time}}</td>
-              <td>{{ $order->Name}}</td>
-              <td>{{ $order->Email}}</td>
-              <td>{{ $order->Phone}}</td>
-              @if ($order->Id_voucher != 0)
-                  <td>{{$order->voucher->Voucher_name}}</td>
-              @else
-              <td>-</td>
-              @endif
-              <td>Rp. {{ number_format($order->Gross_total) }}</td>
-              <td>Rp. {{ number_format($order->Shipping_cost)}}</td>
-              <td>Rp. {{ number_format($order->Grand_total)}}</td>
+              <td><a data-toggle="modal" data-purchase-detail="{{$purchase->detail}}" href="#purchase_detail" >{{ $purchase->No_invoice}}</a></td>
+              <td>{{ $purchase->Purchase_date}}</td>
+              <td><a data-toggle="modal" data-receive-detail="{{$purchase->receive->receive_detail}}" href="#receive_detail" >{{ $purchase->receive->No_receive}}</a></td>
+              <td>{{ $purchase->receive->Receive_date}}</td>
+              <td>
+                @if ($purchase->receive->Payment == 1)
+                Paid
+                @else
+                -
+                @endif
+              </td>
+              <td>{{ $purchase->Supplier_name}}</td>
+              <td>{{ $purchase->Supplier_email}}</td>
+              <td>{{ $purchase->Supplier_phone1}}, {{ $purchase->Supplier_phone2}}</td>
+              <td>Rp. {{ number_format($purchase->Grand_total)}}</td>
             </tr>
         @endforeach
       </tbody>
     </table>
   </div>
 </div>
-<div id="order_detail" class="modal fade" role="dialog">
+<div id="purchase_detail" class="modal fade" role="dialog">
   <div class="modal-dialog modal-dialog-scrollable modal-xl">
 
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Rincian Order </h4>
+        <h4 class="modal-title">Rincian Purchase </h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-          <table class="table-rincian-item-order">
+          <table class="table-rincian-item-purchase">
               <thead>
                   <tr>
                     <th>Nama Produk</th>
                     <th>Variant</th>
-                    <th>Normal Price</th>
-                    <th>Discount</th>
-                    <th>Fix Price</th>
+                    <th>Purchase Price</th>
                     <th>Total dipesan</th>
                     <th>Subtotal</th>
                   </tr>
               </thead>
-              <tbody class="table-body-rincian-item-order">
+              <tbody class="table-body-rincian-item-purchase">
+                  
+              </tbody>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="receive_detail" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Rincian Receive </h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+          <table class="table-rincian-item-receive">
+              <thead>
+                  <tr>
+                    <th>Nama Produk</th>
+                    <th>Variant</th>
+                    <th>Qty</th>
+                  </tr>
+              </thead>
+              <tbody class="table-body-rincian-item-receive">
                   
               </tbody>
           </table>
@@ -303,17 +330,17 @@ $.widget.bridge('uibutton', $.ui.button)
       $(".filter_date_range").attr("disabled", false);
   });
 
-$("#order_detail").on('show.bs.modal', function(event){
+$("#purchase_detail").on('show.bs.modal', function(event){
     var formatter = new Intl.NumberFormat('en-US', {style:'currency', 'currency':"IDR", currencyDisplay:'narrowSymbol'});
-    if ( $.fn.DataTable.isDataTable('.table-rincian-item-order') ) {
-      $('.table-rincian-item-order').DataTable().destroy();
+    if ( $.fn.DataTable.isDataTable('.table-rincian-item-purchase') ) {
+      $('.table-rincian-item-purchase').DataTable().destroy();
     }
     var button = $(event.relatedTarget);
-    var detail_order = button.data('order-detail');
-    console.log(detail_order);
-    $(".table-body-rincian-item-order").html("");
-    detail_order.forEach(detail => {
-        $(".table-body-rincian-item-order").append(`
+    var detail_purchase = button.data('purchase-detail');
+    console.log(detail_purchase);
+    $(".table-body-rincian-item-purchase").html("");
+    detail_purchase.forEach(detail => {
+        $(".table-body-rincian-item-purchase").append(`
             <tr>
               <td>
                     `+detail.Name+`
@@ -322,24 +349,44 @@ $("#order_detail").on('show.bs.modal', function(event){
                     `+detail.Variation_name + `(`+ detail.Option_name+`)
                 </td>
                 <td>
-                    `+formatter.format(detail.Normal_price)+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Discount_promo)+`
-                </td>
-                <td>
-                    `+formatter.format(detail.Fix_price)+`
+                    `+formatter.format(detail.Purchase_price)+`
                 </td>
                 <td>
                     `+detail.Qty+`
                 </td>
                 <td>
-                    `+formatter.format(detail.Qty * detail.Fix_price)+`
+                    `+formatter.format(detail.Qty * detail.Purchase_price)+`
                 </td>
             </tr>
         `)
     });
-    $(".table-rincian-item-order").DataTable();
+    $(".table-rincian-item-purchase").DataTable();
+ });
+
+$("#receive_detail").on('show.bs.modal', function(event){
+    if ( $.fn.DataTable.isDataTable('.table-rincian-item-receive') ) {
+      $('.table-rincian-item-receive').DataTable().destroy();
+    }
+    var button = $(event.relatedTarget);
+    var detail_receive = button.data('receive-detail');
+    
+    $(".table-body-rincian-item-receive").html("");
+    detail_receive.forEach(detail => {
+        $(".table-body-rincian-item-receive").append(`
+            <tr>
+              <td>
+                    `+detail.Name+`
+                </td>
+                <td>
+                    `+detail.Variation_name + `(`+ detail.Option_name+`)
+                </td>
+                <td>
+                    `+detail.Qty+`
+                </td>
+            </tr>
+        `)
+    });
+    $(".table-rincian-item-receive").DataTable();
  });
 
 </script>
