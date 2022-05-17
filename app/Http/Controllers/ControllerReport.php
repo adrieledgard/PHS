@@ -44,6 +44,13 @@ class ControllerReport extends Controller
          return view('Report_stock_card',$param);
     }
 
+    public function print_stock_card(Request $request)
+    {
+        $data_stock_card = $this->show_table_stock_card($request);
+
+        return view('Report_stock_card_print', compact('data_stock_card'));
+    }
+
     public function get_variation_product(Request $request)
     {
         $va = new Product();

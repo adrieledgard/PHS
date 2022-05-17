@@ -392,6 +392,7 @@ Route::post('Insert_purchase_payment', ["uses"=>"ControllerTransaction@Insert_pu
 
 
 Route::get('stock_card', ["uses"=>"ControllerReport@stock_card"]);
+Route::get('stock_card_print', ["uses"=>"ControllerReport@print_stock_card"]);
 Route::get('followup_report', ["uses"=>"ControllerReport@followup_report"]);
 Route::get('print_followup_report', ["uses"=>"ControllerReport@print_followup_report"]);
 Route::get('show_table_followup_cs', ["uses"=>"ControllerReport@show_table_followup_cs"]);
