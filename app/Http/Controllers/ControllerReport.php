@@ -8,6 +8,10 @@ use App\cust_order_header;
 use App\followup;
 use App\member;
 use App\product;
+use App\purchase_detail;
+use App\purchase_header;
+use App\receive_detail;
+use App\receive_header;
 use App\variation;
 use App\stock_card;
 use App\voucher;
@@ -522,4 +526,49 @@ class ControllerReport extends Controller
     }
 
     
+    public function pembelian(Request $request)
+    {
+        $prepare_data = $this->preparePembelianData($request);
+        $total_pengeluaran = $prepare_data[0];
+        $purchases = $prepare_data[1];
+        // $total_voucher = $prepare_data[2];
+
+        $filter_tahun = $this->generate_tahun();
+        $filter_bulan = [0 => 'This month', 1 => 'Last month', 3 => '3 months ago', 6 => '6 months ago'];
+        return view('Report_pembelian', compact('total_pengeluaran', 'purchases', 'filter_tahun', 'filter_bulan'));
+    }
+
+    public function print_pembelian_report(Request $request)
+    {
+        $prepare_data = $this->preparePembelianData($request);
+        $total_pengeluaran = $prepare_data[0];
+        $purchases = $prepare_data[1];
+        // $total_voucher = $prepare_data[2];
+
+        return view('Report_pembelian_print', compact('total_pengeluaran', 'purchases'));
+    }
+
+    public function preparePembelianData($request)
+    {
+        $total_pengeluaran = 0;
+        $purchases = purchase_header::join('supplier', 'supplier.Id_supplier', 'purchase_header.Id_supplier')->where('purchase_header.Status', '>=', 2);
+        if($request->has('filter')){
+            $period_format = $this->format_date($request);
+            $purchases = $purchases->whereBetween('Purchase_date', $period_format);
+        }
+        $purchases = $purchases->get();
+
+        foreach ($purchases as $purchase) {
+            $purchase_detail = purchase_detail::join('product', 'product.Id_product', 'purchase_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'purchase_detail.Id_variation')->where("No_invoice", $purchase->No_invoice)->get();
+            
+            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)->first();
+            $receive_purchase->receive_detail = receive_detail::join('product', 'product.Id_product', 'receive_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'receive_detail.Id_variation')->where('No_receive', $receive_purchase->No_receive)->get();
+
+            $purchase->receive = $receive_purchase;
+            $purchase->detail = $purchase_detail;
+            $total_pengeluaran += $purchase->Grand_total;
+        }
+
+        return [$total_pengeluaran, $purchases];
+    }
 }
