@@ -154,13 +154,12 @@ Pembelian
         <tr>
           <th>No. Order</th>
           <th>Date</th>
-          <th>No. Receive</th>
-          <th>Date Receive</th>
-          <th>Payment</th>
           <th>Supplier Name</th>
           <th>Supplier Email</th>
           <th>Supplier Phone</th>
           <th>Grand Total</th>
+          <th>Receive Purchase</th>
+
         </tr>
       </thead>
   
@@ -169,19 +168,11 @@ Pembelian
             <tr>
               <td><a data-toggle="modal" data-purchase-detail="{{$purchase->detail}}" href="#purchase_detail" >{{ $purchase->No_invoice}}</a></td>
               <td>{{ $purchase->Purchase_date}}</td>
-              <td><a data-toggle="modal" data-receive-detail="{{$purchase->receive->receive_detail}}" href="#receive_detail" >{{ $purchase->receive->No_receive}}</a></td>
-              <td>{{ $purchase->receive->Receive_date}}</td>
-              <td>
-                @if ($purchase->receive->Payment == 1)
-                Paid
-                @else
-                -
-                @endif
-              </td>
               <td>{{ $purchase->Supplier_name}}</td>
               <td>{{ $purchase->Supplier_email}}</td>
               <td>{{ $purchase->Supplier_phone1}}, {{ $purchase->Supplier_phone2}}</td>
               <td>Rp. {{ number_format($purchase->Grand_total)}}</td>
+              <td><button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#receive" data-receive="{{$purchase->receive}}">Rincian</button></td>
             </tr>
         @endforeach
       </tbody>
@@ -209,6 +200,36 @@ Pembelian
                   </tr>
               </thead>
               <tbody class="table-body-rincian-item-purchase">
+                  
+              </tbody>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="receive" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Receive </h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+          <table class="table-rincian-receive">
+              <thead>
+                  <tr>
+                    <th>No. Receive</th>
+                    <th>Date Receive</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                  </tr>
+              </thead>
+              <tbody class="table-body-rincian-receive">
                   
               </tbody>
           </table>
@@ -363,13 +384,57 @@ $("#purchase_detail").on('show.bs.modal', function(event){
     $(".table-rincian-item-purchase").DataTable();
  });
 
+$("#receive").on('show.bs.modal', function(event){
+    if ( $.fn.DataTable.isDataTable('.table-rincian-receive') ) {
+      $('.table-rincian-receive').DataTable().destroy();
+    }
+    var button = $(event.relatedTarget);
+    var receives = button.data('receive');
+    
+    $(".table-body-rincian-receive").html("");
+    receives.forEach(receive => {
+        let payment_status = "-";
+        let receive_status = "";
+        if(receive.Status == 0){
+          receive_status = "Void";
+        }else if(receive.Status == 1){
+          receive_status = "Open"
+        }else if(receive.Status == 2){
+          receive_status = "Partially Processed"
+        }else if(receive.Status == 3){
+          receive_status = "Partially Processed (close)"
+        }else if(receive.Status == 4){
+          receive_status = "Complete close"
+        }
+        if(receive.Payment == 1){
+          payment_status = "Yes";
+        }
+        $(".table-body-rincian-receive").append(`
+            <tr>
+              <td>
+                    <a href="#receive_detail" data-toggle="modal" data-receive-detail='`+JSON.stringify(receive.detail)+`'>`+receive.No_receive+`</a>
+                </td>
+                <td>
+                    ` + receive.Receive_date +`
+                </td>
+                <td>
+                    `+ receive_status +`
+                </td>
+                <td>
+                    `+ payment_status +`
+                </td>
+            </tr>
+        `)
+    });
+    $(".table-rincian-receive").DataTable();
+ });
+
 $("#receive_detail").on('show.bs.modal', function(event){
     if ( $.fn.DataTable.isDataTable('.table-rincian-item-receive') ) {
       $('.table-rincian-item-receive').DataTable().destroy();
     }
     var button = $(event.relatedTarget);
     var detail_receive = button.data('receive-detail');
-    
     $(".table-body-rincian-item-receive").html("");
     detail_receive.forEach(detail => {
         $(".table-body-rincian-item-receive").append(`

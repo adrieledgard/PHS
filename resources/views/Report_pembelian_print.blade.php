@@ -33,9 +33,6 @@
           <tr>
             <th>No. Order</th>
           <th>Date</th>
-          <th>No. Receive</th>
-          <th>Date Receive</th>
-          <th>Payment</th>
           <th>Supplier Name</th>
           <th>Supplier Email</th>
           <th>Supplier Phone</th>
@@ -48,15 +45,6 @@
             <tr>
               <td>{{ $purchase->No_invoice}}</td>
               <td>{{ $purchase->Purchase_date}}</td>
-              <td>{{ $purchase->receive->No_receive}}</td>
-              <td>{{ $purchase->receive->Receive_date}}</td>
-              <td>
-                @if ($purchase->receive->Payment == 1)
-                Paid
-                @else
-                -
-                @endif
-              </td>
               <td>{{ $purchase->Supplier_name}}</td>
               <td>{{ $purchase->Supplier_email}}</td>
               <td>{{ $purchase->Supplier_phone1}}, {{ $purchase->Supplier_phone2}}</td>

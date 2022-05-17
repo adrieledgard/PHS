@@ -561,8 +561,10 @@ class ControllerReport extends Controller
         foreach ($purchases as $purchase) {
             $purchase_detail = purchase_detail::join('product', 'product.Id_product', 'purchase_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'purchase_detail.Id_variation')->where("No_invoice", $purchase->No_invoice)->get();
             
-            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)->first();
-            $receive_purchase->receive_detail = receive_detail::join('product', 'product.Id_product', 'receive_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'receive_detail.Id_variation')->where('No_receive', $receive_purchase->No_receive)->get();
+            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)->get();
+            foreach ($receive_purchase as $receive) {
+                $receive->detail = receive_detail::join('product', 'product.Id_product', 'receive_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'receive_detail.Id_variation')->where('No_receive', $receive->No_receive)->get();
+            }
 
             $purchase->receive = $receive_purchase;
             $purchase->detail = $purchase_detail;
