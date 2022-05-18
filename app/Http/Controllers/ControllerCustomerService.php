@@ -160,6 +160,7 @@ class ControllerCustomerService extends Controller
             {
                 $followup = followup::where("Id_member", $member->Id_member)
                 ->where("End_followup_date", ">", date("Y-m-d H:i:s"))
+                ->where('Is_successful_followup', "<>", '1')
                 ->first();
 
                 if(empty($followup))
