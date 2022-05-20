@@ -4675,7 +4675,7 @@ class Controller extends BaseController
 
 	public function Send_email_to_customer(Request $request)
 	{
-		logger($request->all());
+		// logger($request->all());
 		$customer = member::find($request->Id_member);
 		Mail::to($customer->Email)->send(new SendEmail($request->Subject, $request->Content));
 
@@ -4735,7 +4735,10 @@ class Controller extends BaseController
 			return view('forgot_password')->withErrors($validator);
 		}
 
-		$otp = otp::where('Kode', $request->kode_otp)->where('Expired_time', '>=', date("Y-m-d H:i:s"))->where('Status', 'Active')->first();
+		$otp = otp::where('Kode', $request->kode_otp)
+		->where('Expired_time', '>=', date("Y-m-d H:i:s"))
+		->where('Status', 'Active')
+		->first();
 		if(empty($otp)){
 			return view('forgot_password')->withErrors(['kode_otp'=>'Kode expired/salah']);
 		}

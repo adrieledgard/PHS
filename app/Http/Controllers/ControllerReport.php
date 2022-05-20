@@ -551,17 +551,20 @@ class ControllerReport extends Controller
     public function preparePembelianData($request)
     {
         $total_pengeluaran = 0;
-        $purchases = purchase_header::join('supplier', 'supplier.Id_supplier', 'purchase_header.Id_supplier')->where('purchase_header.Status', '>=', 2);
+        $purchases = purchase_header::join('supplier', 'supplier.Id_supplier', 'purchase_header.Id_supplier')->where('purchase_header.Status', '>=', 1);
         if($request->has('filter')){
             $period_format = $this->format_date($request);
             $purchases = $purchases->whereBetween('Purchase_date', $period_format);
         }
+        $purchases = $purchases->select('purchase_header.status as purchasestat', 'purchase_header.*', 'supplier.*');
         $purchases = $purchases->get();
 
         foreach ($purchases as $purchase) {
             $purchase_detail = purchase_detail::join('product', 'product.Id_product', 'purchase_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'purchase_detail.Id_variation')->where("No_invoice", $purchase->No_invoice)->get();
             
-            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)->get();
+            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)
+            ->where('Status','=',2)
+            ->get();
             foreach ($receive_purchase as $receive) {
                 $receive->detail = receive_detail::join('product', 'product.Id_product', 'receive_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'receive_detail.Id_variation')->where('No_receive', $receive->No_receive)->get();
             }
