@@ -104,6 +104,7 @@
               <td>Status</td>
               <td>Title</td>
               <td>Description</td>
+              <td>Conclusion</td>
               <td>Actions</td>
             </tr>
           </thead>
@@ -125,12 +126,14 @@
                 @endphp
                 <td>{{$ticket->Title}}</td>
                 <td>{{$ticket->Description}}</td>
+                <td>{{$ticket->Conclusion}}</td>
                 <td>
                   {{-- kalau mau close ticket --}}
-                  <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button> 
+                  {{-- <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button>  --}}
                   @php
                     if($ticket->Status != "CLOSED"){
-                        echo '<button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button> <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#chat" data-id-ticket="' . $ticket->id . '">Chat</button>';
+                        echo '<button type="button" class="btn btn-danger btn-sm" onclick="openModal('. $ticket->id .')">Closed</button> <button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button> <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#chat" data-id-ticket="' . $ticket->id . '">Chat</button>
+                        ';
                       }
                       else {
                         echo '<button type="button" class="btn btn-warning btn-sm" disabled onclick="onEdit(' . $ticket->id. ')">Edit</button>';
@@ -158,7 +161,8 @@
         <div class="modal-body">
           {{Form::open(array('url'=>'closed_request_assist/','method'=>'post','class'=>'row g-3'))}}
           <div class="col-md-12">
-            Apakah anda yakin ingin menutup tiket ini ?
+            Masukkan conclusi
+            <textarea class="form-control" name="conclusion" id="conclusion" cols="30" rows="10"></textarea>
             {{ Form::hidden('id', '1', ['class' => 'ticket_id']) }}
           </div>
         </div>

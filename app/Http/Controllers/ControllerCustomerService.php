@@ -71,7 +71,7 @@ class ControllerCustomerService extends Controller
         if(($role == 'ADMIN') || ($tkt->Cs_id == session()->get('userlogin')->Id_member))
         {
             $ticket = new Ticket();
-            $ticket->closed($request->id);
+            $ticket->closed($request->id, $request->conclusion);
 
             return redirect()->route('list_request_assist');
         }
@@ -190,15 +190,15 @@ class ControllerCustomerService extends Controller
                         $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
                         $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
                         if($request->get('operasi_lama_tidak_transaksi') == "="){
-                            if(!($interval->format("%d") == (int)$request->get("lama_tidak_transaksi"))){
+                            if(!($interval->format("%a") == (int)$request->get("lama_tidak_transaksi"))){
                                 continue;
                             }
                         }else if($request->get('operasi_lama_tidak_transaksi') == ">"){
-                            if(!($interval->format("%d") > (int)$request->get("lama_tidak_transaksi"))){
+                            if(!($interval->format("%a") > (int)$request->get("lama_tidak_transaksi"))){
                                 continue;
                             }
                         }else if($request->get('operasi_lama_tidak_transaksi') == "<"){
-                            if(!($interval->format("%d") < (int)$request->get("lama_tidak_transaksi"))){
+                            if(!($interval->format("%a") < (int)$request->get("lama_tidak_transaksi"))){
                                 continue;
                             }
                         }
