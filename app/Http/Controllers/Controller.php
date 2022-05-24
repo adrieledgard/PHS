@@ -4649,10 +4649,15 @@ class Controller extends BaseController
 	{
 		$customer = "";
 		if(!$request->has('produk') && $request->filter == 'produk'){
-			return redirect()->back()->with('error', "Pilih satu atau lebih produk!")->withInput();
+			return redirect()->back()->with('error', "Pilih satu atau lebih produk!")->withInput(); //with input itu kembalikan data inputan semula, $request akan dikembalikan
 		}
 		if($request->filter == 'produk'){
-			$customer = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')->whereIn('cust_order_detail.Id_product', $request->produk)->groupBy('cust_order_header.Id_member')->groupBy('cust_order_header.Email')->select('Id_member', 'Email')->get();
+			$customer = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
+			->whereIn('cust_order_detail.Id_product', $request->produk)
+			->groupBy('cust_order_header.Id_member')
+			->groupBy('cust_order_header.Email')
+			->select('Id_member', 'Email')->get();
+
 		}else if($request->filter == 'total_transaksi'){
 			$result = [];
 			$member = member::where('Role', 'CUST')->get();

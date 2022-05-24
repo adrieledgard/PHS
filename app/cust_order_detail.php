@@ -17,9 +17,9 @@ class cust_order_detail extends Model
 
 
     public function getdetail($Id_order) {
-        return cust_order_detail::select('cust_order_detail.*', 'product.Name','Variation_product.Option_name')
+        return cust_order_detail::select('cust_order_detail.*', 'product.Name','variation_product.Option_name')
                                 ->join('product', 'product.Id_product', 'cust_order_detail.Id_product')
-                                ->join('Variation_product', 'Variation_product.Id_variation', 'cust_order_detail.Id_variation')
+                                ->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')
                                 ->where('cust_order_detail.Id_order', '=', $Id_order)
                                 ->get(); 
     }

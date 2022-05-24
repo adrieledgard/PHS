@@ -110,12 +110,16 @@ class ControllerCustomerService extends Controller
             $update_attachment_chat->Content = $name;
             $update_attachment_chat->save();
         }
-        $chat = new chat();
-        $chat->Id_ticket = $request->id_ticket;
-        $chat->Id_member = session()->get('userlogin')->Id_member;
-        $chat->Type = "text";
-        $chat->Content = $request->content_pesan;
-        $chat->save();
+        else
+        {
+            $chat = new chat();
+            $chat->Id_ticket = $request->id_ticket;
+            $chat->Id_member = session()->get('userlogin')->Id_member;
+            $chat->Type = "text";
+            $chat->Content = $request->content_pesan;
+            $chat->save();
+        }
+       
 
         $get_chat = chat::join('member', 'member.Id_member', 'chat.Id_member')->where('Id_ticket', $request->id_ticket)->get();
         $user_id = session()->get('userlogin')->Id_member;
@@ -223,11 +227,15 @@ class ControllerCustomerService extends Controller
         $date_today = date("Y-m-d") . " 00:00:00";
         $count_followup_cs = followup::where("Id_customer_service", session()->get('userlogin')->Id_member)->where('Followup_date', $date_today)->count();
         if($count_followup_cs == config('followup.limit_followup_cs')){
-            return redirect()->back()->withErrors(['message'=>'Anda sudah melebihi limit hari ini!']);
+            return redirect()->back()
+            ->withErrors(['message'=>'Anda sudah melebihi limit hari ini!']);
         }
 
         $tanggal_followup = "";
-        $followed_up_member = followup::where('Id_member', $request->Id_member)->orderBy('Id_followup', 'desc')->first();
+        $followed_up_member = followup::where('Id_member', $request->Id_member)
+        ->orderBy('Id_followup', 'desc')
+        ->first();
+
         if(!empty($followed_up_member)){
             if($followed_up_member->Is_successful_followup == 1) {
                 return redirect()->back();
@@ -270,9 +278,9 @@ class ControllerCustomerService extends Controller
                     ->get();
 
         foreach ($customers as $customer) {
-            $is_refollowup_available = "disabled";
+            $is_refollowup_available = "disabled"; // jika failed ada refollow up tapi ada pengecekan apakaah konsumen itu ada di follow up sama cs lain dk
             $followup = followup::where("Id_member", $customer->Id_member)->orderBy('Id_followup', 'desc')->first();
-            if(date('Y-m-d', strtotime($followup->End_followup_date)) < date("Y-m-d") && $followup->Is_successful_followup == 0){
+            if(date('Y-m-d', strtotime($followup->End_followup_date)) < date("Y-m-d") && $followup->Is_successful_followup == 0){ //jika memenuhi maka button refollow up muncul
                 $is_refollowup_available = "";
             }
             $customer->is_refollowup_available = $is_refollowup_available;

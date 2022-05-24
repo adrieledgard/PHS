@@ -12,11 +12,11 @@
 
 
 @section('title2')
-    Broadcast
+    Broadcast Prospek
 @endsection
 
 @section('breadcrumb')
-    <li class="breadcrumb-item active">Broadcast</li>
+    <li class="breadcrumb-item active">Broadcast Prospek</li>
 @endsection
 
 @push('custom-css')

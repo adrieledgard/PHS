@@ -44,7 +44,7 @@ class product_image extends Model
             [
                 'Id_image' => null,
                 'Id_product' => strtoupper($Id_product),
-                'Image_name' => strtoupper($Image_name),
+                'Image_name' => ($Image_name),
                 'Image_order' => strtoupper($urutan)
             ]
             );
