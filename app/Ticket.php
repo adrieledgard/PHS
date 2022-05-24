@@ -41,10 +41,11 @@ class Ticket extends Model
         return "sukses";
     }
 
-    public function closed($id)
+    public function closed($id, $conclusion)
     {
         $ticket = Ticket::find($id);
         $ticket->Status = "CLOSED";
+        $ticket->Conclusion = $conclusion;
         $ticket->save();
 
         return "sukses";
