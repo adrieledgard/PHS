@@ -48,11 +48,12 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
+                    
                     {{Form::open(array('url'=>'simpan_pengaturan_followup/','method'=>'post','class'=>'row g-3'))}}
                     {{ Form::label('Jeda periode follow up (hari) :','') }}
-                    {{ Form::number('jeda_periode_followup', config('followup.jeda_periode_followup'), ['class'=>'form-control','id'=>'jeda_periode_followup', 'placeholder' => "0", 'required' => 'required']) }}
+                    {{ Form::number('jeda_periode_followup', $config_jeda_periode_followup, ['class'=>'form-control','id'=>'jeda_periode_followup', 'placeholder' => "0", 'required' => 'required']) }}
                     {{ Form::label('Limit follow up per CS per hari :','') }}
-                    {{ Form::number('limit_followup_cs', config('followup.limit_followup_cs'), ['class'=>'form-control','id'=>'limit_followup_cs', 'placeholder' => "0", 'required' => 'required']) }}
+                    {{ Form::number('limit_followup_cs', $config_limit_followup_cs, ['class'=>'form-control','id'=>'limit_followup_cs', 'placeholder' => "0", 'required' => 'required']) }}
                     <br>
                     {{ Form::submit('Simpan', ['class'=>'btn btn-primary']) }}
                     {{Form::close()}}

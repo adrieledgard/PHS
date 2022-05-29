@@ -226,9 +226,17 @@ class ControllerCustomerService extends Controller
     {
         $date_today = date("Y-m-d") . " 00:00:00";
         $count_followup_cs = followup::where("Id_customer_service", session()->get('userlogin')->Id_member)->where('Followup_date', $date_today)->count();
+
         if($count_followup_cs == config('followup.limit_followup_cs')){
             return redirect()->back()
             ->withErrors(['message'=>'Anda sudah melebihi limit hari ini!']);
+
+        $config_limit_followup = DB::table('config')->where('config_name', 'limit_followup_cs')->first();
+        if(!empty($config_limit_followup)){
+            if($count_followup_cs == $config_limit_followup->value){
+                return redirect()->back()->withErrors(['message'=>'Anda sudah melebihi limit hari ini!']);
+            }
+
         }
 
         $tanggal_followup = "";
@@ -256,18 +264,50 @@ class ControllerCustomerService extends Controller
 
     public function pengaturan_followup()
     {
-        return view("Pengaturan_followup");
+        $config_jeda_periode_followup = DB::table('config')->where('Config_name', 'jeda_periode_followup')->first();
+        $config_limit_followup_cs = DB::table('config')->where('Config_name', 'limit_followup_cs')->first();
+        if(is_null($config_jeda_periode_followup)){
+            $config_jeda_periode_followup = "";
+        }else {
+            $config_jeda_periode_followup = $config_jeda_periode_followup->Value;
+        }
+        if(is_null($config_limit_followup_cs)){
+            $config_limit_followup_cs = "";
+        }else {
+            $config_limit_followup_cs = $config_limit_followup_cs->Value;
+        }
+        return view("Pengaturan_followup", compact('config_jeda_periode_followup', 'config_limit_followup_cs'));
     }
 
     public function simpan_pengaturan_followup(Request $request)
     {
-        $array = [
-            'jeda_periode_followup' => $request->jeda_periode_followup,
-            'limit_followup_cs' => $request->limit_followup_cs
-        ];
-        $fp = fopen(base_path('config/followup.php'), 'w');
-        fwrite($fp, '<?php return ' . var_export($array, true) . ';');
-        fclose($fp);
+        $is_config_jeda_periode_exist = DB::table('config')
+            ->where('Config_name', 'jeda_periode_followup')
+            ->get();
+        if(count($is_config_jeda_periode_exist) > 0){
+            DB::table('config')
+            ->where('Config_name', 'jeda_periode_followup')
+            ->update(['Value' => $request->jeda_periode_followup]);
+        }else {
+            DB::table('config')->insert([
+                'Config_name' => 'jeda_periode_followup',
+                'Value' => $request->jeda_periode_followup
+            ]);
+        }
+        $is_config_limit_followup_exist = DB::table('config')
+            ->where('Config_name', 'limit_followup_cs')
+            ->get();
+        if(count($is_config_limit_followup_exist) > 0){
+            DB::table('config')
+            ->where('Config_name', 'limit_followup_cs')
+            ->update(['Value' => $request->limit_followup_cs]);
+        }else {
+            DB::table('config')->insert([
+                'Config_name' => 'limit_followup_cs',
+                'Value' => $request->limit_followup_cs
+            ]);
+        }
+       
         return redirect()->back();
     }
 
