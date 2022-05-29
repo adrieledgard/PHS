@@ -134,13 +134,15 @@
                                                             ?>
 
                                                                 @php
-                                                                    $embedcode= "<script type='text/javascript' charset='utf-8'>     
-                                                                var iframe = document.createElement('iframe');       
-                                                                document.body.appendChild(iframe);
-                                                                iframe.src = 'https://localhost/PusatHerbalStore/public/embed_code/{$dtpro->Id_product}/{$randomcode}';       
-                                                                iframe.width = '100%';
-                                                                iframe.height = 600;
-                                                                </script>;";
+                                                                //     $embedcode= "<script type='text/javascript' charset='utf-8'>     
+                                                                // var iframe = document.createElement('iframe');       
+                                                                // document.body.appendChild(iframe);
+                                                                // iframe.src = 'https://localhost/PusatHerbalStore/public/embed_code/{$dtpro->Id_product}/{$randomcode}';       
+                                                                // iframe.width = '100%';
+                                                                // iframe.height = 600; 
+                                                                // </script>;";
+
+                                                                $embedcode= "<iframe src='https://localhost/PusatHerbalStore/public/embed_code/{$dtpro->Id_product}/{$randomcode}' frameborder='0' style='width:85%; height:80%; position:absolute'></iframe>";
                                                                 @endphp
                                                             
                                                                

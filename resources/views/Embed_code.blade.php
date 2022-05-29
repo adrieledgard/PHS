@@ -4,6 +4,7 @@
 
 
 {{Form::open(array('url'=>'embed_checkout','method'=>'post','class'=>'row g-3'))}}
+@csrf
 <div class="container">
     <div class="row">
         <b> <h1>Your Order : </h1></b>

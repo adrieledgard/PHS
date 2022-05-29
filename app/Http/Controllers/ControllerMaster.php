@@ -1439,7 +1439,7 @@ class ControllerMaster extends Controller
 						->get();
 				
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 					else
 					{
@@ -1460,7 +1460,7 @@ class ControllerMaster extends Controller
 						->get();
 
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					
 					}
 					
@@ -1547,7 +1547,7 @@ class ControllerMaster extends Controller
 						->get();
 				
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 					else
 					{
@@ -1568,7 +1568,7 @@ class ControllerMaster extends Controller
 						->get();
 	
 	
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 
 
@@ -1656,7 +1656,7 @@ class ControllerMaster extends Controller
 						->get();
 				
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 					else
 					{
@@ -1677,7 +1677,7 @@ class ControllerMaster extends Controller
 						->get();
 
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					
 					}
 					
@@ -1754,7 +1754,7 @@ class ControllerMaster extends Controller
 					->get();
 
 
-					return view('master_banner',$param);
+					return view('Master_banner',$param);
 
 
 					//  $ctrbanner=0;
@@ -3200,7 +3200,7 @@ class ControllerMaster extends Controller
 		}
 		else if($request->login)
 		{
-			return view('login');
+			return view('Login');
 		}
 		
 	}
@@ -3852,7 +3852,7 @@ class ControllerMaster extends Controller
 		}
 		else if($request->login)
 		{
-			return view('login');
+			return view('Login');
 		}
 	}
 
@@ -3988,7 +3988,7 @@ class ControllerMaster extends Controller
 
 		
 
-		return view('master_affiliate',$param);
+		return view('Master_affiliate',$param);
 	}
 
 
@@ -4095,7 +4095,7 @@ class ControllerMaster extends Controller
 					$param['msgerror']="";
 					$param['dtaffiliate'] = affiliate::where('Status','=',1)
 					->get();
-					return view('master_affiliate',$param);
+					return view('Master_affiliate',$param);
 				}
 		}
 	}
@@ -4197,7 +4197,7 @@ class ControllerMaster extends Controller
 
 					
 
-					return view('master_affiliate',$param);
+					return view('Master_affiliate',$param);
 				}
 		}
 	}
@@ -4208,7 +4208,7 @@ class ControllerMaster extends Controller
 		foreach ($ebooks as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 		}
-		return view('master_ebook', compact('ebooks'));
+		return view('Master_ebook', compact('ebooks'));
 	}
 
 	public function show_ebook($ebook_id, $user_token)
