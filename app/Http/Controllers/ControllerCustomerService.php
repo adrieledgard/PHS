@@ -230,7 +230,7 @@ class ControllerCustomerService extends Controller
         if($count_followup_cs == config('followup.limit_followup_cs')){
             return redirect()->back()
             ->withErrors(['message'=>'Anda sudah melebihi limit hari ini!']);
-
+        }
         $config_limit_followup = DB::table('config')->where('config_name', 'limit_followup_cs')->first();
         if(!empty($config_limit_followup)){
             if($count_followup_cs == $config_limit_followup->value){
