@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\supplier;
-use App\Product;
+use App\product;
 use App\product_image;
 use App\variation;
 use App\brand;
@@ -78,7 +78,7 @@ class ControllerTransaction extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 	
 
 		return view('Purchase_add',$param);
@@ -1098,7 +1098,7 @@ class ControllerTransaction extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 	
 	
 		return view('Receive_order_add',$param);
@@ -1895,7 +1895,7 @@ class ControllerTransaction extends Controller
 		$detail = receive_detail::where('receive_detail.No_receive','=',$no_receive)
 		->get();
 
-		$pro = Product::all();
+		$pro = product::all();
 		$vari = variation::all();
 
 

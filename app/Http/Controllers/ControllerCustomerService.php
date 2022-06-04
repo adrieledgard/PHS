@@ -9,7 +9,7 @@ use App\followup;
 use App\Mail\FollowUp as MailFollowUp;
 use App\Mail\SendEmail;
 use App\member;
-use App\Ticket;
+use App\ticket;
 use App\voucher;
 use DateTime;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class ControllerCustomerService extends Controller
 
     public function index_request_assist()
     {
-        $tickets = Ticket::join('member','member.Id_member','table_ticket.Cs_id')
+        $tickets = ticket::join('member','member.Id_member','table_ticket.Cs_id')
         ->select('member.Username as namacs','table_ticket.*')
         ->get();
         return view('Customer_service_list_request_assists', compact('tickets'));
@@ -39,7 +39,7 @@ class ControllerCustomerService extends Controller
 
     public function insert(Request $request)
     {
-        $ticket = new Ticket();
+        $ticket = new ticket();
         
         $ticket->insertdata((session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi, $request->email, $request->phone);
         
@@ -48,13 +48,13 @@ class ControllerCustomerService extends Controller
 
     public function update_request_assist($request_id)
     {
-        $ticket = Ticket::find($request_id);
+        $ticket = ticket::find($request_id);
         return view('Customer_service_request_assists_update', compact('ticket'));
     }
 
     public function update($id, Request $request)
     {
-        $ticket = new Ticket();
+        $ticket = new ticket();
         
         $ticket->updatedata($id,(session()->get('userlogin'))->Id_member, $request->title, $request->description, $request->bukti_chat, $request->platform_komunikasi, $request->email, $request->phone);
         
@@ -66,11 +66,11 @@ class ControllerCustomerService extends Controller
         //cayang4
         $role = session()->get('userlogin')->Role;
 
-        $tkt = Ticket::find($request->id);
+        $tkt = ticket::find($request->id);
 
         if(($role == 'ADMIN') || ($tkt->Cs_id == session()->get('userlogin')->Id_member))
         {
-            $ticket = new Ticket();
+            $ticket = new ticket();
             $ticket->closed($request->id, $request->conclusion);
 
             return redirect()->route('list_request_assist');

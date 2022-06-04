@@ -89,7 +89,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		session()->put('tipe_voucher',1);
 		// session()->put('tipe_voucher_product',"all");
@@ -564,7 +564,7 @@ class ControllerMaster extends Controller
 
 		$param['id'] = $id;
 
-		$param['product'] = Product::where('Id_product','=',$id)
+		$param['product'] = product::where('Id_product','=',$id)
 		->get();
 
 		$param['product_image'] = product_image::where('Id_product','=',$id)
@@ -629,7 +629,7 @@ class ControllerMaster extends Controller
 				{
 					$param['id'] = $kodeproduk;
 	
-					$param['product'] = Product::where('Id_product','=',$kodeproduk)
+					$param['product'] = product::where('Id_product','=',$kodeproduk)
 					->get();
 	
 					$param['product_image'] = product_image::where('Id_product','=',$kodeproduk)
@@ -727,12 +727,12 @@ class ControllerMaster extends Controller
 
 
 						
-						$pro = new Product();
+						$pro = new product();
 						$hasil = $pro->insertdata($name, $id_type, $packaging, $id_brand,$composition,
 						$bpom,$efficacy, $desc,$storage,$dose,$disclaimer,'None',$status);
 
 
-						$pro2 = new Product();
+						$pro2 = new product();
 						$idp =  $pro2->getlastid();
 						
 
@@ -800,11 +800,11 @@ class ControllerMaster extends Controller
 						}
 						else
 						{
-							$pro = new Product();
+							$pro = new product();
 							$hasil = $pro->insertdata($name, $id_type, $packaging, $id_brand,$composition,
 							$bpom,$efficacy, $desc,$storage,$dose,$disclaimer,$variation_name,$status);
 
-							$pro2 = new Product();
+							$pro2 = new product();
 							$idp =  $pro2->getlastid();
 
 
@@ -829,7 +829,7 @@ class ControllerMaster extends Controller
 
 					$datasubcategory = session()->get('datasubcategory');
 
-					$pro = new Product();
+					$pro = new product();
 					$idp =  $pro->getlastid();
 
 					for ($i=0; $i<count($datasubcategory); $i++) { 
@@ -1030,7 +1030,7 @@ class ControllerMaster extends Controller
 					}
 
 
-					$pro = new Product();
+					$pro = new product();
 					$hasil = $pro->edit_product($Id_product,$Name, $Id_type, $Packaging, $Id_brand,$Composition,
 					$Bpom,$Efficacy, $Desc,$Storage,$Dose,$Disclaimer,$Variation_name,$Status);
 
@@ -2217,7 +2217,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		session()->put('tipe_voucher',1);
 		// session()->put('tipe_voucher_product',"all");
@@ -2463,7 +2463,7 @@ class ControllerMaster extends Controller
 	{
 		$Id_voucher = $request->Id_voucher;
 
-		$vc = new Voucher();
+		$vc = new voucher();
 		$hasil = $vc->changestatus($Id_voucher,0);
 
 		echo "sukses";
@@ -2525,7 +2525,7 @@ class ControllerMaster extends Controller
 
 	public function get_variation_product(Request $request)
     {
-        $va = new Product();
+        $va = new product();
 		echo $va->getvariation($request->Id_product);
 
     }
@@ -3305,7 +3305,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		session()->put('tipe_supplier_product',"all");
 
@@ -3454,7 +3454,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$dtproductimage = Product_image::all();
+		$dtproductimage = product_image::all();
 
 		$temp="";
 		for ($i=0; $i < count($product); $i++) { 
@@ -3984,7 +3984,7 @@ class ControllerMaster extends Controller
 		->get();
 
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		
 
@@ -4193,7 +4193,7 @@ class ControllerMaster extends Controller
 					->get();
 
 
-					$param['dtproductimage'] = Product_image::all();
+					$param['dtproductimage'] = product_image::all();
 
 					
 

@@ -20,7 +20,7 @@ class product extends Model
     {
        
       
-        Product::create(
+        product::create(
         [
             'Id_product' => null,
             'Name' => strtoupper($name),
@@ -46,7 +46,7 @@ class product extends Model
 
     public function getlastid()
     {
-        $dn = Product::all();
+        $dn = product::all();
         $ix=0;
 
         foreach ($dn as $data) {
@@ -111,7 +111,7 @@ class product extends Model
 
 		// session()->put('sortby','Default');
 
-        $query = Product::query();
+        $query = product::query();
         $query  = $query->select('product.Id_product', 'product.Name', 'type.Type_name', 'brand.Brand_name', 'variation_product.Sell_price', 'product.Rating');
         $query  = $query->join("type", "product.Id_type", "=", "type.Id_type");
         $query  = $query->join("brand", "product.Id_brand", "=", "brand.Id_brand");

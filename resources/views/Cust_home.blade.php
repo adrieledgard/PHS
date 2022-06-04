@@ -1810,7 +1810,7 @@
 
 
 <!-- testimonials area start -->
-<div class="testimonials-area pt-120 pb-115">
+{{-- <div class="testimonials-area pt-120 pb-115">
     <div class="container">
         <div class="testimonials-active owl-carousel">
             <div class="single-testimonial-2 text-center">
@@ -1823,10 +1823,10 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 <!-- testimonials area end -->
 <!-- services area start -->
-<div class="services-area wrapper-padding-4 gray-bg pt-120 pb-80">
+{{-- <div class="services-area wrapper-padding-4 gray-bg pt-120 pb-80">
     <div class="container-fluid">
         <div class="services-wrapper">
             <div class="single-services mb-40">
@@ -1858,11 +1858,11 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 <!-- services area end -->
 <!-- footer area start -->
 <footer class="footer-area">
-    <div class="footer-top-area pt-70 pb-35 wrapper-padding-5">
+    {{-- <div class="footer-top-area pt-70 pb-35 wrapper-padding-5">
         <div class="container-fluid">
             <div class="widget-wrapper">
                 <div class="footer-widget mb-30">
@@ -1918,7 +1918,7 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="footer-bottom ptb-20 gray-bg-8">
         <div class="container">
             <div class="row">
@@ -2117,14 +2117,14 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mi
     var myurl = "<?php echo URL::to('/'); ?>";
     function pilihcat(type,id)
     {
-          alert(type);
-          alert(id);
+        //   alert(type);
+        //   alert(id);
 
         $.get(myurl + '/Cust_show_cat',
         {type:type,id:id},
         function(result){
         //  alert(result);
-         alert(result);
+        //  alert(result);
         $("#isi-product-category").html(result);
         
         });

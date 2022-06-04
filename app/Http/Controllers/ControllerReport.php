@@ -57,7 +57,7 @@ class ControllerReport extends Controller
 
     public function get_variation_product(Request $request)
     {
-        $va = new Product();
+        $va = new product();
 		echo $va->getvariation($request->Id_product);
 
     }

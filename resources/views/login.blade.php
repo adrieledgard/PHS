@@ -14,7 +14,7 @@
 
 
 @section('Content')
-kalau transaksi penjualan cek promo masih berlaku gak
+{{-- kalau transaksi penjualan cek promo masih berlaku gak --}}
 <div class="login-reg-panel">
    
     <div class="login-info-box">

@@ -420,7 +420,7 @@ Purchase payment pay
     {
       var foto = $('#foto');
 
-      alert(foto);
+      // alert(foto);
       var myurl = "<?php echo URL::to('/'); ?>";
           $.get(myurl + '/input_purchase_payment',
           {foto:foto},

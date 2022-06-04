@@ -565,7 +565,7 @@
         
         })
 
-        alert(kumpulan_id_produk)
+        // alert(kumpulan_id_produk)
   }
 
 

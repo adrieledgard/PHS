@@ -641,7 +641,7 @@ ul.timeline > li:before {
       $.get(myurl + '/update_filter_session',
       {Status: stat},
       function(result){
-           alert(result);
+          //  alert(result);
 
           window.location = myurl + "/My_order/";
       });

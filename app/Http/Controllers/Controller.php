@@ -355,18 +355,18 @@ class Controller extends BaseController
 
 	public function register(){
 		$param['msg']="";
-		return view('register',$param);
+		return view('Register',$param);
 	}
 	
 	public function login(){
 
 		$param['msg']="";
-		return view('login',$param);
+		return view('Login',$param);
 	}
 
 	public function forgot_password(){
 
-		return view('forgot_password');
+		return view('Forgot_password');
 	}
 
 	public function logout(){
@@ -374,7 +374,7 @@ class Controller extends BaseController
 		session()->forget('userlogin');
 		session()->forget('Id_address');
 		$param['msg']="";
-		return view('login',$param);
+		return view('Login',$param);
 		
 	}
 	public function post_register(Request $request){
@@ -406,7 +406,7 @@ class Controller extends BaseController
 			if ($validator->fails())
 			{
 				$param['msg']="";
-				return view('register',$param)
+				return view('Register',$param)
 				->withErrors($validator);
 			}
 			else
@@ -457,7 +457,7 @@ class Controller extends BaseController
 				else
 				{
 					$param['msg'] = "Data ada kembar !";
-					return view('register',$param);
+					return view('Register',$param);
 				}
 			}
 
@@ -465,7 +465,7 @@ class Controller extends BaseController
 		else if($request->login)
 		{
 			$param['msg']="";
-		return view('login',$param);
+		return view('Login',$param);
 		}
 		
 	}
@@ -489,7 +489,7 @@ class Controller extends BaseController
 
 			if ($validator->fails())
 			{
-				return view('login')
+				return view('Login')
 				->withErrors($validator);
 			}
 			else
@@ -503,7 +503,7 @@ class Controller extends BaseController
 				if($hasil == "failed")
 				{
 					$param['msg'] = "Login Failed !";
-					return view('login',$param);
+					return view('Login',$param);
 				}
 				else
 				{
@@ -534,7 +534,7 @@ class Controller extends BaseController
 	public function embedtes()
 	{
 		 
-		return view('embedtes');
+		return view('Embedtes');
 	}
 
 	public function edit_profile()
@@ -646,7 +646,7 @@ class Controller extends BaseController
 		session()->forget('userlogin');
 		session()->forget('cart');
 		$param['msg']="";
-		return view('login',$param);
+		return view('Login',$param);
 	}
 	public function validasipromo()
 	{
@@ -2006,7 +2006,7 @@ class Controller extends BaseController
 		->get();
 
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		return view('Cust_affiliate',$param);
 	}
@@ -2140,7 +2140,7 @@ class Controller extends BaseController
 		->get();
 
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		return view('Cust_embed_code',$param);
 	}
@@ -2349,7 +2349,7 @@ class Controller extends BaseController
 		->select("Option_name","Id_product")
 		->get();
 
-		$dtproductimage = Product_image::all();
+		$dtproductimage = product_image::all();
 
 		$temp="";
 
@@ -4244,7 +4244,7 @@ class Controller extends BaseController
 		$param['arr_variation']  = $arr; 
 		$param['Random_code'] = $Random_code;
 
-		return view('embed_code',$param);
+		return view('Embed_code',$param);
 	}
 
 	public function embed_checkout(Request $request){
@@ -4737,7 +4737,7 @@ class Controller extends BaseController
 		]);
 
 		if($validator->fails()){
-			return view('forgot_password')->withErrors($validator);
+			return view('Forgot_password')->withErrors($validator);
 		}
 
 		$otp = otp::where('Kode', $request->kode_otp)
@@ -4745,7 +4745,7 @@ class Controller extends BaseController
 		->where('Status', 'Active')
 		->first();
 		if(empty($otp)){
-			return view('forgot_password')->withErrors(['kode_otp'=>'Kode expired/salah']);
+			return view('Forgot_password')->withErrors(['kode_otp'=>'Kode expired/salah']);
 		}
 
 		$member = member::where("Email", $otp->Email)->first();
@@ -4753,7 +4753,7 @@ class Controller extends BaseController
 
 		otp::where('Kode', $request->kode_otp)->update(['Status' => "Used"]);
 
-		return view('forgot_password')->with(['success' => "Password berhasil diganti"]);
+		return view('Forgot_password')->with(['success' => "Password berhasil diganti"]);
 	}
 
 	public function getPopulerProduct()

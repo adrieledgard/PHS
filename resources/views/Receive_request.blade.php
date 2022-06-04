@@ -244,7 +244,7 @@ Receive Order
         $.get(myurl + '/set_status_receive',
         {No_receive:no_receive,Status:2},
         function(result){
-           alert(result);
+          //  alert(result);
           toastr["success"]("Success to Approve", "Success");
           window.location = myurl + "/Receive_request/";
           
