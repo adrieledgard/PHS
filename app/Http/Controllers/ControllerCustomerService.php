@@ -224,7 +224,7 @@ class ControllerCustomerService extends Controller
         $count_followup_cs = followup::where("Id_customer_service", session()->get('userlogin')->Id_member)->where('Followup_date', $date_today)->count();
         $config_limit_followup = DB::table('config')->where('config_name', 'limit_followup_cs')->first();
         if(!empty($config_limit_followup)){
-            if($count_followup_cs == $config_limit_followup->value){
+            if($count_followup_cs == $config_limit_followup->Value){
                 return redirect()->back()->withErrors(['message'=>'Anda sudah melebihi limit hari ini!']);
             }
         }
@@ -239,8 +239,12 @@ class ControllerCustomerService extends Controller
         }
         if($tanggal_followup == "" || $tanggal_followup < date("Y-m-d")){
             $tanggal_followup = $tanggal_followup == "" ? date("Y-m-d") : $tanggal_followup;
+            $config_jeda_periode_followup = DB::table('config')->where('config_name', 'jeda_periode_followup')->first();
+            if(empty($config_jeda_periode_followup)){
+                $config_jeda_periode_followup = 30;
+            }
             $member = member::find($request->Id_member);
-            $end_followup_date = date('Y-m-d', strtotime($tanggal_followup . "+ " . config('followup.jeda_periode_followup') . " days" ));
+            $end_followup_date = date('Y-m-d', strtotime($tanggal_followup . "+ " . $config_jeda_periode_followup->Value . " days" ));
             $followup = (new followup())->add_followup(session()->get('userlogin')->Id_member, $request->Id_member, $tanggal_followup, $end_followup_date);
             
 
