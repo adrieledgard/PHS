@@ -1149,7 +1149,7 @@
 
             if($('#guess').val()=="yes") //guess
             {
-                snap.pay(result, {
+                snap.pay(result[0], {
                     // Optional
                     onSuccess: function(result) {
                         /* You may add your own js here, this is just example */
@@ -1158,21 +1158,21 @@
                     },
                     // Optional
                     onPending: function(result) {
-                        var check_status = setInterval(() => {
-                            $.get(myurl + "/Status_transaksi/" + result.order_id, function(result){
-                                var json_res = JSON.parse(result);
-                                console.log(json_res);
-                                if(json_res.transaction_status == 'settlement'){
-                                    clearInterval(check_status);
-                                    payment_success(json_res.order_id);
-                                }
-                                if(json_res.transaction_status == 'expire'){
-                                    clearInterval(check_status);
-                                    payment_expired(json_res.order_id);
-                                }
+                        // var check_status = setInterval(() => {
+                        //     $.get(myurl + "/Status_transaksi/" + result.order_id, function(result){
+                        //         var json_res = JSON.parse(result);
+                        //         console.log(json_res);
+                        //         if(json_res.transaction_status == 'settlement'){
+                        //             clearInterval(check_status);
+                        //             payment_success(json_res.order_id);
+                        //         }
+                        //         if(json_res.transaction_status == 'expire'){
+                        //             clearInterval(check_status);
+                        //             payment_expired(json_res.order_id);
+                        //         }
 
-                            })
-                        }, 1500);
+                        //     })
+                        // }, 1500);
                     },
                     // Optional
                     onError: function(result) {
@@ -1185,7 +1185,20 @@
                     }
                 }); 
 
+                var check_status = setInterval(() => {
+                    $.get(myurl + "/Status_transaksi/" + result[1], function(result){
+                        var json_res = JSON.parse(result);
+                        if(json_res.transaction_status == 'settlement'){
+                            clearInterval(check_status);
+                            payment_success(json_res.order_id);
+                        }
+                        if(json_res.transaction_status == 'expire'){
+                            clearInterval(check_status);
+                            payment_expired(json_res.order_id);
+                        }
 
+                    })
+                }, 1500);
 
 
                 // //langsung jalankan midtrans
