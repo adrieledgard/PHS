@@ -3010,7 +3010,7 @@ class Controller extends BaseController
 			$email_content = "Silahkan melakukan dengan mengklik link di bawah ini <br> <a href='https://localhost/PusatHerbalStore/public/guess_pay_email/$last_id' target='_blank'>Click link untuk melakukan pembayaran</a> <br><br><br> <b>Hiraukan email ini jika anda sudah melakukan pembayaran</b>";
 			Mail::to($order->Email)->send(new SendEmail("Konfirmasi Pembayaran", $email_content));
 
-			return $snapToken;   
+			return [$snapToken, $last_id];   
 		}
 		else //Member
 		{
