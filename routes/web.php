@@ -308,7 +308,7 @@ Route::post('hapus_rating_product', ["uses"=>"Controller@hapus_rating_product"])
 Route::get('update_filter_session', ["uses"=>"Controller@update_filter_session"]);
 Route::get('update_status', ["uses"=>"Controller@update_status"]);
 Route::get('complete_order_automation', ["uses"=>"Controller@complete_order_automation"]);
-Route::get('cancel_order_automation', ['uses' => "Controller@cancel_order"]);
+Route::get('cancel_order_automation', ['uses' => "Controller@cancel_order_automation"]);
 
 //TEMPORARY ROUTE
 Route::get('pay_now', ['uses' => 'Controller@pay_now']);
