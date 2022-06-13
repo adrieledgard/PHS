@@ -346,7 +346,8 @@ class ControllerMaster extends Controller
 
 		$temp="";
 
-		for ($i=0; $i < count($cart); $i++) { 
+		for ($i=0; $i < count($cart); $i++) 
+		{ 
 
 			$temp.= $cart[$i]['idsubcategory'] . ',';
 			// array_push($arr,$cart[$i]['idsubcategory']);
@@ -387,7 +388,8 @@ class ControllerMaster extends Controller
 
 		$potong = [];
 
-		for ($i=0; $i <count($cart) ; $i++) { 
+		for ($i=0; $i <count($cart) ; $i++) 
+		{ 
 			if($i == $ix)
 			{
 
@@ -4214,11 +4216,16 @@ class ControllerMaster extends Controller
 	public function show_ebook($ebook_id, $user_token)
 	{
 		$ebook = ebook::find($ebook_id);
-		if($ebook->Id_template == "1"){
+
+		if($ebook->Id_template == "1")
+		{
 			$view = "Ebook_template1";
-		}else if($ebook->Id_template == "2"){
+		}
+		else if($ebook->Id_template == "2")
+		{
 			$view = "Ebook_template2";
-		}else {
+		}else 
+		{
 			$view = "Ebook_template3";
 		}
 		return view($view, compact('ebook', 'user_token'));

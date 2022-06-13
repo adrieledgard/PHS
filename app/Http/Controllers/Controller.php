@@ -180,14 +180,16 @@ class Controller extends BaseController
 			$pageakhir = ceil(count($hasil)/12) * 12;
 			$pageawal = $pageakhir-11;
 		}
-		foreach ($hasil as $product) {
+		foreach ($hasil as $product) 
+		{
 			# code...
 			$hitungjumlah++;
 			if($hitungjumlah>=$pageawal && $hitungjumlah<=$pageakhir)
 			{
 				$gambardata = "";
 
-				foreach ($dtproductimage as $gambar ) {
+				foreach ($dtproductimage as $gambar ) 
+				{
 					if(($gambar->Id_product == $product->Id_product )&& ($gambar->Image_order == 1))
 					{
 						$gambardata = $gambar->Image_name;
@@ -206,7 +208,8 @@ class Controller extends BaseController
 				$murah=999999999999;
 				$mahal=0;
 				$ctr=0;
-				foreach ($dtvariasi as $datavariasi) {
+				foreach ($dtvariasi as $datavariasi) 
+				{
 					if($Id_product == $datavariasi->Id_product && $datavariasi->Status == 1)
 					{
 						$ctr++;
@@ -227,7 +230,8 @@ class Controller extends BaseController
 				{
 					$fixharga = 'Rp. '. number_format($mahal);
 				}
-				else {
+				else 
+				{
 					$fixharga = 'Rp. '.number_format($murah).' - '.number_format($mahal);
 				}
 				//------------------------------------------------------------
@@ -237,7 +241,8 @@ class Controller extends BaseController
 				$maxrupiah=0;
 				$mahal=0;
 				$tes=0;
-				foreach ($dtpromoheader as $promoheader ) {
+				foreach ($dtpromoheader as $promoheader ) 
+				{
 					if($promoheader->Id_product == $product->Id_product)
 					{
 						$sale=1;
@@ -245,14 +250,16 @@ class Controller extends BaseController
 						$Id_variation = $promoheader->Id_variation;
 						$sellprice=0;
 	
-						foreach ($dtvariasi as $vari) {
+						foreach ($dtvariasi as $vari) 
+						{
 							if($vari->Id_variation==$Id_variation)
 							{
 								$sellprice=$vari->Sell_price;
 							}
 						}
 	
-						foreach ($dtpromodetail as $promodetail) {
+						foreach ($dtpromodetail as $promodetail) 
+						{
 							if($promoheader->Id_promo == $promodetail->Id_promo )
 							{
 								if($model=='%')
@@ -264,7 +271,8 @@ class Controller extends BaseController
 										$tes = $mahal;
 									}
 								}
-								else if($model=='RP') {
+								else if($model=='RP') 
+								{
 									if(($promodetail->Discount) > $mahal)
 									{
 										$mahal= $promodetail->Discount;
@@ -299,10 +307,14 @@ class Controller extends BaseController
 								$temp=$temp."<a href='".url('Cust_show_product/'.$product->Id_product)."'><b>".$product->Name."</b></a>";
 	
 								$temp=$temp."<div class='quick-view-rating'>";
-									for($i = 1; $i <= 5; $i++){
-										if($i <= ceil($product->Rating)){
+									for($i = 1; $i <= 5; $i++)
+									{
+										if($i <= ceil($product->Rating))
+										{
 											$temp=$temp."<i class='fas fa-star'></i>";
-										}else {
+										}
+										else 
+										{
 											$temp=$temp."<i class='far fa-star'></i>";
 										}
 									}
@@ -316,7 +328,6 @@ class Controller extends BaseController
 										$temp=$temp."Discount up to ".$upto; 
 									$temp=$temp."</span>";	
 									
-		
 								}
 								
 							$temp=$temp."</div>";
@@ -324,8 +335,6 @@ class Controller extends BaseController
 					$temp=$temp."</div>";
 				$temp=$temp."</div>";
 			}
-
-			
 		}
 		if($angkapage>ceil($hitungjumlah/12))
 		{
@@ -338,11 +347,9 @@ class Controller extends BaseController
 			$page = "Page ".$angkapage." of ". ceil($hitungjumlah/12);
 		}
 		
-
 		return $temp."||".$hitungjumlah."||".($page);
 
 	}
-
 
 	public function home(){
 		return view('Cust_home',$this->dthome());
@@ -445,7 +452,8 @@ class Controller extends BaseController
 					
 					if($arr!="")
 					{
-						foreach ($arr as $data) {
+						foreach ($arr as $data) 
+						{
 							//adrieljenn
 							$cart = new cart();
 							$carthasil = $cart->add_cart($data->Id_product,$data->Id_variation,$data->Qty,$hasil->Id_member);
@@ -550,7 +558,8 @@ class Controller extends BaseController
 		$db = list_city::all(); 
 		$arr= [];  // array 
 		$arr2= [];  // array 
-		foreach($db as $row) {
+		foreach($db as $row) 
+		{
             $arr[0] = "";
 			$arr2[0] = "";
 			$arr[$row->Id_province] = $row->Province_name; 
@@ -655,7 +664,8 @@ class Controller extends BaseController
 
 		// print_r('aaaaccca');
 		// echo "aadsd";
-		foreach ($promo as $data) {
+		foreach ($promo as $data) 
+		{
 			if($data->End_date < date('Y-m-d'))
 			{
 				//expire lewat tanggal
@@ -682,7 +692,8 @@ class Controller extends BaseController
 
 		// print_r('aaaaccca');
 		// echo "aadsd";
-		foreach ($vc as $data) {
+		foreach ($vc as $data) 
+		{
 			if($data->Redeem_due_date < date('Y-m-d'))
 			{
 				//expire lewat tanggal
@@ -715,7 +726,8 @@ class Controller extends BaseController
 
 			$prosub = product_sub_category::all();
 
-			foreach ($query as $data) {
+			foreach ($query as $data) 
+			{
 				// $temp=$temp."-".$data->Id_sub_category;
 				foreach ($prosub as $data2) {
 					if($data->Id_sub_category == $data2->Id_sub_category)
@@ -728,7 +740,8 @@ class Controller extends BaseController
 				
 			}
 
-			for ($i=0; $i < count($arr1); $i++) { 
+			for ($i=0; $i < count($arr1); $i++) 
+			{ 
 				
 				$ctrpro++;
 
@@ -774,7 +787,8 @@ class Controller extends BaseController
 							$maxrupiah=0;
 							$mahal=0;
 							$tes=0;
-							foreach ($dtpromoheader as $promoheader ) {
+							foreach ($dtpromoheader as $promoheader ) 
+							{
 								if($promoheader->Id_product == $product[0]['Id_product'])
 								{
 									$sale=1;
@@ -782,14 +796,16 @@ class Controller extends BaseController
 									$Id_variation = $promoheader->Id_variation;
 									$sellprice=0;
 
-									foreach ($dtvariasi as $vari) {
+									foreach ($dtvariasi as $vari) 
+									{
 										if($vari->Id_variation==$Id_variation)
 										{
 											$sellprice=$vari->Sell_price;
 										}
 									}
 
-									foreach ($dtpromodetail as $promodetail) {
+									foreach ($dtpromodetail as $promodetail) 
+									{
 										if($promoheader->Id_promo == $promodetail->Id_promo )
 										{
 											if($model=='%')
@@ -801,7 +817,8 @@ class Controller extends BaseController
 													$tes = $mahal;
 												}
 											}
-											else if($model=='RP') {
+											else if($model=='RP') 
+											{
 												if(($promodetail->Discount) > $mahal)
 												{
 													$mahal= $promodetail->Discount;
@@ -855,7 +872,8 @@ class Controller extends BaseController
                                 $murah=999999999999;
                                 $mahal=0;
                                 $ctr=0;
-                                foreach ($dtvariasi as $datavariasi) {
+                                foreach ($dtvariasi as $datavariasi) 
+								{
                                     if($Id_product == $datavariasi->Id_product && $datavariasi->Status == 1)
                                     {
                                         $ctr++;
@@ -876,7 +894,8 @@ class Controller extends BaseController
                                 {
                                     $fixharga = 'Rp. '. number_format($mahal);
                                 }
-                                else {
+                                else 
+								{
                                     $fixharga = 'Rp. '.number_format($murah).' - '.number_format($mahal);
                                 }
 
@@ -908,7 +927,8 @@ class Controller extends BaseController
 		{
 			$prosub = product_sub_category::where('Id_sub_category','=', $id)
 			->get();
-			foreach ($prosub as $data) {
+			foreach ($prosub as $data) 
+			{
 				$ctrpro++;
 
 				if($ctrpro<=12)
@@ -986,7 +1006,8 @@ class Controller extends BaseController
 
 		$kumpulan_id_sub_cat="";
 		$ctr=0;
-		foreach ($query as $data) {
+		foreach ($query as $data) 
+		{
 			$ctr++;
 
 			if($ctr==count($query))
@@ -1193,7 +1214,8 @@ class Controller extends BaseController
 
 		
 
-		foreach ($dtpromoheader as $promoheader) {
+		foreach ($dtpromoheader as $promoheader) 
+		{
 			if($promoheader->Id_variation == $vari[0]->Id_variation)
 			{
 				$sale=1;
@@ -1267,12 +1289,14 @@ class Controller extends BaseController
 		->get();
 
 		$ctr=0;
-		foreach ($dtpromoheader as $promoheader) {
+		foreach ($dtpromoheader as $promoheader) 
+		{
 			$ctr=$ctr+1;
 			$temp=$temp."<br>";
 			$temp=$temp. "<b>".date("d-m-Y", strtotime($promoheader->Start_date)) ." - ".date("d-m-Y", strtotime($promoheader->Start_date)). "</b> <br>";
 
-			foreach ($dtpromodetail as $promodetail) {
+			foreach ($dtpromodetail as $promodetail) 
+			{
 				if($promodetail->Id_promo == $promoheader->Id_promo)
 				{
 					if($promoheader->Model=="%")
@@ -1319,7 +1343,8 @@ class Controller extends BaseController
 		$discount=0;
 		$temp="";
 
-		foreach ($dtpromoheader as $promoheader) {
+		foreach ($dtpromoheader as $promoheader) 
+		{
 			if($promoheader->Id_variation == $vari[0]->Id_variation)
 			{
 				$sale=1;
@@ -1617,7 +1642,8 @@ class Controller extends BaseController
 		$wi = wishlist::where('Id_member','=',$Id_member)
 		->get();
 
-		foreach ($wi as $data) {
+		foreach ($wi as $data) 
+		{
 			if ($data->Id_variation == $Id_variation)
 			{
 				$temp=1;
@@ -1674,7 +1700,8 @@ class Controller extends BaseController
 		{
 			$arr = json_decode(session()->get('cart'));
 
-			foreach ($arr as $data) {
+			foreach ($arr as $data) 
+			{
 				if($Id_cart==$data->Id_cart)
 				{
 					$data->Qty = $Qty;
@@ -1773,7 +1800,8 @@ class Controller extends BaseController
 			$kembar=0;
 			$ctr=0;
 			$arr = json_decode(session()->get('cart')) ?? []; 
-			for($i = 0; $i < count($arr); $i++) {
+			for($i = 0; $i < count($arr); $i++) 
+			{
 				$ctr++;
 				if(($arr[$i]->Id_variation == $Id_variation) && ($arr[$i]->Id_cart>0))
 				{
@@ -1835,7 +1863,8 @@ class Controller extends BaseController
 		else
 		{
 			$arr = json_decode(session()->get('cart'));
-			foreach ($arr as $data) {
+			foreach ($arr as $data) 
+			{
 				if($Id_cart==$data->Id_cart)
 				{
 					$data->Id_cart =-1;
@@ -1866,7 +1895,8 @@ class Controller extends BaseController
 				{
 					$hitung=0;
 
-					foreach (json_decode(session()->get('cart')) as $data) {
+					foreach (json_decode(session()->get('cart')) as $data) 
+					{
 						if($data->Id_cart<0)
 						{
 
@@ -1890,7 +1920,8 @@ class Controller extends BaseController
 			{
 				$hitung=0;
 
-					foreach (json_decode(session()->get('cart')) as $data) {
+					foreach (json_decode(session()->get('cart')) as $data) 
+					{
 						if($data->Id_cart<0)
 						{
 
@@ -1951,8 +1982,10 @@ class Controller extends BaseController
 		->where('Status','>=',2)
 		->get();
 
-		foreach ($param['ebooks'] as $book) {
-			$ebook_download_member = DB::table('ebook_member_downloaded')->select('ebook_member_downloaded.Total_didownload','ebook_member_downloaded.Id_member')
+		foreach ($param['ebooks'] as $book)
+		{
+			$ebook_download_member = DB::table('ebook_member_downloaded')
+			->select('ebook_member_downloaded.Total_didownload','ebook_member_downloaded.Id_member')
 				->where("Id_ebook", $book->Id_ebook)
 				->where("Id_member", session()->get('userlogin')->Id_member)
 				->first();
@@ -1982,7 +2015,7 @@ class Controller extends BaseController
 		return view('Cust_ebook', $param);
 	}
 
-	public function Affiliate_marketing(Request $request)
+	public function Affiliate_marketing(Request $request) //affiliate share link
 	{
 		$param['affiliate'] = affiliate::where('affiliate.Status','=',1)
 		->join('product','affiliate.Id_product','product.Id_product')
@@ -2024,7 +2057,8 @@ class Controller extends BaseController
 
 		$arr_id_order = explode("," ,$kumpulan_id_order);
 		
-		foreach ($arr_id_order as $data) {
+		foreach ($arr_id_order as $data) 
+		{
 			
 			if($data!="")
 			{
@@ -2038,10 +2072,17 @@ class Controller extends BaseController
 				->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name', 'cust_order_detail.Id_product', 'cust_order_detail.Id_variation')
 				->get();
 				
-				if($custorder->Tracking_code != "0"){
+				if($custorder->Tracking_code != "0")
+				{
 					
-					foreach ($order_detail as $detail) {
-						$affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->where("status", 1)->first();
+					foreach ($order_detail as $detail)
+					 {
+						$affiliate = affiliate::where("Id_product", $detail->Id_product)
+						->where("Id_variation", $detail->Id_variation)
+						->where("status", 1)
+						->first();
+
+
 						if(!empty($affiliate))
 						{
 							$detail->point = $affiliate->Poin;
@@ -2110,7 +2151,8 @@ class Controller extends BaseController
 		
 
 		//cayang2
-		foreach ($param['affiliate'] as $aff) {
+		foreach ($param['affiliate'] as $aff) 
+		{
 			$embed_aff = DB::table("embed_member")
 				->where("Id_product", $aff->Id_product)
 				->where('Id_member', session()->get('userlogin')->Id_member)
@@ -2118,7 +2160,8 @@ class Controller extends BaseController
 
 			$aff->embed_aff = $embed_aff;
 
-			if(!empty($embed_aff)){
+			if(!empty($embed_aff))
+			{
 				$aff->embed_aff->submitted = embed_checkout::join('product', 'product.Id_product', 'submitted_embed_checkout.Id_product')
 					->join('variation_product', 'submitted_embed_checkout.Id_variation', 'variation_product.Id_variation')
 					->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_embed_checkout.id')
@@ -2210,7 +2253,8 @@ class Controller extends BaseController
 
 		// print_r('aaaaccca');
 		// echo "aadsd";
-		foreach ($vc as $data) {
+		foreach ($vc as $data) 
+		{
 			if($data->Redeem_due_date < date('Y-m-d') && $Id_voucher== $data->Id_voucher)
 			{
 				//expire lewat tanggal
@@ -2296,7 +2340,8 @@ class Controller extends BaseController
 
 					$pc = point_card::where('Id_member','=',$Id_member)
 					->get();
-					foreach ($pc as $data) {
+					foreach ($pc as $data) 
+					{
 						$temp=$temp."<tr>";
 
 							$simpandulu= date('d-m-Y', strtotime($data->Date_card));
@@ -2381,11 +2426,10 @@ class Controller extends BaseController
 			$temp=$temp."</tr>";
 		$temp=$temp."</thead>";
 		$temp=$temp."<tbody>";
-		foreach ($vp as $datavp) {
-		
-
-			foreach ($product as $dataproduct) {
-				
+		foreach ($vp as $datavp)
+		{
+			foreach ($product as $dataproduct) 
+			{
 				if($datavp->Id_product == $dataproduct->Id_product)
 				{
 					$imgname = "default.jpg";
@@ -2399,8 +2443,6 @@ class Controller extends BaseController
 						$imgname = $img->Image_name;
 						}
 					}
-
-					
 
 						$temp=$temp."<tr>";
 
@@ -2439,7 +2481,8 @@ class Controller extends BaseController
 								}
 								else
 								{
-								foreach ($variation as $datavar) {
+								foreach ($variation as $datavar) 
+								{
 									if($datavar->Id_product == $dataproduct->Id_product )
 									{
 									$vari.=$datavar->Option_name." , ";
@@ -2512,7 +2555,8 @@ class Controller extends BaseController
 		->get();
 
 		$ctr=0;
-		foreach ($dtaddress as $key ) {
+		foreach ($dtaddress as $key ) 
+		{
 			# code...
 
 			$ctr++;
@@ -2596,7 +2640,8 @@ class Controller extends BaseController
 
 		
 		$masalah="";
-		foreach ($cart as $datacart) {
+		foreach ($cart as $datacart) 
+		{
 			
 			$cek = $this->cek_stok($datacart->Id_variation,$datacart->Qty);
 
@@ -2706,7 +2751,8 @@ class Controller extends BaseController
 		$db = list_city::all(); 
 		$arr= [];  // array 
 		$arr2= [];  // array 
-		foreach($db as $row) {
+		foreach($db as $row) 
+		{
             $arr[0] = "";
 			$arr2[0] = "";
 			$arr[$row->Id_province] = $row->Province_name; 
@@ -2731,7 +2777,8 @@ class Controller extends BaseController
 		$City_name="";
 		$Province_name="";
 
-		foreach ($add as $data) {
+		foreach ($add as $data) 
+		{
 			$Address = $data->Address;
 			$City_name = $data->City_name;
 			$Province_name = $data->Province_name;
@@ -2799,7 +2846,8 @@ class Controller extends BaseController
 		{
 			$kurir = $arr->rajaongkir->results[$i]->costs; 
 			$jumservice= count($kurir); 
-			for($i = 0; $i < $jumservice; $i++) {
+			for($i = 0; $i < $jumservice; $i++) 
+			{
 
 				$kurirservice = $kurir[$i]->service;
 				$kurirservice_2 = str_replace(" ", "_", $kurirservice);
@@ -2841,9 +2889,11 @@ class Controller extends BaseController
 		$pakaivoucher=1;
 		$voucherselectedproduct=0;
 		$selectedproduct =0;
-		foreach ($cart as $datacart) {
+		foreach ($cart as $datacart) 
+		{
 
-			foreach ($dtpromoheader as $datapromoheader) {
+			foreach ($dtpromoheader as $datapromoheader) 
+			{
 				if($datacart->Id_product == $datapromoheader->Id_product && $dtvoucher[0]->Joinpromo==0)
 				{
 					//product ada promo dan tidak boleh di gabung dengan promo
@@ -2854,7 +2904,8 @@ class Controller extends BaseController
 		}
 
 
-		foreach ($dtvoucherproduct as $datavoucherpro) {
+		foreach ($dtvoucherproduct as $datavoucherpro) 
+		{
 
 			if($dtvoucher[0]->Voucher_type==2)
 			{
@@ -2952,7 +3003,8 @@ class Controller extends BaseController
 
 			$arr = json_decode(session()->get('cart'));
 
-			foreach ($arr as $datacart) {
+			foreach ($arr as $datacart) 
+			{
 
 				if($datacart->Id_cart!=-1) //-1 itu cart yg di delete di session
 				{
@@ -2978,9 +3030,11 @@ class Controller extends BaseController
 					$Fix_price = $Normal_price;
 					if(count($dtpromoheader)>=1)
 					{
-						foreach ($dtpromoheader as $promhead) {
+						foreach ($dtpromoheader as $promhead) 
+						{
 							
-							foreach ($dtpromodetail as $promdetail) {
+							foreach ($dtpromodetail as $promdetail) 
+							{
 								if($promhead->Id_promo == $promdetail->Id_promo)
 								{
 									if($datacart->Qty>= $promdetail->Minimum_qty)
@@ -3056,7 +3110,8 @@ class Controller extends BaseController
 				->where('Id_voucher','=',$Id_voucher)
 				->get();
 
-				foreach ($vm as $datavm) {
+				foreach ($vm as $datavm) 
+				{
 					$deletevm = new voucher_member();
 					$hasil = $deletevm->delete_voucher_member_2($datavm->Id_voucher_member);
 					break;
@@ -3067,7 +3122,8 @@ class Controller extends BaseController
 			$arr = cart::where('Id_member','=',$Id_member)
 			->get();
 
-			foreach ($arr as $datacart) {
+			foreach ($arr as $datacart) 
+			{
 
 				if($datacart->Id_cart!=-1) //-1 itu cart yg di delete di session
 				{
@@ -3092,9 +3148,11 @@ class Controller extends BaseController
 					$Fix_price = $Normal_price;
 					if(count($dtpromoheader)>=1)
 					{
-						foreach ($dtpromoheader as $promhead) {
+						foreach ($dtpromoheader as $promhead) 
+						{
 							
-							foreach ($dtpromodetail as $promdetail) {
+							foreach ($dtpromodetail as $promdetail) 
+							{
 								if($promhead->Id_promo == $promdetail->Id_promo)
 								{
 									if($datacart->Qty>= $promdetail->Minimum_qty)
@@ -3191,7 +3249,8 @@ class Controller extends BaseController
 
 		$Receive_point_random_code ="";
 
-		if((Cookie::has('Affiliate')) && (!Cookie::has('username_login')) && count($cust_order_email) <= 1 && count($cust_order_phone) <=1 && count($member_email) == 0 && count($member_phone) == 0){
+		if((Cookie::has('Affiliate')) && (!Cookie::has('username_login')) && count($cust_order_email) <= 1 && count($cust_order_phone) <=1 && count($member_email) == 0 && count($member_phone) == 0)
+		{
 			$Receive_point_random_code = Cookie::get('Affiliate');
 		}
 
@@ -3204,23 +3263,28 @@ class Controller extends BaseController
 			
 			
 			//cayang3
-			if(!Cookie::has('First_transaction')){
+			if(!Cookie::has('First_transaction'))
+			{
 				$order = cust_order_header::where('cust_order_header.Id_order',$request->Id_order)
 						->join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
 						->get();
 						
-				foreach ($order as $detail) {
+				foreach ($order as $detail) 
+				{
 					$affiliate = affiliate::where('Id_product', $detail->Id_product)
 								->where('Id_variation', $detail->Id_variation)
 								->where('Status', 1)
 								->get();
 
-					if(count($affiliate) > 0){
+					if(count($affiliate) > 0)
+					{
 						foreach ($affiliate as $aff) {
 							$point += $aff->Poin;
 							$penambahanpoin += $aff->Poin;
 						}
-					}else {
+					}
+					else 
+					{
 						// $point += 100;
 					}
 				}
@@ -3244,7 +3308,8 @@ class Controller extends BaseController
 					->get();
 
 					
-					foreach ($pc as $datapc) {
+					foreach ($pc as $datapc) 
+					{
 						# code...
 						$First_point = $datapc->Last_point;
 					}
@@ -3335,7 +3400,8 @@ class Controller extends BaseController
 		}
 		else
 		{
-			foreach ($cart as $datacart) {
+			foreach ($cart as $datacart) 
+			{
 				if($datacart->Id_variation == $wish[0]->Id_variation)
 				{
 					$kembar=1;
@@ -3364,8 +3430,8 @@ class Controller extends BaseController
 	}
 
 	
-	public function My_order() {
-
+	public function My_order() 
+	{
 		// untuk membuat semua transaksi yg sudah dibayar di midtrans menjadi 
 		// payment_status = 2. ambil dari cust_orer_header
 			$ord = new cust_order_header(); 
@@ -3377,8 +3443,10 @@ class Controller extends BaseController
 						{
 							$res = json_decode($res); 
 							// print_r($res);
-							if($res->status_message == "Success, transaction is found") {
-								if($res->transaction_status == "settlement") {
+							if($res->status_message == "Success, transaction is found") 
+							{
+								if($res->transaction_status == "settlement") 
+								{
 									$data = cust_order_header::find($row->Id_order); 
 									$data->Status = 2; 
 									$data->save(); 
@@ -3401,7 +3469,8 @@ class Controller extends BaseController
 									{
 										$Receive_point_random_code = $session_member->Referral;
 									}
-									else if(Cookie::has('Affiliate')){
+									else if(Cookie::has('Affiliate'))
+									{
 										$Receive_point_random_code = Cookie::get('Affiliate');
 									}
 
@@ -3460,7 +3529,8 @@ class Controller extends BaseController
 													->get();
 								
 													
-													foreach ($pc as $datapc) {
+													foreach ($pc as $datapc) 
+													{
 														# code...
 														$First_point = $datapc->Last_point;
 													}
@@ -3593,13 +3663,16 @@ class Controller extends BaseController
 			
 			$row->jatuhtempo = $tgljatuhtempo;
 
-			if(count($detail) > 0) {
-				if($row->Status == 1 ) {
+			if(count($detail) > 0) 
+			{
+				if($row->Status == 1 ) 
+				{
 				$midtrans = new CreateSnapTokenService($row, $det->getdetail($row->Id_order));
 				$snapToken = $midtrans->getSnapToken(); 
 				$row->snap_token = $snapToken;       
 				}
-				else {
+				else 
+				{
 				$row->snap_token = 0; 
 				}
 			}
@@ -3666,7 +3739,8 @@ class Controller extends BaseController
 		$total=0;
 
 		$temp2 = $temp2 . "<b>Shipper pick orderby Exp date :</b><br><Br>";
-		for ($i=0; $i < count($detailorder); $i++) { 
+		for ($i=0; $i < count($detailorder); $i++) 
+		{ 
 
 			$temp=$temp."<tr>";
 				
@@ -3705,7 +3779,8 @@ class Controller extends BaseController
 
 
 			$temp2 = $temp2 . "<b>". $detailorder[$i]['Name'] ." - " . $detailorder[$i]['Option_name']. "</b> <br>";
-			foreach ($stockcard as $datasc) {
+			foreach ($stockcard as $datasc) 
+			{
 				$temp2 = $temp2 . "@" . $datasc->Credit . "->" . date("d-m-Y", strtotime($datasc->Expire_date)) ."<br>";
 			}
 		}
@@ -3754,16 +3829,21 @@ class Controller extends BaseController
 		$temp=$temp."<td></td>";
 		$temp=$temp."</tr>";
 
-		if($request->has('request_from')){
-			if($request->request_from == 'rating_review'){
-				foreach ($detailorder as $detail) {
+		if($request->has('request_from'))
+		{
+			if($request->request_from == 'rating_review')
+			{
+				foreach ($detailorder as $detail) 
+				{
 					$detail->is_review = false;
 					$detail->is_deleted = false;
 					$review = rate_review::where('Id_detail_order', $detail->Id_detail_order)
 					->get();
 					
-					if(count($review) > 0){
-						if($review[0]->Status == 'Active'){
+					if(count($review) > 0)
+					{
+						if($review[0]->Status == 'Active')
+						{
 							$detail->Status = $review[0]->Status;
 							$detail->is_review = true;
 							$detail->Rate = $review[0]->Rate;
@@ -3874,7 +3954,8 @@ class Controller extends BaseController
 
 		$no=0;
 		$temp="";
-		foreach ($query as $data) {
+		foreach ($query as $data) 
+		{
 			 $temp=$temp."<div class='card' id='card".$no."'>";
 				$temp=$temp."<div class='card-body'>";
 				$temp=$temp."<input type='checkbox' class='cb_child' value='".$data->Id_order."' style='transform: scale(1.5)'>";
@@ -3955,7 +4036,8 @@ class Controller extends BaseController
 
 		$arr_id_order = explode("," ,$kumpulan_id_order);
 
-		foreach ($arr_id_order as $data) {
+		foreach ($arr_id_order as $data) 
+		{
 			
 			$ch = new cust_order_header();
 			$hasil = $ch->ganti_status($data,3);
@@ -3978,7 +4060,8 @@ class Controller extends BaseController
 		$kumpulan_id_order = $request->input('kumpulan_id_order');
 		$arr_id_order = explode("," ,$kumpulan_id_order);
 
-		foreach ($arr_id_order as $id_order) {
+		foreach ($arr_id_order as $id_order) 
+		{
 			$new_request = new Request();
 			$new_request->merge(['id' => $id_order, 'request_from' => 'function print_shipping_label']);
 			$order = cust_order_header::find($id_order); 
@@ -4226,12 +4309,15 @@ class Controller extends BaseController
 					->join('sub_category', 'sub_category.Id_sub_category', 'product_sub_category.Id_sub_category')
 					->where('product.Id_product', $request->product)
 					->get();
-		foreach ($products as $product) {
+
+		foreach ($products as $product) 
+		{
 			$submitted_email_ebook = email_ebook::join('ebook', 'ebook.Id_ebook', 'submitted_email_ebook.Ebook_id')
 					->where('ebook.Id_sub_category', $product->Id_sub_category)
 					->get();
 
-			foreach ($submitted_email_ebook as $user) {
+			foreach ($submitted_email_ebook as $user) 
+			{
 				
 				$jumlahterkirim += 1;
 				$link_product = "https://localhost/PusatHerbalStore/public/Cust_show_product/$request->product/$user->User_token";
@@ -4255,7 +4341,8 @@ class Controller extends BaseController
 		->get(); 
 
 		$arr= [];  // array 
-		foreach($db as $row) {
+		foreach($db as $row) 
+		{
 			if($row->Status==1)
 			{
 				$arr[$row->Id_variation] = $row->Option_name; 
@@ -4336,7 +4423,8 @@ class Controller extends BaseController
 			->get();
 
 			$ada=0;
-			foreach ($tempcart as $datacart) {
+			foreach ($tempcart as $datacart) 
+			{
 				if($datacart->Id_variation == $Id_variation)
 				{
 					$cart = new cart();
@@ -4382,21 +4470,20 @@ class Controller extends BaseController
 				$ec2 = new embed_checkout();
 				Cookie::queue(Cookie::make("Id_prospect", $ec2->getlastid(), 1500000));
 				
-					if(!empty($member_aff)){
-					$total_diklik = 0;
-					if(!empty($embed))
+					if(!empty($member_aff))
 					{
-						$total_diklik = $embed->Total_diklik + 1;	
-						DB::update("update embed_member set Total_diklik = $total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
+						$total_diklik = 0;
+						if(!empty($embed))
+						{
+							$total_diklik = $embed->Total_diklik + 1;	
+							DB::update("update embed_member set Total_diklik = $total_diklik where Id_product = $Variasi->Id_product and Id_member = $member_aff->Id_member");
+						}
+						else 
+						{
+							$total_diklik = 1;
+							DB::insert('insert into embed_member (Id_member, Id_product, Total_diklik) values (?, ?, ?)', [$member_aff->Id_member, $Variasi->Id_product, $total_diklik]);
+						}
 					}
-					else 
-					{
-						$total_diklik = 1;
-						DB::insert('insert into embed_member (Id_member, Id_product, Total_diklik) values (?, ?, ?)', [$member_aff->Id_member, $Variasi->Id_product, $total_diklik]);
-					}
-
-					
-			}
 
 				//cayang
 
@@ -4413,7 +4500,8 @@ class Controller extends BaseController
 			{
 				$arr = json_decode(session()->get('cart'));
 				$Id_cart=-1;
-				foreach ($arr as $datacart) {
+				foreach ($arr as $datacart) 
+				{
 					if($datacart->Id_variation == $Id_variation && $datacart->Id_cart>0)
 					{
 						$Id_cart=$datacart->Id_cart;
@@ -4500,7 +4588,8 @@ class Controller extends BaseController
 		$db = list_city::all(); 
 		$arr= [];  // array 
 		$arr2= [];  // array 
-		foreach($db as $row) {
+		foreach($db as $row) 
+		{
 			$arr[0] = "";
 			$arr2[0] = "";
 			$arr[$row->Id_province] = $row->Province_name; 
@@ -4573,10 +4662,13 @@ class Controller extends BaseController
 						->where('rating_review.Status', 'Active')
 						->select(DB::raw("count(*) as jum_data"), DB::raw("sum(rate) as rate"))->first();
 		$product = product::find($id_product);
-		if($product_rating->jum_data > 0){
+		if($product_rating->jum_data > 0)
+		{
 			$product->Rating = $product_rating->rate / $product_rating->jum_data;
 			
-		}else {
+		}
+		else 
+		{
 			$product->Rating = 0;
 		}
 
@@ -4596,7 +4688,8 @@ class Controller extends BaseController
 	{
 		$ten_days_ago = date('Y-m-d H:i:s', strtotime( '-10 day' , strtotime (date("Y-m-d H:i:s"))));
 		$old_orders = cust_order_header::where('Status', '4')->where('Date_time', '<=', $ten_days_ago)->get();
-		foreach ($old_orders as $order) {
+		foreach ($old_orders as $order) 
+		{
 			$update_old_order = cust_order_header::find($order->Id_order);
 			$update_old_order->Status = 5;
 			$update_old_order->save();
@@ -4613,7 +4706,8 @@ class Controller extends BaseController
 	{
 		$two_days_ago = date('Y-m-d H:i:s', strtotime( '-2 day' , strtotime (date("Y-m-d H:i:s"))));
 		$old_orders = cust_order_header::where('Status', '1')->where('Date_time', '<=', $two_days_ago)->get();
-		foreach ($old_orders as $order) {
+		foreach ($old_orders as $order) 
+		{
 			$update_old_order = new cust_order_header();
 			$update_old_order->ganti_status($order->Id_order, 0);
 		}
@@ -4643,7 +4737,8 @@ class Controller extends BaseController
 	public function Database_pembeli()
 	{
 		$member = member::where('Role', 'CUST')->get();
-		foreach ($member as $customer) {
+		foreach ($member as $customer) 
+		{
 			$customer->total_order = cust_order_header::where("Id_member", $customer->Id_member)
 			->count();
 			
@@ -4658,7 +4753,8 @@ class Controller extends BaseController
 			$orders = cust_order_header::where('cust_order_header.Id_member', $customer->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')
 			->get();
 
-			foreach ($orders as $order) {
+			foreach ($orders as $order) 
+			{
 				$detail_order = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $order->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get()->toArray();
 				$order->detail_order = $detail_order;
 			}
@@ -4670,31 +4766,42 @@ class Controller extends BaseController
 	public function Broadcast_pembeli(Request $request)
 	{
 		$customer = "";
-		if(!$request->has('produk') && $request->filter == 'produk'){
+		if(!$request->has('produk') && $request->filter == 'produk') //jika filter produk tapi dk ada produk, maka keluarkan error
+		{
 			return redirect()->back()->with('error', "Pilih satu atau lebih produk!")->withInput(); //with input itu kembalikan data inputan semula, $request akan dikembalikan
 		}
-		if($request->filter == 'produk'){
+		if($request->filter == 'produk')
+		{
 			$customer = cust_order_header::join('cust_order_detail', 'cust_order_header.Id_order', 'cust_order_detail.Id_order')
 			->whereIn('cust_order_detail.Id_product', $request->produk)
 			->groupBy('cust_order_header.Id_member')
 			->groupBy('cust_order_header.Email')
 			->select('Id_member', 'Email')->get();
 
-		}else if($request->filter == 'total_transaksi'){
+		}
+		else if($request->filter == 'total_transaksi')
+		{
 			$result = [];
 			$member = member::where('Role', 'CUST')->get();
-			foreach ($member as $cust) {
-				$total_transaksi = cust_order_header::where('Id_member', $cust->Id_member)->count();
-				if($total_transaksi == $request->total_transaksi){
+			foreach ($member as $cust) 
+			{
+				$total_transaksi = cust_order_header::where('Id_member', $cust->Id_member)
+				->count();
+
+				if($total_transaksi == $request->total_transaksi)
+				{
 					array_push($result,$cust);
 				}
 			}
 			$customer = $result;
-		}else if($request->filter == 'status_transaksi'){
-			$customer = cust_order_header::where('Status', $request->status_transaksi)->get();
+		}else if($request->filter == 'status_transaksi')
+		{
+			$customer = cust_order_header::where('Status', $request->status_transaksi)
+			->get();
 		}
 
-		foreach ($customer as $cust) {
+		foreach ($customer as $cust) 
+		{
 			Mail::to($cust->Email)->send(new BroadcastMail($request->subject, $request->content));
 		}
 		return redirect()->back()->with('success', "Success send to ". count($customer) ." customers");
@@ -4721,14 +4828,21 @@ class Controller extends BaseController
 	public function request_otp(Request $request)
 	{
 		$is_member = member::where('Email', $request->Email)->first();
-		if(empty($is_member)){
+		if(empty($is_member))
+		{
 			return "email_tidak_terdaftar";
 		}
 
-		$actived_kode_otp = otp::where('Email', $request->Email)->where('Status', 'Active')->first();
-		if(!empty($actived_kode_otp)){
+		$actived_kode_otp = otp::where('Email', $request->Email)
+		->where('Status', 'Active')
+		->first();
+
+
+		if(!empty($actived_kode_otp))
+		{
 			otp::where('id', $actived_kode_otp->id)->update(['Status' => 'Expired']);
 		}
+
 		$kode_otp = random_int(000000, 999999);
 		$expired_time = date('Y-m-d H:i:s', strtotime("+30 minutes"));
 		otp::create([
@@ -4758,7 +4872,8 @@ class Controller extends BaseController
 			'kon_new_password.same' => 'Password & Confirmation password not match'
 		]);
 
-		if($validator->fails()){
+		if($validator->fails())
+		{
 			return view('Forgot_password')->withErrors($validator);
 		}
 
@@ -4766,7 +4881,10 @@ class Controller extends BaseController
 		->where('Expired_time', '>=', date("Y-m-d H:i:s"))
 		->where('Status', 'Active')
 		->first();
-		if(empty($otp)){
+
+		
+		if(empty($otp))
+		{
 			return view('Forgot_password')->withErrors(['kode_otp'=>'Kode expired/salah']);
 		}
 

@@ -327,13 +327,16 @@
         $("#preview_template" + template).modal("show");
       }
 
-      function readURL() {
+      function readURL()
+       {
         let input = document.getElementById('image_upload');
         
-        if (input.files && input.files[0]) {
+        if (input.files && input.files[0])
+        {
           var reader = new FileReader();
 
-          reader.onload = function (e) {
+          reader.onload = function (e)
+           {
             $('.embed_image').attr('src', e.target.result);
           };
 
@@ -343,13 +346,16 @@
         $("#preview_image").modal("show");
       }
 
-      function previewPDF() {
+      function previewPDF() 
+      {
         let input = document.getElementById('pdf_upload');
         
-        if (input.files && input.files[0]) {
+        if (input.files && input.files[0]) 
+        {
           var reader = new FileReader();
 
-          reader.onload = function (e) {
+          reader.onload = function (e) 
+          {
             console.log( e.target.result);
             $('.embed_pdf').attr('src', e.target.result);
           };

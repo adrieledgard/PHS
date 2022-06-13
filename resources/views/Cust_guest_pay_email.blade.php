@@ -268,14 +268,16 @@ ul.timeline > li:before {
 
 <script>
   var id_order = {!! $id_order !!};
-  $('.viewdetail').on('show.bs.modal', function(event){
+  $('.viewdetail').on('show.bs.modal', function(event)
+  {
     var button = $(event.relatedTarget);
     // var id = button.data('idorder');
     var modal = $(this);
 
     $.get(myurl + '/get_cust_detail_order',
     {id: id_order},
-    function(result){
+    function(result)
+    {
         // alert(result);
         var cut = result.split("#");
         console.log(cut);
@@ -305,17 +307,27 @@ ul.timeline > li:before {
               </li>`);
           
           var line = document.getElementsByClassName(`${timeline.id}`)[0];
-          if(timeline.Order_status == 0){
+          if(timeline.Order_status == 0)
+          {
             line.style.setProperty('--background', "#cf4a4f");
-          }else if(timeline.Order_status == 1){
+          }
+          else if(timeline.Order_status == 1)
+          {
             line.style.setProperty('--background', "#4d88db");
-          }else if(timeline.Order_status == 2){
+          }
+          else if(timeline.Order_status == 2)
+          {
             line.style.setProperty('--background', "#4d88db");
-          }else if(timeline.Order_status == 3){
+          }
+          else if(timeline.Order_status == 3)
+          {
             line.style.setProperty('--background', "#9e9228");
-          }else if(timeline.Order_status == 4){
+          }
+          else if(timeline.Order_status == 4)
+          {
             line.style.setProperty('--background', "#a638c2");
-          }else if(timeline.Order_status == 5){
+          }
+          else if(timeline.Order_status == 5){
             line.style.setProperty('--background', "#53c95b");
           }
         });

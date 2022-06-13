@@ -68,18 +68,24 @@
                     <td>{{$customer->Username}}</td>
                     <td>{{date('Y-m-d', strtotime($customer->Followup_date))}} - {{date('Y-m-d', strtotime($customer->End_followup_date))}}</td>
                     @php
-                        if($customer->Is_successful_followup == 0){
-                            if(date("Y-m-d", strtotime($customer->End_followup_date)) < date("Y-m-d")){
+                        if($customer->Is_successful_followup == 0)
+                        {
+                            if(date("Y-m-d", strtotime($customer->End_followup_date)) < date("Y-m-d"))
+                            {
                                 echo "
                                     <td><span class='badge badge-danger'>Failed</span></td>
                                     <td>
                                         <button class='btn btn-primary btn-sm' data-idmember='$customer->Id_member' data-toggle='modal' data-target='#followup_email' $customer->is_refollowup_available>Re-follow up</button>
                                     </td>
                                     ";
-                            }else {
+                            }
+                            else 
+                            {
                                 echo "<td><span class='badge badge-secondary'>Waiting transaction</span></td><td></td>";
                             }
-                        } else {
+                        } 
+                        else 
+                        {
                             echo "<td><span class='badge badge-success'>Successful</span></td>
                               <td>
                                 <button class='btn btn-primary btn-sm' data-order='$customer->transaksi' data-toggle='modal' data-target='#rincian_order'>Transaksi</button>

@@ -407,11 +407,12 @@ class ControllerTransaction extends Controller
 
 				$arr_variation= [];  // array Variation
 				$jum =0;
-				foreach($variation as $data) {
-				$arr_variation[$jum]['Id_variation'] = $data->Id_variation; 
-				$arr_variation[$jum]['Option_name'] = $data->Option_name; 
-				$arr_variation[$jum]['Purchase_price'] = $data->Purchase_price; 
-				$jum++;
+				foreach($variation as $data) 
+				{
+					$arr_variation[$jum]['Id_variation'] = $data->Id_variation; 
+					$arr_variation[$jum]['Option_name'] = $data->Option_name; 
+					$arr_variation[$jum]['Purchase_price'] = $data->Purchase_price; 
+					$jum++;
 				}
 				
 		
@@ -749,7 +750,8 @@ class ControllerTransaction extends Controller
 
 		$temp="";
 		$total=0;
-		for ($i=0; $i < count($purchase_detail); $i++) { 
+		for ($i=0; $i < count($purchase_detail); $i++) 
+		{ 
 
 			$no_detail = $purchase_detail[$i]['No_detail'];
 
@@ -758,7 +760,8 @@ class ControllerTransaction extends Controller
 
 			$qtyreceive=0;
 			
-			for ($k=0; $k < count($receive_detail); $k++) { 
+			for ($k=0; $k < count($receive_detail); $k++) 
+			{ 
 
 				$norec = $receive_detail[$k]['No_receive'];
 				$receive_header = receive_header::where('No_receive','=',$norec)
@@ -829,7 +832,8 @@ class ControllerTransaction extends Controller
 
 
 		$temp="";
-		for ($i=0; $i < count($prosupp); $i++) { 
+		for ($i=0; $i < count($prosupp); $i++) 
+		{ 
 			
 			$Id_product = $prosupp[$i]['Id_product'];
 

@@ -152,12 +152,14 @@
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script>
   <script>
-    function deleteebook() {
+    function deleteebook() 
+    {
       let id = $(".id_ebook").val();
 
       window.location.href=`{!! url('master_ebook/delete/${id}') !!}`
     }
-    function confirmDelete(title, id){
+    function confirmDelete(title, id)
+    {
       $(".title-ebook").html(title);
       $(".id_ebook").val(id);
       $("#confirm_delete").modal("show");
