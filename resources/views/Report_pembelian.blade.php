@@ -171,15 +171,24 @@ Pembelian
               <td>{{ $purchase->Purchase_date}}</td>
               @php
                   $stat="";
-                  if($purchase->purchasestat==0){
+                  if($purchase->purchasestat==0)
+                  {
                     $stat='Void';
-                  }else if($purchase->purchasestat==1){
+                  }
+                  else if($purchase->purchasestat==1)
+                  {
                     $stat='Open';
-                  }else if($purchase->purchasestat==2){
+                  }
+                  else if($purchase->purchasestat==2)
+                  {
                     $stat='Partially processed';
-                  }else if($purchase->purchasestat==3){
+                  }
+                  else if($purchase->purchasestat==3)
+                  {
                     $stat='Partially processed (close)';
-                  }else if($purchase->purchasestat==4){
+                  }
+                  else if($purchase->purchasestat==4)
+                  {
                     $stat='Complete (close)';
                   }
 
