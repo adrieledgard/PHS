@@ -438,7 +438,7 @@ $.widget.bridge('uibutton', $.ui.button)
                         `+detail.Qty+`
                     </td>
                     <td>
-                        `+moment(detail.created_at).format("YYYY-MM-DD HH:mm:ss")+`
+                        `+detail.submitted_date+`
                     </td>
                     <td>
                         No
@@ -471,7 +471,7 @@ $.widget.bridge('uibutton', $.ui.button)
                                 `+detail.Qty+`
                             </td>
                             <td>
-                                `+moment(detail.created_at).format("YYYY-MM-DD HH:mm:ss")+`
+                                `+detail.submitted_date+`
                             </td>
                             <td>
                                 Yes

@@ -2169,6 +2169,10 @@ class Controller extends BaseController
 					->where("User_token", session()->get('userlogin')->Random_code)
 					->select("submitted_embed_checkout.*", 'product.name as namaproduk', 'variation_product.Option_name as variasi', 'cust_order_header.Id_order as Id_order', 'cust_order_header.Tracking_code as Tracking_code')
 					->get();
+
+				foreach ($aff->embed_aff->submitted as $value) {
+					$value->submitted_date = date("Y-m-d H:i:s", strtotime($value->created_at));
+				}
 			}
 		}
 		// , 'cust_order_header.Tracking_code as Tracking_code'
@@ -3667,7 +3671,7 @@ class Controller extends BaseController
 			{
 				if($row->Status == 1 ) 
 				{
-				$midtrans = new CreateSnapTokenService($row, $det->getdetail($row->Id_order));
+				$midtrans = new CreateSnapTokenService($row, $det->getdetail($row->Id_order), 2);
 				$snapToken = $midtrans->getSnapToken(); 
 				$row->snap_token = $snapToken;       
 				}
