@@ -1957,15 +1957,20 @@ class Controller extends BaseController
 				->where("Id_member", session()->get('userlogin')->Id_member)
 				->first();
 
-			if(!empty($ebook_download_member)){
+			if(!empty($ebook_download_member))
+			{
 				$book->Total_didownload = $ebook_download_member->Total_didownload;
 				$book->Id_member = $ebook_download_member->Id_member;
-			}else {
+			}
+			else 
+			{
 				$book->Total_download = 0;
 				$book->Id_member = 0;
 			}
 
-			$book->sub_category = sub_category::find($book->Id_sub_category);
+			$book->sub_category = sub_category::find($book->Id_sub_category); //gak jadi dipake
+
+			//email_ebook itu tabel submitted email ebook
 			$book->downloaded_detail = email_ebook::leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_email_ebook.id')
 			->Select('cust_order_header.*','submitted_email_ebook.*')
 			->where('submitted_email_ebook.Ebook_id', $book->Id_ebook)
@@ -2023,18 +2028,27 @@ class Controller extends BaseController
 			
 			if($data!="")
 			{
-				$custorder = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->where('Id_order', $data)->first(); 
+				$custorder = cust_order_header::join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')
+				->where('Id_order', $data)
+				->first(); 
 
-				$order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $data)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name', 'cust_order_detail.Id_product', 'cust_order_detail.Id_variation')->get();
+				$order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')
+				->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')
+				->where('cust_order_detail.Id_order', $data)
+				->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name', 'cust_order_detail.Id_product', 'cust_order_detail.Id_variation')
+				->get();
 				
 				if($custorder->Tracking_code != "0"){
 					
 					foreach ($order_detail as $detail) {
 						$affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->where("status", 1)->first();
-						if(!empty($affiliate)){
+						if(!empty($affiliate))
+						{
 							$detail->point = $affiliate->Poin;
 							$custorder->total_point += $affiliate->Poin;
-						}else {
+						}
+						else 
+						{
 							$detail->point = 0;
 						}
 					}
@@ -2105,9 +2119,11 @@ class Controller extends BaseController
 			$aff->embed_aff = $embed_aff;
 
 			if(!empty($embed_aff)){
-				$aff->embed_aff->submitted = embed_checkout::join('product', 'product.Id_product', 'submitted_embed_checkout.Id_product')->join('variation_product', 'submitted_embed_checkout.Id_variation', 'variation_product.Id_variation')
+				$aff->embed_aff->submitted = embed_checkout::join('product', 'product.Id_product', 'submitted_embed_checkout.Id_product')
+					->join('variation_product', 'submitted_embed_checkout.Id_variation', 'variation_product.Id_variation')
 					->leftJoin('cust_order_header', 'cust_order_header.Id_prospect', 'submitted_embed_checkout.id')
-					->where('submitted_embed_checkout.Id_product', $embed_aff->Id_product)->where("User_token", session()->get('userlogin')->Random_code)
+					->where('submitted_embed_checkout.Id_product', $embed_aff->Id_product)
+					->where("User_token", session()->get('userlogin')->Random_code)
 					->select("submitted_embed_checkout.*", 'product.name as namaproduk', 'variation_product.Option_name as variasi', 'cust_order_header.Id_order as Id_order', 'cust_order_header.Tracking_code as Tracking_code')
 					->get();
 			}
@@ -3640,7 +3656,11 @@ class Controller extends BaseController
 		->join('variation_product','cust_order_detail.Id_variation','variation_product.Id_variation')
 		->get();
 
-		$order_history = cust_order_history::where('Id_order', $Id_order)->orderBy('id','desc')->get();
+		$order_history = cust_order_history::where('Id_order', $Id_order)
+		->orderBy('id','desc')
+		->get();
+
+
 		$temp="";
 		$temp2="";
 		$total=0;
@@ -3739,7 +3759,9 @@ class Controller extends BaseController
 				foreach ($detailorder as $detail) {
 					$detail->is_review = false;
 					$detail->is_deleted = false;
-					$review = rate_review::where('Id_detail_order', $detail->Id_detail_order)->get();
+					$review = rate_review::where('Id_detail_order', $detail->Id_detail_order)
+					->get();
+					
 					if(count($review) > 0){
 						if($review[0]->Status == 'Active'){
 							$detail->Status = $review[0]->Status;

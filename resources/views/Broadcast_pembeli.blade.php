@@ -164,7 +164,7 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <script>
         $('.filter_produk').multiselect();
-        $('#summernote').summernote();
+        $('#summernote').summernote(); //editor email
         $("#filter_produk").click(function(){
             $('.filter_produk').multiselect('enable');
             $(".filter_total_transaksi").attr('disabled', 'disabled');
