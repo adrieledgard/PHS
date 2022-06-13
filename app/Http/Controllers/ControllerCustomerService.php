@@ -199,6 +199,7 @@ class ControllerCustomerService extends Controller
                         
                         $transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->first();
                         $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
+                        
                         $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
                         
                         
@@ -222,7 +223,7 @@ class ControllerCustomerService extends Controller
                             }
                         }
                         
-                        $member->lama_tidak_belanja = $interval->format("%d");
+                        $member->lama_tidak_belanja = $interval->format("%a");
                         $member->rincian_transaksi = cust_order_header::where('cust_order_header.Id_member', $member->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->orderBy('Id_order', 'desc')->get();
                        
                         foreach ($member->rincian_transaksi as $trans)
