@@ -139,7 +139,7 @@ Pembelian
         <div class="card-body">
           Total Order : {{count($purchases)}}
           <br>
-          Total Pengeluaran : Rp. {{number_format($total_pengeluaran)}}
+          Total Order to Supplier : Rp. {{number_format($total_pengeluaran)}}
         </div>
       </div>
     </div>
@@ -154,6 +154,7 @@ Pembelian
         <tr>
           <th>No. Order</th>
           <th>Date</th>
+          <th>Status</th>
           <th>Supplier Name</th>
           <th>Supplier Email</th>
           <th>Supplier Phone</th>
@@ -168,6 +169,22 @@ Pembelian
             <tr>
               <td><a data-toggle="modal" data-purchase-detail="{{$purchase->detail}}" href="#purchase_detail" >{{ $purchase->No_invoice}}</a></td>
               <td>{{ $purchase->Purchase_date}}</td>
+              @php
+                  $stat="";
+                  if($purchase->purchasestat==0){
+                    $stat='Void';
+                  }else if($purchase->purchasestat==1){
+                    $stat='Open';
+                  }else if($purchase->purchasestat==2){
+                    $stat='Partially processed';
+                  }else if($purchase->purchasestat==3){
+                    $stat='Partially processed (close)';
+                  }else if($purchase->purchasestat==4){
+                    $stat='Complete (close)';
+                  }
+
+              @endphp
+              <td>{{ $stat }}</td>
               <td>{{ $purchase->Supplier_name}}</td>
               <td>{{ $purchase->Supplier_email}}</td>
               <td>{{ $purchase->Supplier_phone1}}, {{ $purchase->Supplier_phone2}}</td>
@@ -225,7 +242,6 @@ Pembelian
                   <tr>
                     <th>No. Receive</th>
                     <th>Date Receive</th>
-                    <th>Status</th>
                     <th>Payment</th>
                   </tr>
               </thead>
@@ -395,17 +411,7 @@ $("#receive").on('show.bs.modal', function(event){
     receives.forEach(receive => {
         let payment_status = "-";
         let receive_status = "";
-        if(receive.Status == 0){
-          receive_status = "Void";
-        }else if(receive.Status == 1){
-          receive_status = "Open"
-        }else if(receive.Status == 2){
-          receive_status = "Partially Processed"
-        }else if(receive.Status == 3){
-          receive_status = "Partially Processed (close)"
-        }else if(receive.Status == 4){
-          receive_status = "Complete close"
-        }
+       
         if(receive.Payment == 1){
           payment_status = "Yes";
         }
@@ -417,9 +423,7 @@ $("#receive").on('show.bs.modal', function(event){
                 <td>
                     ` + receive.Receive_date +`
                 </td>
-                <td>
-                    `+ receive_status +`
-                </td>
+               
                 <td>
                     `+ payment_status +`
                 </td>

@@ -979,7 +979,7 @@
     {
         $('#courier_packet_text_hidden').val(kode);
         $('#courier_hidden').val($('#cb_courier').val());
-        alert(kode);
+        // alert(kode);
 
         var cut = kode.split("-");
 

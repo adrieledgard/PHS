@@ -89,7 +89,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		session()->put('tipe_voucher',1);
 		// session()->put('tipe_voucher_product',"all");
@@ -346,7 +346,8 @@ class ControllerMaster extends Controller
 
 		$temp="";
 
-		for ($i=0; $i < count($cart); $i++) { 
+		for ($i=0; $i < count($cart); $i++) 
+		{ 
 
 			$temp.= $cart[$i]['idsubcategory'] . ',';
 			// array_push($arr,$cart[$i]['idsubcategory']);
@@ -387,7 +388,8 @@ class ControllerMaster extends Controller
 
 		$potong = [];
 
-		for ($i=0; $i <count($cart) ; $i++) { 
+		for ($i=0; $i <count($cart) ; $i++) 
+		{ 
 			if($i == $ix)
 			{
 
@@ -564,7 +566,7 @@ class ControllerMaster extends Controller
 
 		$param['id'] = $id;
 
-		$param['product'] = Product::where('Id_product','=',$id)
+		$param['product'] = product::where('Id_product','=',$id)
 		->get();
 
 		$param['product_image'] = product_image::where('Id_product','=',$id)
@@ -629,7 +631,7 @@ class ControllerMaster extends Controller
 				{
 					$param['id'] = $kodeproduk;
 	
-					$param['product'] = Product::where('Id_product','=',$kodeproduk)
+					$param['product'] = product::where('Id_product','=',$kodeproduk)
 					->get();
 	
 					$param['product_image'] = product_image::where('Id_product','=',$kodeproduk)
@@ -727,12 +729,12 @@ class ControllerMaster extends Controller
 
 
 						
-						$pro = new Product();
+						$pro = new product();
 						$hasil = $pro->insertdata($name, $id_type, $packaging, $id_brand,$composition,
 						$bpom,$efficacy, $desc,$storage,$dose,$disclaimer,'None',$status);
 
 
-						$pro2 = new Product();
+						$pro2 = new product();
 						$idp =  $pro2->getlastid();
 						
 
@@ -800,11 +802,11 @@ class ControllerMaster extends Controller
 						}
 						else
 						{
-							$pro = new Product();
+							$pro = new product();
 							$hasil = $pro->insertdata($name, $id_type, $packaging, $id_brand,$composition,
 							$bpom,$efficacy, $desc,$storage,$dose,$disclaimer,$variation_name,$status);
 
-							$pro2 = new Product();
+							$pro2 = new product();
 							$idp =  $pro2->getlastid();
 
 
@@ -829,7 +831,7 @@ class ControllerMaster extends Controller
 
 					$datasubcategory = session()->get('datasubcategory');
 
-					$pro = new Product();
+					$pro = new product();
 					$idp =  $pro->getlastid();
 
 					for ($i=0; $i<count($datasubcategory); $i++) { 
@@ -1030,7 +1032,7 @@ class ControllerMaster extends Controller
 					}
 
 
-					$pro = new Product();
+					$pro = new product();
 					$hasil = $pro->edit_product($Id_product,$Name, $Id_type, $Packaging, $Id_brand,$Composition,
 					$Bpom,$Efficacy, $Desc,$Storage,$Dose,$Disclaimer,$Variation_name,$Status);
 
@@ -1439,7 +1441,7 @@ class ControllerMaster extends Controller
 						->get();
 				
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 					else
 					{
@@ -1460,7 +1462,7 @@ class ControllerMaster extends Controller
 						->get();
 
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					
 					}
 					
@@ -1547,7 +1549,7 @@ class ControllerMaster extends Controller
 						->get();
 				
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 					else
 					{
@@ -1568,7 +1570,7 @@ class ControllerMaster extends Controller
 						->get();
 	
 	
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 
 
@@ -1656,7 +1658,7 @@ class ControllerMaster extends Controller
 						->get();
 				
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					}
 					else
 					{
@@ -1677,7 +1679,7 @@ class ControllerMaster extends Controller
 						->get();
 
 
-						return view('master_banner',$param);
+						return view('Master_banner',$param);
 					
 					}
 					
@@ -1754,7 +1756,7 @@ class ControllerMaster extends Controller
 					->get();
 
 
-					return view('master_banner',$param);
+					return view('Master_banner',$param);
 
 
 					//  $ctrbanner=0;
@@ -2217,7 +2219,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		session()->put('tipe_voucher',1);
 		// session()->put('tipe_voucher_product',"all");
@@ -2463,7 +2465,7 @@ class ControllerMaster extends Controller
 	{
 		$Id_voucher = $request->Id_voucher;
 
-		$vc = new Voucher();
+		$vc = new voucher();
 		$hasil = $vc->changestatus($Id_voucher,0);
 
 		echo "sukses";
@@ -2525,7 +2527,7 @@ class ControllerMaster extends Controller
 
 	public function get_variation_product(Request $request)
     {
-        $va = new Product();
+        $va = new product();
 		echo $va->getvariation($request->Id_product);
 
     }
@@ -3200,7 +3202,7 @@ class ControllerMaster extends Controller
 		}
 		else if($request->login)
 		{
-			return view('login');
+			return view('Login');
 		}
 		
 	}
@@ -3305,7 +3307,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		session()->put('tipe_supplier_product',"all");
 
@@ -3454,7 +3456,7 @@ class ControllerMaster extends Controller
 		->select("Option_name","Id_product")
 		->get();
 
-		$dtproductimage = Product_image::all();
+		$dtproductimage = product_image::all();
 
 		$temp="";
 		for ($i=0; $i < count($product); $i++) { 
@@ -3852,7 +3854,7 @@ class ControllerMaster extends Controller
 		}
 		else if($request->login)
 		{
-			return view('login');
+			return view('Login');
 		}
 	}
 
@@ -3984,11 +3986,11 @@ class ControllerMaster extends Controller
 		->get();
 
 
-		$param['dtproductimage'] = Product_image::all();
+		$param['dtproductimage'] = product_image::all();
 
 		
 
-		return view('master_affiliate',$param);
+		return view('Master_affiliate',$param);
 	}
 
 
@@ -4095,7 +4097,7 @@ class ControllerMaster extends Controller
 					$param['msgerror']="";
 					$param['dtaffiliate'] = affiliate::where('Status','=',1)
 					->get();
-					return view('master_affiliate',$param);
+					return view('Master_affiliate',$param);
 				}
 		}
 	}
@@ -4193,11 +4195,11 @@ class ControllerMaster extends Controller
 					->get();
 
 
-					$param['dtproductimage'] = Product_image::all();
+					$param['dtproductimage'] = product_image::all();
 
 					
 
-					return view('master_affiliate',$param);
+					return view('Master_affiliate',$param);
 				}
 		}
 	}
@@ -4208,17 +4210,22 @@ class ControllerMaster extends Controller
 		foreach ($ebooks as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 		}
-		return view('master_ebook', compact('ebooks'));
+		return view('Master_ebook', compact('ebooks'));
 	}
 
 	public function show_ebook($ebook_id, $user_token)
 	{
 		$ebook = ebook::find($ebook_id);
-		if($ebook->Id_template == "1"){
+
+		if($ebook->Id_template == "1")
+		{
 			$view = "Ebook_template1";
-		}else if($ebook->Id_template == "2"){
+		}
+		else if($ebook->Id_template == "2")
+		{
 			$view = "Ebook_template2";
-		}else {
+		}else 
+		{
 			$view = "Ebook_template3";
 		}
 		return view($view, compact('ebook', 'user_token'));

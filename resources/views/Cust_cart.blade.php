@@ -335,7 +335,7 @@
 
     function deletecart(id_cart)
     {
-        alert(id_cart);
+        // alert(id_cart);
         $.get(myurl + '/deletecart',
         {Id_cart: id_cart},
         function(result){

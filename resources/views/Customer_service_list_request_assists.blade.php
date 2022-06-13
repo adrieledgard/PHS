@@ -75,7 +75,8 @@
     <div class="row">
       <div class="col-md-12">
         <?php
-        if((session()->get('userlogin'))->Role == "CUSTOMER SERVICE"){
+        if((session()->get('userlogin'))->Role == "CUSTOMER SERVICE")
+        {
           ?>
 
               <a href="{!! url('request_assist_add'); !!}">
@@ -117,10 +118,12 @@
                 <td>{{$ticket->Email}}</td>
                 <td>{{$ticket->Phone}}</td>
                 @php
-                    if($ticket->Status == "OPEN"){
+                    if($ticket->Status == "OPEN")
+                    {
                       echo "<td><button type='button' class='btn btn-warning btn-sm' disabled>$ticket->Status</button></td>";
                     }
-                    else if($ticket->Status == "CLOSED"){
+                    else if($ticket->Status == "CLOSED")
+                    {
                       echo "<td><button type='button' class='btn btn-danger btn-sm' disabled>$ticket->Status</button></td>";
                     }
                 @endphp
@@ -131,11 +134,13 @@
                   {{-- kalau mau close ticket --}}
                   {{-- <button type="button" class="btn btn-danger btn-sm" onclick="openModal('{{$ticket->id}}')">Closed</button>  --}}
                   @php
-                    if($ticket->Status != "CLOSED"){
+                    if($ticket->Status != "CLOSED")
+                    {
                         echo '<button type="button" class="btn btn-danger btn-sm" onclick="openModal('. $ticket->id .')">Closed</button> <button type="button" class="btn btn-warning btn-sm" onclick="onEdit(' . $ticket->id. ')">Edit</button> <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#chat" data-id-ticket="' . $ticket->id . '">Chat</button>
                         ';
                       }
-                      else {
+                      else 
+                      {
                         echo '<button type="button" class="btn btn-warning btn-sm" disabled onclick="onEdit(' . $ticket->id. ')">Edit</button>';
                       }
                   @endphp

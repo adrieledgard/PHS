@@ -252,7 +252,7 @@
 
     function deletewishlist(id_wish)
     {
-        alert(id_wish);
+        // alert(id_wish);
         $.get(myurl + '/deletewishlist',
         {Id_wishlist: id_wish},
         function(result){

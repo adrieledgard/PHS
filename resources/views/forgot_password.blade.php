@@ -110,7 +110,8 @@
 <script src ="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 <script>
-  function request_otp() {
+  function request_otp() 
+  {
     $(".button_send").attr('disabled', true)
     var myurl = "<?php echo URL::to('/'); ?>";
     var token = $(".csrf_token").val();
@@ -123,10 +124,14 @@
 
     $.post(myurl + '/request_otp',
     {Email: email, CSRF: token},
-    function(result){
-      if(result == 'sukses'){
+    function(result)
+    {
+      if(result == 'sukses')
+      {
         toastr["success"]("Kode OTP sudah dikirim. Silahkan cek email anda", "Success");
-      }else if(result == 'email_tidak_terdaftar'){
+      }
+      else if(result == 'email_tidak_terdaftar')
+      {
         toastr["error"]("Email tidak terdaftar", "Error");
       }
         

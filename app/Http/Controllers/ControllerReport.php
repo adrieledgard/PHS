@@ -57,7 +57,7 @@ class ControllerReport extends Controller
 
     public function get_variation_product(Request $request)
     {
-        $va = new Product();
+        $va = new product();
 		echo $va->getvariation($request->Id_product);
 
     }
@@ -165,25 +165,39 @@ class ControllerReport extends Controller
         $followup = followup::where("Id_customer_service", $Id_customer_service)
                     ->whereBetween("Followup_date", $period)
                     ->get();
+
         $summary[0] = count($followup);
 
-		for ($i=0; $i < count($followup) ; $i++) { 
-            $cs = member::where("Id_member", $followup[$i]->Id_customer_service)->first();
-            $customer = member::where("Id_member", $followup[$i]->Id_member)->first();
+		for ($i=0; $i < count($followup) ; $i++) 
+        { 
+            $cs = member::where("Id_member", $followup[$i]->Id_customer_service)
+            ->first();
+
+            $customer = member::where("Id_member", $followup[$i]->Id_member)
+            ->first();
             $transaksi = "";
             $status = "Wait transaction";
-            if($followup[$i]['Is_successful_followup'] == 0){
-                if(date("Y-m-d", strtotime($followup[$i]->End_followup_date)) < date("Y-m-d")){
+            if($followup[$i]['Is_successful_followup'] == 0)
+            {
+                if(date("Y-m-d", strtotime($followup[$i]->End_followup_date)) < date("Y-m-d"))
+                {
                     $status = "Failed";
                     $summary[1] ++;
                 }
-            }else {
+            }
+            else
+            {
                 $status = "Sucessful";
-                $transaksi = cust_order_header::where("Id_order", $followup[$i]->Id_order)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->first();
+                $transaksi = cust_order_header::where("Id_order", $followup[$i]->Id_order)
+                ->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')
+                ->first();
+
+
                 $transaksi->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $followup[$i]->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get();
                 $summary[2] ++;
 
             }
+
 			$temp =$temp. "<tr>";
                 $temp =$temp. "<td>";
                     $temp =$temp. $cs->Username;
@@ -273,7 +287,9 @@ class ControllerReport extends Controller
     {
         $total_keuntungan = 0;
         $cust_orders = cust_order_header::where('status', '>=', 2);
-        if($request->has('filter')){
+
+        if($request->has('filter'))
+        {
             $period_format = $this->format_date($request);
             $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
         }
@@ -282,13 +298,16 @@ class ControllerReport extends Controller
         //HAPUS CODING DIBAWAH INI
         $temp_orders = $cust_orders;
         //BATAS HAPUS
-        foreach ($cust_orders as $index => $order) {
+        foreach ($cust_orders as $index => $order) 
+        {
             $order_profit = 0;
             $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
-            foreach ($order_detail as $detail) {
+            foreach ($order_detail as $detail) 
+            {
                 $order_detail_stock_card = stock_card::where("No_reference", $detail->Id_detail_order)->first();
                 //HAPUS CODING DIBAWAH INI
-                if(empty($order_detail_stock_card)){
+                if(empty($order_detail_stock_card))
+                {
                     continue;
                 }
                 //BATAS HAPUS
@@ -331,13 +350,18 @@ class ControllerReport extends Controller
     public function format_date($request)
     {
         $period = [];
-        if($request->filter == "bulan"){
+        if($request->filter == "bulan")
+        {
             $period[0] = date("Y-m-01", strtotime("-$request->filter_bulan month")) . " 00:00:00";
             $period[1] = date("Y-m-t", strtotime("-$request->filter_bulan month")) . " 23:59:59";
-        }else if($request->filter == "tahun"){
+        }
+        else if($request->filter == "tahun")
+        {
             $period[0] = date("$request->filter_tahun-m-01") . " 00:00:00";
             $period[1] = date("$request->filter_tahun-m-t") . " 23:59:59";
-        }else {
+        }
+        else 
+        {
             $date_range = explode(" - ", $request->filter_date_range);
             $period[0] = $date_range[0] . " 00:00:00";
             $period[1] = $date_range[1] . " 23:59:59";
@@ -373,7 +397,9 @@ class ControllerReport extends Controller
         $total_omzet = 0;
         $total_voucher = 0;
         $cust_orders = cust_order_header::where('status', '>=', 2);
-        if($request->has('filter')){
+
+        if($request->has('filter'))
+        {
             $period_format = $this->format_date($request);
             $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
         }
@@ -384,7 +410,8 @@ class ControllerReport extends Controller
             $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
             
             $voucher = voucher::find($order->Id_voucher);
-            if(!empty($voucher)){
+            if(!empty($voucher))
+            {
                 $total_voucher += $voucher->Discount;
                 $order->voucher = $voucher;
             }
@@ -419,13 +446,16 @@ class ControllerReport extends Controller
     {
         $total_omzet = 0;
         $cust_orders = cust_order_header::where('status', '>=', 2)->where('Affiliate', "<>", "")->where('Tracking_code', '<>', '');
-        if($request->has('filter')){
+        
+        if($request->has('filter'))
+        {
             $period_format = $this->format_date($request);
             $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
         }
         $cust_orders = $cust_orders->get();
 
-        foreach ($cust_orders as $order) {
+        foreach ($cust_orders as $order) 
+        {
             $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
             
             $order->affiliator = member::where('Random_code', $order->Affiliate)->first();
@@ -462,22 +492,27 @@ class ControllerReport extends Controller
     {
         $total_omzet = 0;
         $affiliators = member::where("Role", 'CUST')->get();
-        foreach ($affiliators as $affiliator) {
+        foreach ($affiliators as $affiliator) 
+        {
             $total_omzet_affiliator = 0;
             $total_point = 0;
             $cust_orders = cust_order_header::where('status', '>=', 2)->where('Affiliate', $affiliator->Random_code)->where('Tracking_code', '<>', '');
-            if($request->has('filter')){
+            if($request->has('filter'))
+            {
                 $period_format = $this->format_date($request);
                 $cust_orders = $cust_orders->whereBetween('Date_time', $period_format);
             }
             $cust_orders = $cust_orders->get();
 
-            foreach ($cust_orders as $order) {
+            foreach ($cust_orders as $order) 
+            {
                 $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
                 
-                foreach ($order_detail as $detail) {
+                foreach ($order_detail as $detail) 
+                {
                     $affiliate = affiliate::where("Id_product", $detail->Id_product)->where("Id_variation", $detail->Id_variation)->first();
-                    if(!empty($affiliate)){
+                    if(!empty($affiliate))
+                    {
                         $total_point += $affiliate->Poin;
                     }
                 }
@@ -512,11 +547,13 @@ class ControllerReport extends Controller
     {
         $members = member::all();
 
-        foreach ($members as $member) {
+        foreach ($members as $member) 
+        {
             $total_point_ditukar = 0;
             $member->rincian_penukaran = voucher::join('point_card', 'point_card.No_reference', 'voucher.Id_voucher')->where('point_card.Id_member', $member->Id_member)->where('point_card.Type', 'Claim voucher')->orderBy("Date_card", 'desc')->get();
 
-            foreach ($member->rincian_penukaran as $penukaran) {
+            foreach ($member->rincian_penukaran as $penukaran) 
+            {
                 $total_point_ditukar += $penukaran->Point;
             }
             $member->total_point_ditukar = $total_point_ditukar;
@@ -551,18 +588,23 @@ class ControllerReport extends Controller
     public function preparePembelianData($request)
     {
         $total_pengeluaran = 0;
-        $purchases = purchase_header::join('supplier', 'supplier.Id_supplier', 'purchase_header.Id_supplier')->where('purchase_header.Status', '>=', 2);
-        if($request->has('filter')){
+        $purchases = purchase_header::join('supplier', 'supplier.Id_supplier', 'purchase_header.Id_supplier')->where('purchase_header.Status', '>=', 1);
+        if($request->has('filter'))
+        {
             $period_format = $this->format_date($request);
             $purchases = $purchases->whereBetween('Purchase_date', $period_format);
         }
+        $purchases = $purchases->select('purchase_header.status as purchasestat', 'purchase_header.*', 'supplier.*');
         $purchases = $purchases->get();
 
         foreach ($purchases as $purchase) {
             $purchase_detail = purchase_detail::join('product', 'product.Id_product', 'purchase_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'purchase_detail.Id_variation')->where("No_invoice", $purchase->No_invoice)->get();
             
-            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)->get();
-            foreach ($receive_purchase as $receive) {
+            $receive_purchase = receive_header::where('No_invoice', $purchase->No_invoice)
+            ->where('Status','=',2)
+            ->get();
+            foreach ($receive_purchase as $receive) 
+            {
                 $receive->detail = receive_detail::join('product', 'product.Id_product', 'receive_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'receive_detail.Id_variation')->where('No_receive', $receive->No_receive)->get();
             }
 

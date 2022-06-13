@@ -32,7 +32,7 @@
 @endpush
 
 
-@section('Content')
+{{-- @section('Content')
 <div class="container-fluid">
     <!-- Small boxes (Stat box) -->
     <div class="row">
@@ -613,7 +613,7 @@
     <!-- /.row (main row) -->
   </div><!-- /.container-fluid -->
 
-@endsection
+@endsection --}}
 
 
 

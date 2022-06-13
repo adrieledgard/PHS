@@ -782,8 +782,8 @@
       if(Id_product=="" || Id_product==0)
       { 
         toastr["error"]("Please select product", "Error");
-        alert(CurrentDate);
-        alert(startdate);
+        // alert(CurrentDate);
+        // alert(startdate);
       }
       else if(Id_variation=="" || Id_variation==0)
       {
@@ -807,7 +807,7 @@
         $.get(myurl + '/add_promo',
         {Id_product:Id_product, Id_variation:Id_variation,Start_date:tglfix_start,End_date:tglfix_end,Model:Model,Comingsoon:Comingsoon},
         function(result){
-         alert(result);
+        //  alert(result);
            if(result=='fail')
            {
             toastr["error"]("Please set discount and min Qty", "Error");
@@ -917,7 +917,7 @@
           $.get(myurl + '/add_promo',
           {Id_product:Id_product, Id_variation:Id_variation,Start_date:tglfix_start,End_date:tglfix_end,Model:Model,Comingsoon:Comingsoon},
           function(result){
-            alert(result);
+            // alert(result);
             if(result=='fail')
             {
               toastr["error"]("Please set discount and min Qty", "Error");

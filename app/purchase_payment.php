@@ -32,7 +32,7 @@ class purchase_payment extends Model
             'Id_member' => strtoupper($Id_member),
             'Payment_method' => strtoupper($Payment_method),
             'Id_bank' => strtoupper($Id_bank),
-            'Payment_image' => strtoupper($Payment_image),
+            'Payment_image' => ($Payment_image),
         ]
         );
         return "sukses";

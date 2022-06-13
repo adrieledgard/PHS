@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Ticket extends Model
+class ticket extends Model
 {
     protected $table = "table_ticket";
     protected $fillable = ['Cs_id', 'Title', 'Platform_komunikasi', 'Bukti_chat', 'Date_request', 'Status', 'Description', 'Email', 'Phone', 'Nomor_ticket'];
     public function insertdata($cs_id, $title, $description, $bukti_chat, $platform_komunikasi, $email, $phone)
     {
-        Ticket::create([
+        ticket::create([
             'Nomor_ticket' => mt_rand(1000000, 9999999),
             'Cs_id' => $cs_id,
             'Title' => strtoupper($title),
@@ -28,7 +28,7 @@ class Ticket extends Model
 
     public function updatedata($id, $cs_id, $title, $description, $bukti_chat, $platform_komunikasi, $email, $phone)
     {
-        $ticket = Ticket::find($id);
+        $ticket = ticket::find($id);
         $ticket->Cs_id = $cs_id;
         $ticket->Title = $title;
         $ticket->Bukti_chat = strtoupper($bukti_chat);
@@ -43,7 +43,7 @@ class Ticket extends Model
 
     public function closed($id, $conclusion)
     {
-        $ticket = Ticket::find($id);
+        $ticket = ticket::find($id);
         $ticket->Status = "CLOSED";
         $ticket->Conclusion = $conclusion;
         $ticket->save();
