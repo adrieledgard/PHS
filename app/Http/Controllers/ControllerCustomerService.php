@@ -184,6 +184,7 @@ class ControllerCustomerService extends Controller
                     if($jum_transaksi != 0){
                         $transaksi = cust_order_header::where("Id_member", $member->Id_member)->orderBy('Id_order', 'desc')->first();
                         $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
+                        
                         $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
                         if($request->get('operasi_lama_tidak_transaksi') == "="){
                             if(!($interval->format("%a") == (int)$request->get("lama_tidak_transaksi"))){
@@ -199,7 +200,7 @@ class ControllerCustomerService extends Controller
                             }
                         }
                         
-                        $member->lama_tidak_belanja = $interval->format("%d");
+                        $member->lama_tidak_belanja = $interval->format("%a");
                         $member->rincian_transaksi = cust_order_header::where('cust_order_header.Id_member', $member->Id_member)->join('list_city', 'list_city.Id_city', 'cust_order_header.Id_city')->orderBy('Id_order', 'desc')->get();
                         foreach ($member->rincian_transaksi as $trans) {
                             $trans->detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where('cust_order_detail.Id_order', $trans->Id_order)->select('product.Name', 'cust_order_detail.Normal_price','cust_order_detail.Discount_promo','cust_order_detail.Qty', 'cust_order_detail.Fix_price', 'variation_product.Variation_name as Variant_name', 'variation_product.Option_name as Variant_option_name')->get();

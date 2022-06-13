@@ -4609,7 +4609,7 @@ class Controller extends BaseController
 		} 
 		else
 		{
-			if(date("Y-m-d", strtotime($followup->End_followup_date)) > date("Y-m-d", strtotime($transaction_date)))
+			if(date("Y-m-d", strtotime($followup->End_followup_date)) >= date("Y-m-d", strtotime($transaction_date)))
 			{
 				(new followup())->followup_successful($followup->Id_followup, $Id_member, $Id_order);
 			}
