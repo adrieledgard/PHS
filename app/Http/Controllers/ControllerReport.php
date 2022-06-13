@@ -304,7 +304,9 @@ class ControllerReport extends Controller
             $order_detail = cust_order_detail::join('product', 'product.Id_product', 'cust_order_detail.Id_product')->join('variation_product', 'variation_product.Id_variation', 'cust_order_detail.Id_variation')->where("Id_order", $order->Id_order)->get();
             foreach ($order_detail as $detail) 
             {
-                $order_detail_stock_card = stock_card::where("No_reference", $detail->Id_detail_order)->first();
+                $order_detail_stock_card = stock_card::where("No_reference", $detail->Id_detail_order)
+                ->where("Type_card",'LIKE','Cust_order%')
+                ->first();
                 //HAPUS CODING DIBAWAH INI
                 if(empty($order_detail_stock_card))
                 {
