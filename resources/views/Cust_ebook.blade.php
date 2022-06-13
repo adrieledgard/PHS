@@ -389,29 +389,6 @@ $.widget.bridge('uibutton', $.ui.button)
                </tr>
                 `)
             }
-            else
-            {
-                $(".table-body-download-detail").append(`
-               <tr>
-                    <td>
-                        `+detail.Name+`
-                    </td>
-                    <td>
-                        `+detail.Email +`
-                    </td>
-                    <td>
-                        `+detail.Phone+`
-                    </td>
-                    <td>
-                        `+detail.Date_request+`
-                    </td>
-                    <td>
-                        No
-                    </td>
-                   
-               </tr>
-                `)
-            }
            
        });
        $(".table-download-detail").DataTable();

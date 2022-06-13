@@ -344,7 +344,7 @@ $.widget.bridge('uibutton', $.ui.button)
 <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
    <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
-
+<script src="{{asset('assets\plugins\moment\moment.min.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script>
     $(document).ready(function(){
@@ -415,10 +415,9 @@ $.widget.bridge('uibutton', $.ui.button)
        }
        var button = $(event.relatedTarget);
        var checkout_detail = button.data('checkout');
-       console.log(checkout_detail);
        $(".table-body-checkout-detail").html("");
        checkout_detail.forEach(detail => {
-
+            console.log(moment);
             if(detail.Id_order == null)  // blm beli
             {
                 $(".table-body-checkout-detail").append(`
@@ -439,7 +438,7 @@ $.widget.bridge('uibutton', $.ui.button)
                         `+detail.Qty+`
                     </td>
                     <td>
-                        `+detail.created_at+`
+                        `+moment(detail.created_at).format("YYYY-MM-DD HH:mm:ss")+`
                     </td>
                     <td>
                         No
@@ -472,7 +471,7 @@ $.widget.bridge('uibutton', $.ui.button)
                                 `+detail.Qty+`
                             </td>
                             <td>
-                                `+detail.created_at+`
+                                `+moment(detail.created_at).format("YYYY-MM-DD HH:mm:ss")+`
                             </td>
                             <td>
                                 Yes
@@ -483,35 +482,6 @@ $.widget.bridge('uibutton', $.ui.button)
                     </tr>
                     `)
 
-                }
-                else
-                {
-                    $(".table-body-checkout-detail").append(`
-                    <tr>
-                            <td>
-                                `+detail.Name+`
-                            </td>
-                            <td>
-                                `+detail.Email +`
-                            </td>
-                            <td>
-                                `+detail.Phone+`
-                            </td>
-                            <td>
-                                `+detail.namaproduk+` (`+detail.variasi+`)
-                            </td>
-                            <td>
-                                `+detail.Qty+`
-                            </td>
-                            <td>
-                                `+detail.created_at+`
-                            </td>
-                            <td>
-                                No
-                            </td>
-                        
-                    </tr>
-                        `)
                 }
                 
             }
