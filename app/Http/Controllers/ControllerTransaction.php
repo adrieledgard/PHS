@@ -516,8 +516,6 @@ class ControllerTransaction extends Controller
 				$temp =$temp ."<td width='17%'><br>
 				<input type='text' min='0' id='txt_purchase_price".$i."' class='form-control' onkeyup='changetxtpurchase($i)' onfocusin='format($i,`in`)' onfocusout='format($i,`out`)' value='".number_format($cart[$i]['Purchase_price'])."'>
 				</td>";
-				//				<input type='text' id='txt_purchase_price".$i."' data-a-sign='' data-a-dec=',' data-a-sep='.' class='form-control purchase_price' onkeyup='changetxtpurchase($i)' onchange='changetxtpurchase($i)' value='".$cart[$i]['Purchase_price']."'>
-//
 
 				// $pat = '';
 
