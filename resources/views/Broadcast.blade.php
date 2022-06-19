@@ -35,6 +35,7 @@
   <!-- JQVMap -->
   <link rel="stylesheet" href="{{ asset('assets/plugins/jqvmap/jqvmap.min.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
 @endpush
 
 
@@ -58,7 +59,9 @@
         </div>
         <div class="col-md-6">
           {{ Form::label('product :','') }}
-          {{ Form::select('product', $product, '',['class'=>'form-control','id'=>'product', 'placeholder' => "Product", 'required' => 'required']) }}
+          <input type="hidden" name="product" class="product">
+          <button type="button" class="form-control product_name" data-toggle="modal" data-product="{{$product}}" data-target="#modal-product">Select Product</button>
+          {{-- {{ Form::select('product', $product, '',['class'=>'form-control','id'=>'product', 'placeholder' => "Product", 'required' => 'required']) }} --}}
         </div>
         <div class="col-md-12">
           {{ Form::label('Content :','') }}
@@ -71,7 +74,45 @@
       </div>
     {{Form::close()}}
   </div>
-
+  <div class="modal fade" id="modal-product">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Product</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <br>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <table class='table table-striped display table_id'>
+                <thead>
+                  <tr>
+                    <th width='150px'>Image</th>
+                    <th>Product Name</th>
+                    <th>Brand</th>
+                    <th>Type</th>
+                    <th>Variation</th>
+                    <th>Action</th>
+                  </tr>
+              </thead>
+            
+              <tbody id="modal-body-product">
+                
+              </tbody>
+                
+            
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 @endsection
 
 @push('custom-script')
@@ -112,8 +153,41 @@
   <script src="{{ asset('assets/dist/js/pages/dashboard.js') }}"></script> 
   <!--End of Tawk.to Script-->
   <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-    
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
   <script>
     $('#summernote').summernote();
+
+    $('#modal-product').on('show.bs.modal', function(event){
+      if ( $.fn.DataTable.isDataTable('.table_id') ) {
+         $('.table_id').DataTable().destroy();
+       }
+      var button = $(event.relatedTarget);
+      var products = button.data('product');
+      var modal = $(this);
+      
+      $("#modal-body-product").html("");
+      products.forEach(product => {
+
+        $("#modal-body-product").append(`
+          <tr>
+            <td><img src="${product.url_image}" width='150px' height='150px' class='center'></img></td>
+            <td>${product.Name}</td>
+            <td>${product.Brand_name}</td>
+            <td>${product.Type_name}</td>
+            <td>${product.vari2}</td>
+            <td><button class="btn btn-sm btn-warning" onclick="select_product('${product.Name}', ${product.Id_product})">Select</button></td>
+          </tr>
+        `)
+      });
+      $(".table_id").DataTable();
+    })
+
+    function select_product(product_name, product_id) {
+      $(".product").val(product_id);
+      $(".product_name").html(product_name);
+
+      $("#modal-product .close").click();
+    }
   </script>
+
 @endpush

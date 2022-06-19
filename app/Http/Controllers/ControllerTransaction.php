@@ -120,9 +120,13 @@ class ControllerTransaction extends Controller
 			
 			if($product_session[$i]['Id'] == $id)
 			{
+				$hargabeli = $request->hargabeli;
+				if(gettype($hargabeli) == 'string'){
+					$hargabeli = (int)str_replace(",",'', $hargabeli);
+				}
 				$product_session[$i]['Id_variation'] = $request->Id_variation;
 				$product_session[$i]['Qty_beli'] = $request->qtybeli;
-				$product_session[$i]['Purchase_price'] = $request->hargabeli;
+				$product_session[$i]['Purchase_price'] = $hargabeli;
 				
 				try {
 					if($request->bentuk == "txt_qty") //KALAU TXT QTY BERUBAH MAKA ARRAY EXPIRE DI RESTART
@@ -509,8 +513,11 @@ class ControllerTransaction extends Controller
 
 				
 				//PURCHASE PRICE
-				$temp =$temp ."<td width='17%'><br><input type='number' min='0' id='txt_purchase_price".$i."' class='form-control' onkeyup='changetxtpurchase($i)' onchange='changetxtpurchase($i)' value='".$cart[$i]['Purchase_price']."'></td>";
-
+				$temp =$temp ."<td width='17%'><br>
+				<input type='text' min='0' id='txt_purchase_price".$i."' class='form-control' onkeyup='changetxtpurchase($i)' onfocusin='format($i,`in`)' onfocusout='format($i,`out`)' value='".number_format($cart[$i]['Purchase_price'])."'>
+				</td>";
+				//				<input type='text' id='txt_purchase_price".$i."' data-a-sign='' data-a-dec=',' data-a-sep='.' class='form-control purchase_price' onkeyup='changetxtpurchase($i)' onchange='changetxtpurchase($i)' value='".$cart[$i]['Purchase_price']."'>
+//
 
 				// $pat = '';
 

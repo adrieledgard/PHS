@@ -4295,7 +4295,57 @@ class Controller extends BaseController
 
 	public function broadcastView()
 	{
-		$product = product::pluck('Name', 'Id_product');
+		$product = product::where('product.Status','=', '1')
+			->join('brand','product.Id_brand','brand.Id_brand')
+			->join('type','product.Id_type','type.Id_type')
+			->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
+			"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+				->get();
+
+
+			$variation= variation::where('Status','=',1)
+			->select("Option_name","Id_product")
+			->get();
+
+			for ($i=0; $i < count($product); $i++) { 
+			
+				$Id_product = $product[$i]['Id_product'];
+				$vari="";
+				$vari2="";
+			
+				$imgname = "default.jpg";
+	
+				$dtproductimage = product_image::all();
+	
+				foreach ($dtproductimage as $img) {
+					
+					// $idp = $data->Id_product;
+					$idi = $img->Id_product;
+					$urutan = $img->Image_order;
+					
+					if (($Id_product == $idi) && ($urutan==1))
+					{
+						$imgname = $img->Image_name;
+					}
+				}
+				$product[$i]['url_image'] = url('Uploads/Product/'.$imgname);
+				if($product[$i]->Variation == "NONE")
+				{
+					$vari2="NONE";
+				}
+				else
+				{
+					foreach ($variation as $datavar) {
+						if($datavar->Id_product == $product[$i]->Id_product)
+						{
+							$vari.=$datavar->Option_name." , ";
+						}
+					}
+					$vari2=substr($vari,0,-2);
+				}
+
+				$product[$i]['vari2'] = $vari2;
+			}
 
 		return view('Broadcast', compact('product'));
 	}

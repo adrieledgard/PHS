@@ -446,12 +446,12 @@ Purchase Order
 <script src="{{ asset('assets/plugins/jquery/jquery.min.js')}}"></script> --}}
 <!-- CDN DATA TABLE -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
- 
+<script src="{{asset('js\currency.js')}}"></script>
  <!-- Bootstrap 4 -->
  <script src="{{ asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script>
   $(document).ready( function () {
- 
+
   } );
   </script>
   
@@ -548,7 +548,7 @@ function formatCurrency(input, blur) {
 
 <script>
   $(function () {
-   
+
     //Datemask dd/mm/yyyy
     $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
     //Datemask2 mm/dd/yyyy
@@ -622,9 +622,8 @@ function formatCurrency(input, blur) {
   $.get(myurl + '/show_table_session',
   {},
   function(result){
-  
+    
     $("#product_session").html(result);
-  
   });
 
   //supplier name kasi kosong
@@ -664,7 +663,17 @@ function formatCurrency(input, blur) {
 
   }
 
-
+  function format(nomer, type_focus) {
+    var value = $("#txt_purchase_price" + nomer).val();
+    if(type_focus == 'in'){
+      value = value.replaceAll(",", "");
+      
+    }
+    else {
+      value = value.toString().number_format();
+    }
+    $("#txt_purchase_price" + nomer).val(value);
+  }
 
   $('#modal-expired').on('show.bs.modal', function(event){
     
@@ -814,6 +823,7 @@ function formatCurrency(input, blur) {
 
   function changetxtpurchase(nomer)
   {
+
     var nilaicb = $("#cboption" + nomer).val();
     var cut = nilaicb.split("#");
     var Id_variation = cut[2];
@@ -837,8 +847,9 @@ function formatCurrency(input, blur) {
     // TOTAL BAGIAN PALING BAWAH
     $("#txt_total").html("<b>Rp. "+ result.toString().number_format()+"</b>");
     $("#txt_grandtotal").val(result);
-      
+
     });
+    
   }
 
   function changetxtqty(nomer)
