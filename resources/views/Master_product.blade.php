@@ -152,9 +152,9 @@
         
               </a>
               <br><br>
-              <a href="{!! url('Master_product_images/' .$data->Id_product); !!}">
+              {{-- <a href="{!! url('Master_product_images/' .$data->Id_product); !!}">
                 {{ Form::button('<i class="fa fa-camera" aria-hidden="true"></i> Images',['class'=>'btn btn-info btn-sm']) }}
-              </a>
+              </a> --}}
               <br><br>
               {{ Form::button('Rating/Review', ['name'=>'btn_edit','class'=>'btn btn-info btn-sm ','data-rating'=>$data->rating,'data-toggle'=>'modal','data-target'=>'#rating']) }}
             </td>

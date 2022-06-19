@@ -71,7 +71,9 @@
   
   
       <div class="jumbotron">
-       {{Form::open(array('url'=>'add_product_detail','method'=>'post','class'=>'row g-3'))}}
+        <form method="post" class="row g-3" action="{{route('add_product_detail')}}" enctype="multipart/form-data">
+          @csrf
+       {{-- {{Form::open(array('url'=>'add_product_detail','method'=>'post','class'=>'row g-3'))}} --}}
         <div class="col-md-12">
           {{ Form::label('Status :','') }}
           {{ Form::select('cb_status', ['Not Active','Active'], 'Kosong', ['placeholder'=>'Product status','class'=>'form-control', 'id'=>'cb_status' ]) }}
@@ -286,12 +288,23 @@
         </div>
       </div>
   
+      <div class="jumbotron">
+        {{ Form::label('Images :','') }}
+        <div class="row">
+          <div class="col-md-12">
+            <div class="list-group" id="list-tab" role="tablist">
+                <input type="file" name="foto[]" multiple>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="col-12">
         {{ Form::submit('Insert', ['name'=>'add_product_detail', 'class'=>'btn btn-primary btn-lg float-right']) }}
       
       </div>
       <br><br> <br><br>
-        {{Form::close()}}
+    </form>
       
     
   </div><!-- /.container-fluid -->

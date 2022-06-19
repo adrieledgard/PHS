@@ -50,8 +50,8 @@
 
 
 @section('Content')
-
-{{Form::open(array('url'=>'edit_product_detail','method'=>'post'))}}
+<form method="post" class="row g-3" action="{{route('edit_product_detail')}}" enctype="multipart/form-data">
+{{-- {{Form::open(array('url'=>'edit_product_detail','method'=>'post'))}} --}}
   @csrf
   @if(count($errors)>0)
   <div class="alert alert-danger">
@@ -316,16 +316,60 @@
       </div>
 
     </div>
+
+  </div>
+
+</div>
+<div>
+  <div class="jumbotron">
+    {{ Form::label('Images :','') }}
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="" id="list-tab" role="tablist">
+            <input type="file" name="foto[]" multiple>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="" style="float: left">
+          @foreach ($dtproductimage as $data)
+          <div style="float: left">
+            <img onmousedown=tekandown({{$data->Image_order}}) src="{{ asset('Uploads/Product/'.$data->Image_name )}}" style="width: 150px; height:150px;"  class="center"> 
+            <label onclick=hapus({{ $data->Id_image}},{{ $data->Image_order}}) style='cursor: pointer; color:#000;
+              margin:-105% -8% 0px 0px;
+              float:right;
+              border-radius: 100%;
+              background-color : black; 
+              color: white;
+              padding:5%;'>X</label>
+          </div>
+              
+          
+          @endforeach
+      </div>
+    </div>
   </div>
 </div>
+
 {{-- 
 <input type="submit" value="SAVE CHANGES"  name="edit_product_detail" id="edit_product_detail"> --}}
-{{ Form::submit('SAVE CHANGES', ['name'=>'edit_product_detail', 'class'=>'btn btn-primary float-right']) }}
+
+<div class="jumbotron g-3" style="margin-top:200px; position:absolute; bottom:362px; margin-left:60%; ">
+  <div class="row">
+    <div class="col-lg-12" style="width: 300px;">
+      {{ Form::submit('SAVE CHANGES', ['name'=>'edit_product_detail', 'class'=>'btn btn-primary float-right', 'style' => 'margin-top:200px; position:absolute; bottom:0px']) }}
+    </div>
+  </div>
+</div>
 {{ Form::close() }}
+
+</form>
 
   
 
-
+<div>
 
    <!--ADD Modal -->
    <div class="modal fade" id="variation_modal_add">

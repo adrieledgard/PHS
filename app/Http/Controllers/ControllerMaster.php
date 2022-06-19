@@ -182,7 +182,9 @@ class ControllerMaster extends Controller
 						"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
 							->get();
 
-		
+		$param['dtproductimage'] = product_image::where('Id_image','>',-1)
+		->where('Id_product', $id)
+		->get();
 		//Variation
 		$param['dtvar'] = variation::where('Id_product','=', $id)
 		->where('Status','=',1)
@@ -616,37 +618,41 @@ class ControllerMaster extends Controller
 		{
 			if($request->hasFile('foto'))
 			{
-				$kodeproduk = $request->id;
+				$kodeproduk = (isset($request->id)) ? $request->id : $request->txt_id_product;
 				$filefoto = $request->file('foto');
-				$extfile = $filefoto->getClientOriginalExtension();
+				foreach ($filefoto as $foto) {
+					$extfile = $foto->getClientOriginalExtension();
 	
-				$despath = 'Uploads/Product';
-				$randoman = rand(1,100000);
-				$namafile = $kodeproduk.'-'.$randoman.'.'.$extfile;
-				$filefoto->move($despath,$namafile);
-	
-				$br = new product_image();
-				$hasil = $br->add_image ($kodeproduk,$namafile);
-	
-				if($hasil=="sukses")
-				{
-					$param['id'] = $kodeproduk;
-	
-					$param['product'] = product::where('Id_product','=',$kodeproduk)
-					->get();
-	
-					$param['product_image'] = product_image::where('Id_product','=',$kodeproduk)
-					->orderBy('Image_order')
-					->get();
-	
-					return view('Master_product_images',$param);
+					$despath = 'Uploads/Product';
+					$randoman = rand(1,100000);
+					$namafile = $kodeproduk.'-'.$randoman.'.'.$extfile;
+					$foto->move($despath,$namafile);
+		
+					$br = new product_image();
+					$hasil = $br->add_image ($kodeproduk,$namafile);
+		
+					if($hasil=="sukses")
+					{
+						$param['id'] = $kodeproduk;
+		
+						$param['product'] = product::where('Id_product','=',$kodeproduk)
+						->get();
+		
+						$param['product_image'] = product_image::where('Id_product','=',$kodeproduk)
+						->orderBy('Image_order')
+						->get();
+		
+						// return view('Master_product_images',$param);
+					}
 				}
+				
 	
 			}
 			else
 			{
 				$namafile = "default.png";
 			}
+			return;
 		}
 
 
@@ -842,7 +848,8 @@ class ControllerMaster extends Controller
 						$hasil = $sub->insertdata($idp,$idsub);
 					}
 					
-						
+					$request->merge(['id' => $idp]);
+					$this->Insertphoto($request);
 
 					return view('Master_product', $this->dtproduct());
 				}
@@ -855,7 +862,6 @@ class ControllerMaster extends Controller
 
 		
 		if($request->edit_product_detail){
-
 			if($request->validate(
 				[
 					'txt_product_name' => ['required','max:100',new ValidasiProductName("edit",$request->txt_id_product)],
@@ -1037,12 +1043,13 @@ class ControllerMaster extends Controller
 					$hasil = $pro->edit_product($Id_product,$Name, $Id_type, $Packaging, $Id_brand,$Composition,
 					$Bpom,$Efficacy, $Desc,$Storage,$Dose,$Disclaimer,$Variation_name,$Status);
 
-					
+					$this->Insertphoto($request);
 
 					return view('Master_product', $this->dtproduct());
 				}
+
+			
 		}
-		
 	}
 
 

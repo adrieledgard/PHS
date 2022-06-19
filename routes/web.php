@@ -137,8 +137,8 @@ Route::get('pay_email_guest', ['uses' => "Controller@pay_email_guest"]);
 
 Route::get('master_product', ["uses"=>"ControllerMaster@master_product"])->middleware('CheckLogin','CheckRoleAdmin');
 Route::get('master_product_add', ["uses"=>"ControllerMaster@master_product_add"])->middleware('CheckLogin','CheckRoleAdmin');
-Route::post('add_product_detail', ["uses"=>"ControllerMaster@add_product_detail"]);
-Route::post('edit_product_detail', ["uses"=>"ControllerMaster@edit_product_detail"]);
+Route::post('add_product_detail', ["uses"=>"ControllerMaster@add_product_detail"])->name('add_product_detail');
+Route::post('edit_product_detail', ["uses"=>"ControllerMaster@edit_product_detail"])->name('edit_product_detail');
 // Route::post('upload-images', ["uses"=>"Controller@upload_product_images"]);
 Route::get('add_option_product', ["uses"=>"ControllerMaster@add_option_product"]);
 Route::get('show_cart_option', ["uses"=>"ControllerMaster@show_cart_option"]);
