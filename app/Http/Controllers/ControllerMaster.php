@@ -52,6 +52,7 @@ class ControllerMaster extends Controller
 		->join('brand','product.Id_brand','brand.Id_brand')
 		->join('type','product.Id_type','type.Id_type')
 		->select("product.Id_product","product.Name","brand.Brand_name", "type.Type_name","product.Variation", \DB::raw('(CASE WHEN product.status = 1 THEN "Active" ELSE "Non-Active" END) AS status_user'))
+		->orderBy('Id_product','desc')
 			->get();
 
 		$param['dtproductimage'] = product_image::where('Id_image','>',-1)
@@ -1063,6 +1064,7 @@ class ControllerMaster extends Controller
 
 	public function master_category(){
 		$param['dtcategory'] = category::where('Status','=',1)
+		->orderBy('Id_category', 'desc')
 		->get();
 		$param['msg'] ="";
 		
@@ -1096,6 +1098,7 @@ class ControllerMaster extends Controller
 			 ->join('category','sub_category.Id_category','category.Id_category')
 			 ->where('sub_category.Status','=',1)
 			 ->select('sub_category.Id_sub_category','category.Category_name', 'sub_category.Sub_category_code', 'sub_category.Sub_category_name')
+			 ->orderBy('Id_sub_category', 'desc')
 				->get();
 
 
@@ -1136,6 +1139,7 @@ class ControllerMaster extends Controller
 		$param['dtteam_member'] = member::where('role','=','ADMIN')
 		->orwhere('role','=','CUSTOMER SERVICE')
 		->orwhere('role','=','SHIPPER')
+		->orderBy('Id_member', 'desc')
 		->get();
 
 		return view('Master_team_member',$param);
@@ -1144,6 +1148,7 @@ class ControllerMaster extends Controller
 
 	public function master_brand(){
 		$param['dtbrand'] = brand::where('Status','=',1)
+		->orderBy('Id_brand', 'desc')
 		->get();
 
 		return view('Master_brand',$param);
@@ -1841,6 +1846,7 @@ class ControllerMaster extends Controller
 
 	public function master_bank(){
 		$param['dtbank'] = bank::where('Status','=',1)
+		->orderBy('Id_bank', 'desc')
 		->get();
 
 		return view('Master_bank',$param);
@@ -1883,6 +1889,7 @@ class ControllerMaster extends Controller
 		->join('variation_product','promo_header.Id_variation','variation_product.Id_variation')
 		->select('promo_header.Id_promo','product.Name','variation_product.Option_name', 'promo_header.Start_date', 'promo_header.End_date', 'promo_header.Status')
 		->where('promo_header.Status','<>',0)
+		->orderBy('Id_promo','desc')
 			->get();
 
 
@@ -2195,7 +2202,11 @@ class ControllerMaster extends Controller
 	{
 		$param['dtvoucher'] = voucher::where('Status','<>',0)
 		->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo','Status')
+		->orderBy('Id_voucher', 'desc')
 		->get();
+		logger(voucher::where('Status','<>',0)
+		->select('Id_voucher','Voucher_name',\DB::raw('(CASE WHEN Voucher_type = 1 THEN "Disc All Product" WHEN Voucher_type = 2 THEN "Disc Selected Product" ELSE "Disc Shipping Cost" END) AS Voucher_type'),'Discount','Point','Redeem_due_date','Joinpromo','Status')
+		->orderBy('Id_voucher', 'desc')->toSql());
 		// \DB::raw('(CASE WHEN product.status = 1 THEN "Active" ELSE "Non-Active" END) AS status_user')
 		return view('Master_voucher',$param);
 	}
@@ -2546,6 +2557,7 @@ class ControllerMaster extends Controller
 
 	public function master_type(){
 		$param['dttype'] = type::where('Status','=',1)
+		->orderBy('Id_type', 'desc')
 		->get();
 
 		return view('Master_type',$param);
@@ -3283,6 +3295,7 @@ class ControllerMaster extends Controller
 		
 		$param['dtsupplier'] = supplier::where('Id_supplier','>',-1)
 						->select('Id_supplier','Supplier_name','Supplier_email', 'Supplier_phone1', 'Supplier_phone2','Supplier_address','Credit_due_date','Status')
+						->orderBy('Id_supplier', 'desc')
 						->get();
 
 						return view('Master_supplier',$param);
@@ -3969,6 +3982,7 @@ class ControllerMaster extends Controller
 
 		$param['dtaffiliate'] = affiliate::join('product','affiliate.Id_product','product.Id_product')
 		->select('affiliate.Id_product','product.Name','affiliate.Poin','affiliate.Status')
+		->orderBy('Id_affiliate', 'desc')
 		->get();
 
 
@@ -3978,6 +3992,7 @@ class ControllerMaster extends Controller
 		->join('type','product.Id_type','type.Id_type')
 		->select("product.Id_product","product.Name", "type.Type_name","product.Packaging","brand.Brand_name","product.Composition",
 		"product.Bpom","product.Efficacy","product.Description","product.Storage","product.Dose","product.Disclaimer","product.Variation","product.status")
+		->orderBy('Id_product', 'desc')
 			->get();
 
 
@@ -4206,7 +4221,7 @@ class ControllerMaster extends Controller
 
 	public function master_ebook()
 	{
-		$ebooks = ebook::where('status', '1')->get();
+		$ebooks = ebook::where('status', '1')->orderBy('Id_ebook','desc')->get();
 		foreach ($ebooks as $book) {
 			$book->sub_category = sub_category::find($book->Id_sub_category);
 		}

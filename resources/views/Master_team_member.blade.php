@@ -248,7 +248,7 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
 <script>
   $(document).ready( function () {
-    $('#table_id').DataTable();
+    $('#table_id').DataTable({order: [],});
   } );
   </script>
     <!-- ChartJS -->

@@ -156,7 +156,7 @@ class ControllerCustomerService extends Controller
         $available_customers = [];
         if($request->exists('lama_tidak_transaksi'))
         {
-
+            //HARI INI - lama tidak transaksi
             $date = date('Y-m-d', strtotime( "-" .$request->get('lama_tidak_transaksi') . " day" , strtotime (date("Y-m-d H:i:s"))));
             $periode = [$date . " 00:00:00", $date . " 23:59:59"];
             
@@ -164,11 +164,14 @@ class ControllerCustomerService extends Controller
 
             foreach ($members as $member) 
             {
+                //end fol date = 2022-06-15 
+                // date now = 2022-06-14
+                // status = sukses
                 $followup = followup::where("Id_member", $member->Id_member)
                 ->where("End_followup_date", ">", date("Y-m-d H:i:s"))
-                ->where('Is_successful_followup', "<>", '1')
+                ->where('Is_successful_followup', '0')
                 ->first();
-
+                
                 if(empty($followup))
                 {
                     $jum_transaksi = cust_order_header::where("Id_member", $member->Id_member)->count();
@@ -201,7 +204,6 @@ class ControllerCustomerService extends Controller
                         $tanggal_transaksi = new DateTime(date("Y-m-d", strtotime($transaksi->Date_time)));
                         
                         $interval = (new DateTime(date("Y-m-d")))->diff($tanggal_transaksi);
-                        
                         
                         if($request->get('operasi_lama_tidak_transaksi') == "=")
                         {
